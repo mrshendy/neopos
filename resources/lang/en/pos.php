@@ -177,4 +177,216 @@ return [
     'reason_required'       => 'Decision reason (required)',
     'approval_sent'         => 'Approval request sent.',
     'approval_updated'      => 'Approval updated.',
+
+     // Titles & Buttons
+    'title_customers_create'   => 'Create Customer',
+    'btn_save'                 => 'Save',
+    'btn_cancel'               => 'Cancel',
+    'btn_back'                 => 'Back',
+
+    // Sections
+    'section_basic'            => 'Basic Information',
+    'section_location'         => 'Location',
+    'section_contact_finance'  => 'Contact & Finance',
+
+    // Fields / Helpers / Placeholders
+    'f_code'                   => 'Code',
+    'ph_code'                  => 'Auto or custom code',
+    'h_code'                   => 'Unique reference for the customer (auto allowed).',
+
+    'f_legal_name_ar'          => 'Legal Name (Arabic)',
+    'ph_legal_name_ar'         => 'Enter Arabic legal name',
+    'h_legal_ar'               => 'Official Arabic name that appears on invoices.',
+
+    'f_legal_name_en'          => 'Legal Name (English)',
+    'ph_legal_name_en'         => 'Enter English legal name',
+    'h_legal_en'               => 'Official English name that appears on invoices.',
+
+    'f_type'                   => 'Customer Type',
+    'h_type'                   => 'Select the relation type.',
+    'opt_individual'           => 'Individual',
+    'opt_company'              => 'Company',
+
+    'f_channel'                => 'Sales Channel',
+    'h_channel'                => 'Where the customer is served.',
+    'opt_retail'               => 'Retail',
+    'opt_wholesale'            => 'Wholesale',
+    'opt_online'               => 'Online',
+    'opt_pharmacy'             => 'Pharmacy',
+
+    'f_country'                => 'Country',
+    'ph_country'               => 'Choose country',
+    'h_country'                => 'Used to determine address and taxation rules.',
+
+    'f_governorate'            => 'Governorate',
+    'ph_governorate'           => 'Choose governorate',
+    'h_governorate'            => 'Administrative region within the country.',
+
+    'f_city_select'            => 'City (List)',
+    'ph_city_select'           => 'Choose city',
+    'h_city_select'            => 'Pick an existing city from the list.',
+
+    'f_area'                   => 'Area',
+    'ph_area'                  => 'Choose area',
+    'h_area'                   => 'Neighborhood / district.',
+
+    'f_city_text'              => 'City (Text)',
+    'ph_city_text'             => 'Type city name if not in list',
+    'h_city_text'              => 'Used when the city does not exist in the predefined list.',
+
+    'f_phone'                  => 'Phone',
+    'ph_phone'                 => 'Enter phone number',
+    'h_phone'                  => 'Primary contact number.',
+
+    'f_tax'                    => 'Tax Number',
+    'ph_tax'                   => 'Enter VAT/Tax ID',
+    'h_tax'                    => 'Registered taxpayer number if applicable.',
+
+    'f_price_category'         => 'Price Category',
+    'ph_price_category'        => 'Choose price list',
+    'h_price_category'         => 'Defines default prices / discounts.',
+
+    'f_credit_limit'           => 'Credit Limit',
+    'h_credit_limit'           => 'Maximum allowed outstanding balance.',
+
+    'f_account_status'         => 'Account Status',
+    'status_active'            => 'Active',
+    'status_inactive'          => 'Inactive',
+    'status_suspended'         => 'Suspended',
+    'h_account_status'         => 'Controls whether the customer can transact.',
+
+    // Misc
+    'loading'                  => 'Saving…',
+
+        // Common Buttons/Titles
+    'btn_save'                 => 'Save',
+    'btn_cancel'               => 'Cancel',
+    'btn_close'                => 'Close',
+    'btn_back'                 => 'Back',
+    'btn_edit'                 => 'Edit',
+    'btn_update'               => 'Update',
+    'btn_print'                => 'Print',
+    'btn_new_invoice'          => 'New Invoice',
+
+    // Sections / Fields
+    'section_basic'            => 'Basic Information',
+    'section_location'         => 'Location',
+    'section_contact_finance'  => 'Contact & Finance',
+
+    'f_code'                   => 'Code',
+    'ph_code'                  => 'Auto or custom code',
+    'h_code'                   => 'Unique reference for the customer (auto allowed).',
+
+    'f_legal_name_ar'          => 'Legal Name (Arabic)',
+    'ph_legal_name_ar'         => 'Enter Arabic legal name',
+    'h_legal_ar'               => 'Official Arabic name that appears on invoices.',
+
+    'f_legal_name_en'          => 'Legal Name (English)',
+    'ph_legal_name_en'         => 'Enter English legal name',
+    'h_legal_en'               => 'Official English name that appears on invoices.',
+
+    'f_type'                   => 'Customer Type',
+    'opt_individual'           => 'Individual',
+    'opt_company'              => 'Company',
+    'h_type'                   => 'Select the relation type.',
+
+    'f_channel'                => 'Sales Channel',
+    'opt_retail'               => 'Retail',
+    'opt_wholesale'            => 'Wholesale',
+    'opt_online'               => 'Online',
+    'opt_pharmacy'             => 'Pharmacy',
+    'h_channel'                => 'Where the customer is served.',
+
+    'f_country'                => 'Country',
+    'ph_country'               => 'Choose country',
+    'h_country'                => 'Used to determine address and taxation rules.',
+
+    'f_governorate'            => 'Governorate',
+    'ph_governorate'           => 'Choose governorate',
+    'h_governorate'            => 'Administrative region within the country.',
+
+    'f_city_select'            => 'City (List)',
+    'ph_city_select'           => 'Choose city',
+    'h_city_select'            => 'Pick an existing city from the list.',
+
+    'f_area'                   => 'Area',
+    'ph_area'                  => 'Choose area',
+    'h_area'                   => 'Neighborhood / district.',
+
+    'f_city_text'              => 'City (Text)',
+    'ph_city_text'             => 'Type city name if not in list',
+    'h_city_text'              => 'Used when the city does not exist in the predefined list.',
+
+    'f_phone'                  => 'Phone',
+    'ph_phone'                 => 'Enter phone number',
+    'h_phone'                  => 'Primary contact number.',
+
+    'f_tax'                    => 'Tax Number',
+    'ph_tax'                   => 'Enter VAT/Tax ID',
+    'h_tax'                    => 'Registered taxpayer number if applicable.',
+
+    'f_price_category'         => 'Price Category',
+    'ph_price_category'        => 'Choose price list',
+    'h_price_category'         => 'Defines default prices / discounts.',
+
+    'f_credit_limit'           => 'Credit Limit',
+    'h_credit_limit'           => 'Maximum allowed outstanding balance.',
+
+    'f_account_status'         => 'Account Status',
+    'status_active'            => 'Active',
+    'status_inactive'          => 'Inactive',
+    'status_suspended'         => 'Suspended',
+    'h_account_status'         => 'Controls whether the customer can transact.',
+
+    // Show Page
+    'title_customers_show'     => 'Customer Profile',
+
+    // Profile & Cards
+    'card_profile'             => 'Profile',
+    'desc_profile'             => 'General information and address.',
+    'card_summary'             => 'Financial Summary',
+    'desc_summary'             => 'Credit overview and latest activity.',
+    'card_activity'            => 'Activity',
+    'card_contacts'            => 'Contacts',
+    'desc_contacts'            => 'People responsible for communication.',
+    'card_notes'               => 'Internal Notes',
+    'desc_notes'               => 'Private notes visible to staff.',
+    'no_notes'                 => 'No notes recorded.',
+
+    // Table / labels
+    'th_code'                  => 'Code',
+    'th_name'                  => 'Name',
+    'th_phone'                 => 'Phone',
+    'th_status'                => 'Status',
+    'th_country'               => 'Country',
+    'th_governorate'           => 'Governorate',
+    'th_city'                  => 'City',
+    'th_area'                  => 'Area',
+    'th_price_category'        => 'Price Category',
+    'th_balance'               => 'Balance',
+    'th_credit_limit'          => 'Credit Limit',
+    'th_available'             => 'Available',
+    'th_open_invoices'         => 'Open Invoices',
+    'th_type'                  => 'Type',
+    'th_reference'             => 'Reference',
+    'th_date'                  => 'Date',
+    'th_value'                 => 'Amount',
+    'th_person'                => 'Person',
+    'th_role'                  => 'Role',
+    'th_email'                 => 'Email',
+
+    // Tabs & Empty states
+    'tab_invoices'             => 'Invoices',
+    'tab_receipts'             => 'Receipts',
+    'tab_returns'              => 'Returns',
+    'tab_latest'               => 'Latest',
+    'no_transactions'          => 'No transactions found.',
+    'no_invoices'              => 'No invoices found.',
+    'no_receipts'              => 'No receipts found.',
+    'no_returns'               => 'No returns found.',
+    'no_contacts'              => 'No contacts defined.',
+
+    // Misc
+    'credit_used'              => 'Credit used',
+    'tt_copy'                  => 'Copy to clipboard',
 ];

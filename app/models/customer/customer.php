@@ -25,22 +25,22 @@ class customer extends Model
     public $translatable = ['legal_name','trade_name'];
 
     // 🔗 علاقات جغرافية (حسب الجداول الموجودة)
-    public function country()    { return $this->belongsTo(countries::class,    'country_id'); }
+    public function country()    { return $this->belongsTo(\App\models\countries::class,    'country_id'); }
     // app/models/customer/customer.php
-public function governorate() { return $this->belongsTo(\App\models\customer\governorate::class, 'governorate_id'); }
-public function cityRel()    { return $this->belongsTo(\App\models\customer\city::class, 'city_id'); }
-public function area()       { return $this->belongsTo(\App\models\customer\area::class, 'area_id'); }
+public function governorate() { return $this->belongsTo(\App\models\governorate::class, 'governorate_id'); }
+public function cityRel()    { return $this->belongsTo(\App\models\city::class, 'city_id'); }
+public function area()       { return $this->belongsTo(\App\models\area::class, 'area_id'); }
 
     // 🔗 أخرى
-    public function priceCategory() { return $this->belongsTo(pricelist::class, 'price_category_id'); }
-    public function salesRep()      { return $this->belongsTo(\App\models\User::class, 'sales_rep_id'); }
+    public function priceCategory() { return $this->belongsTo(\App\models\pricelist::class, 'price_category_id'); }
+    public function salesRep()      { return $this->belongsTo(\App\User::class, 'sales_rep_id'); }
 
-    public function addresses()     { return $this->hasMany(customeraddress::class, 'customer_id'); }
-    public function contacts()      { return $this->hasMany(customercontact::class, 'customer_id'); }
-    public function credit()        { return $this->hasOne(customercredit::class, 'customer_id'); }
-    public function pricing()       { return $this->hasMany(customerpricing::class, 'customer_id'); }
-    public function documents()     { return $this->hasMany(customerdocument::class, 'customer_id'); }
-    public function approvals()     { return $this->hasMany(customerapproval::class, 'customer_id'); }
-    public function transactions()  { return $this->hasMany(customertransaction::class, 'customer_id'); }
-    
+    public function addresses()     { return $this->hasMany(\App\models\customer\customeraddress::class, 'customer_id'); }
+    public function contacts()      { return $this->hasMany(\App\models\customer\customercontact::class, 'customer_id'); }
+    public function credit()        { return $this->hasOne(\App\models\customer\customercredit::class, 'customer_id'); }
+    public function pricing()       { return $this->hasMany(\App\models\customer\customerpricing::class, 'customer_id'); }
+    public function documents()     { return $this->hasMany(\App\models\customer\customerdocument::class, 'customer_id'); }
+    public function approvals()     { return $this->hasMany(\App\models\customer\customerapproval::class, 'customer_id'); }
+    public function transactions()  { return $this->hasMany(\App\models\customer\customertransaction::class, 'customer_id'); }
+
 }

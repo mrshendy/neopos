@@ -7,21 +7,19 @@ use App\models\customer\customer;
 
 class Show extends Component
 {
-    public $id;
+    public $customer_id;
+    public $customer;
 
     public function mount($id)
     {
-        $this->id = $id;
+        $this->customer_id = $id;
+        $this->customer = customer::findOrFail($this->customer_id);
     }
 
     public function render()
     {
-        $customer = customer::with([
-            'country','governorate','cityRel','area',
-            'priceCategory','contacts','addresses','documents',
-            'credit','pricing','transactions'
-        ])->findOrFail($this->id);
-
-        return view('livewire.customer.show', compact('customer'));
+        return view('livewire.customer.show');
     }
 }
+
+
