@@ -5,7 +5,7 @@ namespace App\Http\Livewire\customer;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use App\models\customer\customer;
-use App\models\countries;
+use App\models\country;
 use App\models\governorate;
 use App\models\city;
 use App\models\area;
@@ -47,7 +47,7 @@ class Edit extends Component
             'type'               => ['required', Rule::in(['individual','company','b2b','b2c'])],
             'channel'            => ['nullable', Rule::in(['retail','wholesale','online','pharmacy'])],
 
-            'country_id'         => ['nullable','exists:Countries,id'],
+            'country_id'         => ['nullable','exists:country,id'],
             'governorate_id'     => ['nullable','exists:governorate,id'],
             'city_id'            => ['nullable','exists:city,id'],
             'area_id'            => ['nullable','exists:area,id'],
@@ -150,7 +150,7 @@ class Edit extends Component
     public function render()
     {
         return view('livewire.customer.edit', [
-            'countries'    => countries::all(),
+            'country'    => country::all(),
             'governorates' => $this->country_id ? governorate::where('country_id',$this->country_id)->get() : collect(),
             'cities'       => $this->governorate_id ? city::where('governorate_id',$this->governorate_id)->get() : collect(),
             'areas'        => $this->city_id ? area::where('city_id',$this->city_id)->get() : collect(),

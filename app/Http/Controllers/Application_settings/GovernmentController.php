@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Application_settings;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storegovernorate;
-use App\models\countries;
+use App\models\country;
 use App\models\governorate ;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -19,9 +19,9 @@ class governorateController extends Controller
    */
   public function index()
   {
-    $countries=countries::all();
+    $country=country::all();
     $governoratees=governorate::all();
-  return view('settings.governorate',compact('governoratees','countries'));
+  return view('settings.governorate',compact('governoratees','country'));
 
   }
 

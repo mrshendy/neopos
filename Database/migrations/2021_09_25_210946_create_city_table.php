@@ -25,7 +25,7 @@ public function up(): void
         $table->softDeletes();
 
         // أضف هنا الفهارس/المفاتيح الخارجية لو محتاجها
-        // $table->foreign('id_country')->references('id')->on('Countries')->cascadeOnDelete();
+        // $table->foreign('id_country')->references('id')->on('country')->cascadeOnDelete();
         // $table->foreign('id_governorate')->references('id')->on('governorate')->cascadeOnDelete();
     });
 }

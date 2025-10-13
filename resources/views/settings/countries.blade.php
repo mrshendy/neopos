@@ -28,7 +28,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">{{ trans('settings_trans.countries') }}</h5>
+                        <h5 class="card-title mb-0">{{ trans('settings_trans.country') }}</h5>
                        {{-- Message --}}
                             @if (Session::has('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -53,7 +53,7 @@
 
                         <!-- Buttons Grid -->
                         <div class="d-grid gap-2" >
-                            <button data-bs-toggle="modal" data-bs-target="#signupModals" class="btn btn-primary waves-effect waves-light" type="button">{{ trans('settings_trans.add_new_Countries') }}</button>
+                            <button data-bs-toggle="modal" data-bs-target="#signupModals" class="btn btn-primary waves-effect waves-light" type="button">{{ trans('settings_trans.add_new_country') }}</button>
                         </div>
 
 
@@ -71,7 +71,7 @@
                             </thead>
                             <tbody>
                                 <?php $i=0; ?>
-                                @foreach($Countries as $Country)
+                                @foreach($country as $Country)
                                 <tr>
                                     <?php $i++; ?>
                                     <td>{{$i}}</td>
@@ -96,11 +96,11 @@
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content border-0 overflow-hidden">
                                                     <div class="modal-header p-3">
-                                                        <h4 class="card-title mb-0">{{ trans('settings_trans.update_Countries') }}</h4>
+                                                        <h4 class="card-title mb-0">{{ trans('settings_trans.update_country') }}</h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form action="{{ route('countries.update','test')}}" method="post" >
+                                                        <form action="{{ route('country.update','test')}}" method="post" >
                                                             {{ method_field('patch') }}
                                                             @csrf
                                                             <div class="form-group">
@@ -132,7 +132,7 @@
                                                             <h4>{{ trans('settings_trans.massagedelete_d') }}!</h4>
                                                             <p class="text-muted">   {{ trans('settings_trans.massagedelete_p') }}{{$Country->name}}</p>
                                                             <!-- Toogle to second dialog -->
-                                                            <form action="{{ route('countries.destroy','test')}}" method="post">
+                                                            <form action="{{ route('country.destroy','test')}}" method="post">
                                                                 {{ method_field('delete') }}
                                                                 {{ csrf_field() }}
                                                                 <input  class="form-control" id="id" name="id" value="{{$Country->id}}" type="hidden">
@@ -158,13 +158,13 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0 overflow-hidden">
                     <div class="modal-header p-3">
-                        <h4 class="card-title mb-0">{{ trans('settings_trans.add_new_Countries') }}</h4>
+                        <h4 class="card-title mb-0">{{ trans('settings_trans.add_new_country') }}</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     
                     <div class="modal-body">
                        
-                        <form action="{{route('countries.store')}}" method="post">
+                        <form action="{{route('country.store')}}" method="post">
                             {{ csrf_field() }}
 
                             <div class="mb-3">

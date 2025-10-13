@@ -34,11 +34,6 @@ class Index extends Component
         session()->flash('success', __('pos.status_changed'));
     }
 
-    public function confirmDelete($id){
-        // يستدعي JS: confirmDelete(id) -> ثم Livewire('deleteConfirmed', id)
-        $this->emit('confirmDelete', $id);
-    }
-
     public function delete($id){
         $s = supplier::findOrFail($id);
         $s->delete();
@@ -48,6 +43,7 @@ class Index extends Component
 
     public function render(){
         $q = supplier::query()
+            ->with(['category','governorate','city']) // ✅ تحميل العلاقات مسبقًا
             ->when($this->search, function($q){
                 $q->where('code','like',"%{$this->search}%")
                   ->orWhere('name->ar','like',"%{$this->search}%")
@@ -64,8 +60,8 @@ class Index extends Component
             'categories'   => suppliercategory::orderBy('id','desc')->get(),
             'governorates' => governorate::orderBy('id','asc')->get(),
             'cities'       => $this->filter_governorate
-                                ? city::where('governorate_id',$this->filter_governorate)->orderBy('id','asc')->get()
-                                : city::orderBy('id','asc')->limit(50)->get(),
+                                    ? city::where('governorate_id',$this->filter_governorate)->orderBy('id','asc')->get()
+                                    : city::orderBy('id','asc')->limit(50)->get(),
         ]);
     }
 }

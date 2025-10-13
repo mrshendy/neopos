@@ -28,7 +28,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">{{ trans('settings_trans.countries') }}</h5>
+                        <h5 class="card-title mb-0">{{ trans('settings_trans.country') }}</h5>
                        {{-- Message --}}
                             @if (Session::has('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -65,7 +65,7 @@
                                     <th data-ordering="false">{{ trans('settings_trans.id') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.name_ar') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.name_en') }}</th>
-                                    <th data-ordering="false">{{ trans('settings_trans.name_Countries') }}</th>
+                                    <th data-ordering="false">{{ trans('settings_trans.name_country') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.default') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.status') }}</th>
                                     <th>{{ trans('settings_trans.create_date') }}</th>
@@ -81,7 +81,7 @@
                                     <td>{{$currencies->id}}</td>
                                     <td>{{$currencies->getTranslation('name','ar')}}</td>
                                     <td>{{$currencies->getTranslation('name','en')}}</td>
-                                    <td>{{$currencies->Countries->name }}</td>
+                                    <td>{{$currencies->country->name }}</td>
                                     <td>
                                         @if($currencies->default==1) 
                                         <span class="badge badge-label bg-success"><i class="mdi mdi-circle-medium"></i> {{ trans('settings_trans.default_true') }}</span>
@@ -116,7 +116,7 @@
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content border-0 overflow-hidden">
                                                     <div class="modal-header p-3">
-                                                        <h4 class="card-title mb-0">{{ trans('settings_trans.update_Countries') }}</h4>
+                                                        <h4 class="card-title mb-0">{{ trans('settings_trans.update_country') }}</h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -149,10 +149,10 @@
                                                                 </select>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="name_en" class="form-label">{{ trans('settings_trans.countries_select') }}</label>
+                                                                <label for="name_en" class="form-label">{{ trans('settings_trans.country_select') }}</label>
                                                                 <select name="id_country" id="id_country" class="form-control" required>
                                                                     <option value="" selected disabled>{{ trans('currencies_trans.Country') }}</option>
-                                                                    @foreach ($Countries as $Country)
+                                                                    @foreach ($country as $Country)
                                                                         <option value="{{ $Country->id }}" <?php if($Country->id==$currencies->id_country){echo 'selected="true"';}?> >{{ $Country->name }}</option>
                                                                     @endforeach
                                                                 </select>                                                           
@@ -228,11 +228,11 @@
                                 </select>                           
                              </div>
                             <div class="mb-3">
-                                <label for="ForminputState" class="form-label">{{ trans('settings_trans.countries_select') }}</label>
+                                <label for="ForminputState" class="form-label">{{ trans('settings_trans.country_select') }}</label>
                                 
                                 <select name="id_country" id="id_country" class="form-select" data-choices data-choices-sorting="true" required>
-                                    <option value="" selected disabled>{{ trans('settings_trans.countries_select') }}</option>
-                                    @foreach ($Countries as $currencies)
+                                    <option value="" selected disabled>{{ trans('settings_trans.country_select') }}</option>
+                                    @foreach ($country as $currencies)
                                         <option value="{{ $currencies->id }}">{{ $currencies->name }}</option>
                                     @endforeach
                                 </select>                           

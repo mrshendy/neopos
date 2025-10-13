@@ -37,8 +37,8 @@
                                    <i class="mdi mdi-cog" style="font-size: 35px"></i>
                                 </div>
                             </div>
-                            <h4 class="card-title font font">{{ trans('settings_trans.countries') }}</h4>
-                            <a  href="{{ url('/' . $page='countries') }}" class="btn btn-info">{{ trans('settings_trans.Go_to_settings_now') }}</a>
+                            <h4 class="card-title font font">{{ trans('settings_trans.country') }}</h4>
+                            <a  href="{{ url('/' . $page='country') }}" class="btn btn-info">{{ trans('settings_trans.Go_to_settings_now') }}</a>
                         </div>
                     </div><!-- end col -->
                     <div class="col-xxl-6 col-lg-6">

@@ -25,7 +25,7 @@ class customer extends Model
     public $translatable = ['legal_name','trade_name'];
 
     // 🔗 علاقات جغرافية (حسب الجداول الموجودة)
-    public function country()    { return $this->belongsTo(\App\models\countries::class,    'country_id'); }
+    public function country()    { return $this->belongsTo(\App\models\country::class,    'country_id'); }
     // app/models/customer/customer.php
 public function governorate() { return $this->belongsTo(\App\models\governorate::class, 'governorate_id'); }
 public function cityRel()    { return $this->belongsTo(\App\models\city::class, 'city_id'); }

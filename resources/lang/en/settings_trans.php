@@ -38,13 +38,13 @@ return [
      'add_new_nationality' => 'Add a new nationality',
      'name_ar' => 'Arabic Name ',
      'name_en' => 'English Name',
-     'name_Countries' => 'Country Name',
+     'name_country' => 'Country Name',
      'name_governoratees' => 'governorate Name',
      'name_city' => 'City Name',
 
     // Place
     
-         'countries' => 'Countries settings',
+         'country' => 'country settings',
          'governorate' => 'Governorate settings',
          'city' => 'City settings',
          'area' => 'Area settings',
@@ -60,12 +60,12 @@ return [
     'status' => 'Status',
     'action' => 'Action',
 
-    'add_new_Countries' => 'Add New Countries',
+    'add_new_country' => 'Add New country',
     'add_new_governorate' => 'Add New governorate',
     'add_new_city' => 'Add New city',
     'add_new_area' => 'Add New Area',
 
-    'countries_select' => 'Select countries',
+    'country_select' => 'Select country',
     'governorate_select' => 'Select governorate',
     'city_select' => 'Select city',
 
@@ -74,12 +74,12 @@ return [
     'area' => 'Area settings',
 
 
-    'update_Countries' => 'update Countries',
+    'update_country' => 'update country',
     'update_city' => 'update city',
     'update_governorate' => 'update governorate',
     'update_area' => 'update Area',
 
-    'massagedelete'  => 'Delete Countries',
+    'massagedelete'  => 'Delete country',
     'massagedelete_governorate'  => 'Delete governorate',
     'massagedelete_city'  => 'Delete city',
     'massagedelete_area'  => 'Delete Area',

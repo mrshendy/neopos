@@ -28,8 +28,8 @@ class supplieraddress extends Model
     ];
 
     public function supplier()    { return $this->belongsTo(supplier::class); }
-    public function country()     { return $this->belongsTo(\App\Models\customer\country::class,'country_id'); }
-    public function governorate() { return $this->belongsTo(\App\Models\customer\governorate::class,'governorate_id'); }
-    public function city()        { return $this->belongsTo(\App\Models\customer\city::class,'city_id'); }
-    public function area()        { return $this->belongsTo(\App\Models\customer\area::class,'area_id'); }
+    public function country()     { return $this->belongsTo(\App\Models\country::class,'country_id'); }
+    public function governorate() { return $this->belongsTo(\App\Models\governorate::class,'governorate_id'); }
+    public function city()        { return $this->belongsTo(\App\Models\city::class,'city_id'); }
+    public function area()        { return $this->belongsTo(\App\Models\area::class,'area_id'); }
 }

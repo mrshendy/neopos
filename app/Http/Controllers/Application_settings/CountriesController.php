@@ -2,11 +2,11 @@
 namespace App\Http\Controllers\Application_settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCountry;
-use App\models\countries;
+use App\models\country;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-class CountriesController extends Controller
+class countryController extends Controller
 {
 
   /**
@@ -16,8 +16,8 @@ class CountriesController extends Controller
    */
   public function index()
   {
-    $Countries=Countries::all();
-    return view('settings.countries',compact('Countries'));
+    $country=country::all();
+    return view('settings.country',compact('country'));
 
   }
 
@@ -41,21 +41,21 @@ class CountriesController extends Controller
     
 
    
-    if(Countries::where('name->ar',$request->name_ar)->orwhere('name->en',$request->name_en)->exists())
+    if(country::where('name->ar',$request->name_ar)->orwhere('name->en',$request->name_en)->exists())
     {
         return  redirect()->back()->withErrors([trans('Country_trans.existes') ]);
     }
     try
     {
         $validated = $request->validated();
-        $Country=new Countries();
+        $Country=new country();
         $Country->name=['en'=>$request->name_en,'ar'=>$request->name_ar];
         $Country->notes=$request->notes;
         $Country->user_add=(Auth::user()->id);
         $Country->account_id=(Auth::user()->id_account);
         $Country->save();
         session()->flash('add');
-        return redirect()->route('countries.index');
+        return redirect()->route('country.index');
        
     }catch(\Exception $e)
     {
@@ -97,13 +97,13 @@ class CountriesController extends Controller
         try
         {
         $validated = $request->validated();
-        $Country= Countries::findorFail($request->id);
+        $Country= country::findorFail($request->id);
         $Country->update([
             $Country->name=['en'=>$request->name_en,'ar'=>$request->name_ar],
             $Country->notes=$request->notes,
             $Country->user_add=(Auth::user()->id),
         ]);
-        return redirect()->route('countries.index')->with('success', 'User Deleted successfully.');
+        return redirect()->route('country.index')->with('success', 'User Deleted successfully.');
 
         }
         catch(\Exception $e)
@@ -124,8 +124,8 @@ class CountriesController extends Controller
     try
     {
 
-      $Country= Countries::findorFail($request->id)->delete();
-      return redirect()->route('countries.index')->with('success', 'User Deleted successfully.');
+      $Country= country::findorFail($request->id)->delete();
+      return redirect()->route('country.index')->with('success', 'User Deleted successfully.');
 
     }
     catch(\Exception $e)

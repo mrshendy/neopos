@@ -35,9 +35,9 @@ class area extends Model
         return $this->belongsTo(governorate::class, 'id_governorate');
     }
 
-    public function countries()
+    public function country()
     {
-        return $this->belongsTo(countries::class, 'id_country');
+        return $this->belongsTo(country::class, 'id_country');
     }
 
     public function city()

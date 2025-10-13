@@ -25,7 +25,7 @@ return new class extends Migration {
             $t->timestamps();
             $t->softDeletes();
 
-            $t->foreign('country_id')->references('id')->on('Countries');
+            $t->foreign('country_id')->references('id')->on('country');
             $t->foreign('governorate_id')->references('id')->on('governorate');
             $t->foreign('city_id')->references('id')->on('city');
             $t->foreign('area_id')->references('id')->on('Area');

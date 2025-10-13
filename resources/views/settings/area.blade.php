@@ -65,7 +65,7 @@
                                     <th data-ordering="false">{{ trans('settings_trans.id') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.name_ar') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.name_en') }}</th>
-                                    <th data-ordering="false">{{ trans('settings_trans.name_Countries') }}</th>
+                                    <th data-ordering="false">{{ trans('settings_trans.name_country') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.name_governoratees') }}</th>
                                     <th data-ordering="false">{{ trans('settings_trans.name_city') }}</th>
                                     <th>{{ trans('settings_trans.create_date') }}</th>
@@ -81,7 +81,7 @@
                                     <td>{{$area->id}}</td>
                                     <td>{{$area->getTranslation('name','ar')}}</td>
                                     <td>{{$area->getTranslation('name','en')}}</td>
-                                    <td>{{$area->countries->name }}</td>
+                                    <td>{{$area->country->name }}</td>
                                     <td>{{$area->governoratees->name }}</td>
                                     <td>{{$area->city->name }}</td>
                                     <td>{{$area->created_at}}</td>
@@ -123,12 +123,12 @@
                                                             <div class="form-group">
                                                                 <div class="row">
                                                                     <div class="col-md-4">
-                                                                        <label class="my-1 mr-2" for="inlineFormCustomSelectPref">{{ trans('settings_trans.countries_select') }}</label>
+                                                                        <label class="my-1 mr-2" for="inlineFormCustomSelectPref">{{ trans('settings_trans.country_select') }}</label>
                                                                         <select name="id_country" class="form-control SlectBox" onclick="console.log($(this).val())"
                                                                             onchange="console.log($(this).val())" >
                                                                             <!--placeholder-->
-                                                                            <option value="" selected disabled>{{ trans('settings_trans.countries_select') }}</option>
-                                                                            @foreach ($countries as $country)
+                                                                            <option value="" selected disabled>{{ trans('settings_trans.country_select') }}</option>
+                                                                            @foreach ($country as $country)
                                                                             <option value="{{ $country->id }}">{{ $country->name }}</option>
                                                                         @endforeach
                                                                       </select>
@@ -215,12 +215,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">{{ trans('settings_trans.countries_select') }}</label>
+                                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">{{ trans('settings_trans.country_select') }}</label>
                                     <select name="id_country" class="form-control SlectBox" onclick="console.log($(this).val())"
                                         onchange="console.log($(this).val())" >
                                         <!--placeholder-->
-                                        <option value="" selected disabled>{{ trans('settings_trans.countries_select') }}</option>
-                                        @foreach ($countries as $country)
+                                        <option value="" selected disabled>{{ trans('settings_trans.country_select') }}</option>
+                                        @foreach ($country as $country)
                                         <option value="{{ $country->id }}">{{ $country->name }}</option>
                                     @endforeach
                                   </select>

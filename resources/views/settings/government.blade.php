@@ -28,7 +28,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">{{ trans('settings_trans.countries') }}</h5>
+                        <h5 class="card-title mb-0">{{ trans('settings_trans.country') }}</h5>
                        {{-- Message --}}
                             @if (Session::has('success'))
                             <div class="alert alert-success alert-dismissible" role="alert">
@@ -79,7 +79,7 @@
                                     <td>{{$governorate->id}}</td>
                                     <td>{{$governorate->getTranslation('name','ar')}}</td>
                                     <td>{{$governorate->getTranslation('name','en')}}</td>
-                                    <td>{{$governorate->countries->name }}</td>
+                                    <td>{{$governorate->country->name }}</td>
                                     <td>{{$governorate->created_at}}</td>
                                     <td>
                                         <div class="dropdown d-inline-block">
@@ -98,7 +98,7 @@
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content border-0 overflow-hidden">
                                                     <div class="modal-header p-3">
-                                                        <h4 class="card-title mb-0">{{ trans('settings_trans.update_Countries') }}</h4>
+                                                        <h4 class="card-title mb-0">{{ trans('settings_trans.update_country') }}</h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -117,10 +117,10 @@
                                                                 <input type="text" class="form-control" id="name_en" name="name_en" value="{{$governorate->getTranslation('name','en')}}">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="name_en" class="form-label">{{ trans('settings_trans.countries_select') }}</label>
+                                                                <label for="name_en" class="form-label">{{ trans('settings_trans.country_select') }}</label>
                                                                 <select name="id_country" id="id_country" class="form-control" required>
                                                                     <option value="" selected disabled>{{ trans('governorate_trans.Country') }}</option>
-                                                                    @foreach ($countries as $Country)
+                                                                    @foreach ($country as $Country)
                                                                         <option value="{{ $Country->id }}" <?php if($Country->id==$governorate->id_country){echo 'selected="true"';}?> >{{ $Country->name }}</option>
                                                                     @endforeach
                                                                 </select>                                                           
@@ -189,11 +189,11 @@
                                 <input type="text" class="form-control" id="name_en" name="name_en" placeholder="{{ trans('settings_trans.name_en_enter') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="ForminputState" class="form-label">{{ trans('settings_trans.countries_select') }}</label>
+                                <label for="ForminputState" class="form-label">{{ trans('settings_trans.country_select') }}</label>
                                 
                                 <select name="id_country" id="id_country" class="form-select" data-choices data-choices-sorting="true" required>
-                                    <option value="" selected disabled>{{ trans('settings_trans.countries_select') }}</option>
-                                    @foreach ($countries as $governorate)
+                                    <option value="" selected disabled>{{ trans('settings_trans.country_select') }}</option>
+                                    @foreach ($country as $governorate)
                                         <option value="{{ $governorate->id }}">{{ $governorate->name }}</option>
                                     @endforeach
                                 </select>                           

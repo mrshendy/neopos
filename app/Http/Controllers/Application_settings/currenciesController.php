@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Application_settings;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storecurrencies;
-use App\models\countries;
+use App\models\country;
 use App\models\currencies ;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -19,9 +19,9 @@ class currenciesController extends Controller
    */
   public function index()
   {
-    $Countries=Countries::all();
+    $country=country::all();
     $currencieses=currencies::all();
-  return view('settings.currencies',compact('currencieses','Countries'));
+  return view('settings.currencies',compact('currencieses','country'));
 
   }
 

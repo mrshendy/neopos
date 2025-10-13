@@ -51,6 +51,14 @@
                                 <span data-key="t-customers">{{ __('pos.title_customers_index') }}</span>
                             </a>
                         </li>
+                        {{-- المورّدون --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'suppliers.')) active @endif"
+                                href="{{ route('suppliers.index') }}">
+                                <i class="mdi mdi-truck-outline"></i>
+                                <span data-key="t-suppliers">{{ __('pos.supplier_title') }}</span>
+                            </a>
+                        </li>
 
                         <!--user management-->
                         <li class="menu-title"><i class="ri-more-fill"></i> <span

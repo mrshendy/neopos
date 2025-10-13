@@ -118,7 +118,7 @@
                         <label class="form-label fw-bold"><i class="mdi mdi-earth me-1"></i> {{ __('pos.f_country') }}</label>
                         <select class="form-select @error('country_id') is-invalid @enderror" wire:model="country_id">
                             <option value="">{{ __('pos.ph_country') }}</option>
-                            @foreach ($countries as $rg)
+                            @foreach ($country as $rg)
                                 @php $nm = method_exists($rg,'getTranslation') ? $rg->getTranslation('name', app()->getLocale()) : ($rg->name ?? ''); @endphp
                                 <option value="{{ $rg->id }}">{{ $nm }}</option>
                             @endforeach

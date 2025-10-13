@@ -22,8 +22,8 @@ class nationalities extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
-    public function countries(){
-        return $this->belongsTo (countries::class, 'id_country');
+    public function country(){
+        return $this->belongsTo (country::class, 'id_country');
     }
 
 }

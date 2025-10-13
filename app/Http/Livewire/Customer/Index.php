@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Livewire\customer;
+namespace App\Http\Livewire\Customer;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\models\customer\customer;
+use App\Models\customer\customer; // غيّرها لو اسم موديلك مختلف
 
 class Index extends Component
 {
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    protected $listeners = ['deleteConfirmed' => 'delete'];
+    protected $listeners = ['deleteConfirmed' => 'delete']; // يشتغل مع SweetAlert
 
     // فلاتر
     public $search = '';
@@ -20,51 +20,69 @@ class Index extends Component
     public $tax = '';
     public $channel = '';
     public $account_status = '';
-    public $price_category_id = '';
+    public $price_category_id;
+
+    // Toggle status
+    public function toggleStatus($id)
+    {
+        $row = Customer::find($id);
+        if (!$row) {
+            session()->flash('error', __('pos.err_not_found'));
+            return;
+        }
+
+        $row->account_status = $row->account_status === 'active' ? 'inactive' : 'active';
+        $row->save();
+
+        session()->flash('success', __('pos.status_changed'));
+    }
+
+    // الحذف (بيشتغل لما SweetAlert يبعث deleteConfirmed مع id)
+    public function delete($id)
+    {
+        $row = Customer::find($id);
+        if (!$row) {
+            session()->flash('error', __('pos.err_not_found'));
+            return;
+        }
+
+        // لو عندك SoftDeletes استخدم $row->delete()
+        $row->delete();
+
+        // رجّع لصفحة أولى لو اتفضّت الصفحة الحالية
+        if ($this->page > $this->paginator->lastPage()) {
+            $this->resetPage();
+        }
+
+        session()->flash('success', __('pos.deleted_success'));
+    }
 
     public function updating($field)
     {
+        // مع أي تغيير فلتر ارجع لأول صفحة
         $this->resetPage();
     }
 
-    public function toggleStatus($id)
+    public function getQueryProperty()
     {
-        $c = customer::findOrFail($id);
-        $c->account_status = $c->account_status === 'active' ? 'inactive' : 'active';
-        $c->save();
-        session()->flash('success', __('pos.msg_status_updated'));
-    }
-
-    public function delete($id)
-    {
-        // إن أردت منع حذف العميل صاحب معاملات، فعّل الكود التالي:
-        // $c = customer::withCount('transactions')->findOrFail($id);
-        // if ($c->transactions_count > 0) {
-        //     session()->flash('error', __('pos.msg_cannot_delete_has_tx'));
-        //     return;
-        // }
-        $c = customer::findOrFail($id);
-        $c->delete();
-        session()->flash('success', __('pos.msg_deleted'));
+        return Customer::query()
+            ->with(['cityRel', 'area', 'priceCategory'])
+            ->when($this->search, fn($q) => $q->where(function ($x) {
+                $x->where('legal_name->ar', 'like', "%{$this->search}%")
+                  ->orWhere('legal_name->en', 'like', "%{$this->search}%");
+            }))
+            ->when($this->code, fn($q) => $q->where('code', 'like', "%{$this->code}%"))
+            ->when($this->phone, fn($q) => $q->where('phone', 'like', "%{$this->phone}%"))
+            ->when($this->tax, fn($q) => $q->where('tax_number', 'like', "%{$this->tax}%"))
+            ->when($this->channel, fn($q) => $q->where('channel', $this->channel))
+            ->when($this->account_status, fn($q) => $q->where('account_status', $this->account_status))
+            ->when($this->price_category_id, fn($q) => $q->where('price_category_id', $this->price_category_id))
+            ->orderByDesc('id');
     }
 
     public function render()
     {
-        $locale = app()->getLocale();
-
-        $customers = customer::query()
-            ->when($this->search, fn($q) =>
-                $q->where("legal_name->$locale",'like',"%{$this->search}%")
-                  ->orWhere("trade_name->$locale",'like',"%{$this->search}%"))
-            ->when($this->code, fn($q) => $q->where('code','like',"%{$this->code}%"))
-            ->when($this->phone, fn($q) => $q->where('phone','like',"%{$this->phone}%"))
-            ->when($this->tax, fn($q) => $q->where('tax_number','like',"%{$this->tax}%"))
-            ->when($this->channel, fn($q) => $q->where('channel',$this->channel))
-            ->when($this->account_status, fn($q) => $q->where('account_status',$this->account_status))
-            ->when($this->price_category_id, fn($q) => $q->where('price_category_id',$this->price_category_id))
-            ->orderBy('id','desc')
-            ->paginate(10);
-
+        $customers = $this->query->paginate(10);
         return view('livewire.customer.index', compact('customers'));
     }
 }

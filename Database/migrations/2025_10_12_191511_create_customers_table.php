@@ -60,8 +60,8 @@ return new class extends Migration {
                   ->references('id')->on('price_lists')
                   ->nullOnDelete();
 
-            // Countries / governorate / city / area
-            $table->foreign('country_id')->references('id')->on('Countries')->nullOnDelete();
+            // country / governorate / city / area
+            $table->foreign('country_id')->references('id')->on('country')->nullOnDelete();
             $table->foreign('governorate_id')->references('id')->on('governorate')->nullOnDelete();
             $table->foreign('city_id')->references('id')->on('city')->nullOnDelete();
             $table->foreign('area_id')->references('id')->on('area')->nullOnDelete();

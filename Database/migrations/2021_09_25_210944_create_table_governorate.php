@@ -28,9 +28,9 @@ return new class extends Migration {
             // فهارس
             $table->index(['id_country']);
 
-            // FK لجدول Countries (اسم الجدول بالحروف كما عندك)
+            // FK لجدول country (اسم الجدول بالحروف كما عندك)
             $table->foreign('id_country')
-                  ->references('id')->on('Countries')
+                  ->references('id')->on('country')
                   ->cascadeOnDelete();
         });
     }

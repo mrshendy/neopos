@@ -389,4 +389,94 @@ return [
     // Misc
     'credit_used'              => 'Credit used',
     'tt_copy'                  => 'Copy to clipboard',
+
+       // Pages
+    'supplier_title'   => 'Suppliers',
+    'supplier_list'    => 'Suppliers List',
+    'supplier_create'  => 'Create Supplier',
+    'supplier_edit'    => 'Edit Supplier',
+    'supplier_show'    => 'Supplier Details',
+
+    // Fields
+    'supplier_code'    => 'Supplier Code',
+    'supplier_name'    => 'Supplier Name',
+    'name_ar'          => 'Arabic Name',
+    'name_en'          => 'English Name',
+    'commercial_register' => 'Commercial Register',
+    'tax_number'       => 'Tax Number',
+    'category'         => 'Category',
+    'payment_term'     => 'Payment Term',
+
+    // Geography
+    'country'          => 'Country',
+    'governorate'      => 'Governorate',
+    'city'             => 'City',
+    'area'             => 'Area',
+
+    // Status & actions
+    'status'           => 'Status',
+    'status_active'    => 'Active',
+    'status_inactive'  => 'Inactive',
+    'actions'          => 'Actions',
+
+    // Buttons
+    'btn_save'         => 'Save',
+    'btn_update'       => 'Update',
+    'btn_back'         => 'Back',
+    'btn_create'       => 'Add Supplier',
+    'btn_show'         => 'Show',
+    'btn_edit'         => 'Edit',
+    'btn_delete'       => 'Delete',
+    'btn_toggle'       => 'Toggle Status',
+
+    // Common
+    'no_data'          => 'No data found',
+    'search_supplier'  => 'Search by name/code',
+
+    // Success/Warnings
+    'created_success'  => '✅ Supplier created successfully.',
+    'updated_success'  => '✅ Supplier updated successfully.',
+    'deleted_success'  => '✅ Record deleted successfully.',
+    'status_changed'   => 'Status updated successfully.',
+    'warn_inactive_supplier' => 'Warning: Supplier is inactive — purchasing is not allowed until activated.',
+
+    // Placeholders + Descriptions
+    'ph_code'          => 'Enter a unique supplier code',
+    'desc_code'        => 'Used to link with other modules.',
+    'ph_name_ar'       => 'Enter Arabic name',
+    'desc_name_ar'     => 'Official Arabic name.',
+    'ph_name_en'       => 'Enter English name',
+    'desc_name_en'     => 'Official English name.',
+    'ph_cr'            => 'Commercial register (optional)',
+    'desc_cr'          => 'For legal verification.',
+    'ph_tax'           => 'Tax number (optional)',
+    'desc_tax'         => 'Required for fiscal invoices.',
+    'ph_category'      => 'Select category',
+    'desc_category'    => 'For reports and filters.',
+    'ph_payment_term'  => 'Select payment term',
+    'desc_payment_term'=> 'Due days & partial payments.',
+    'desc_status'      => 'Temporarily disable without deleting.',
+
+    'ph_country'       => 'Select country',
+    'desc_country'     => 'Supplier\'s country.',
+    'ph_governorate'   => 'Select governorate',
+    'desc_governorate' => 'Within the selected country.',
+    'ph_city'          => 'Select city',
+    'desc_city'        => 'Within the governorate.',
+    'ph_area'          => 'Select area',
+    'desc_area'        => 'Within the city.',
+
+    // Filters
+    'filter_category'    => 'Filter by category',
+    'filter_governorate' => 'Filter by governorate',
+    'filter_city'        => 'Filter by city',
+    'filter_status'      => 'Filter by status',
+
+    // SweetAlert2
+    'alert_delete_title'    => 'Warning',
+    'alert_delete_text'     => '⚠️ Are you sure you want to delete? This cannot be undone!',
+    'alert_delete_confirm'  => 'Yes, delete',
+    'alert_delete_cancel'   => 'Cancel',
+    'alert_deleted'         => 'Deleted!',
+    'alert_deleted_text'    => '✅ Deleted successfully.',
 ];

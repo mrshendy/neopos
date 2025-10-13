@@ -33,7 +33,7 @@ return new class extends Migration {
 
             // === FKs (تُنفذ بعد تأكدنا إن الجداول موجودة) ===
             $table->foreign('id_country')
-                  ->references('id')->on('Countries')
+                  ->references('id')->on('country')
                   ->cascadeOnDelete();
 
             $table->foreign('id_governorate')

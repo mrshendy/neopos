@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Requests\Storecity;
 use App\models\city;
-use App\models\countries;
+use App\models\country;
 use App\models\governorate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -25,8 +25,8 @@ class cityController extends Controller
   {
     $citys=city::all();
     $governoratees=governorate::all();
-    $countries=countries::all();
-    return view('settings.city',compact('citys','governoratees','countries'));
+    $country=country::all();
+    return view('settings.city',compact('citys','governoratees','country'));
 
   }
 
@@ -78,9 +78,9 @@ class cityController extends Controller
    */
   public function show($id)
   {
-    $Country=countries::select('name_ar','name_en')->get();
+    $Country=country::select('name_ar','name_en')->get();
     foreach ( $Country as $var ) {
-      $Country=new countries();
+      $Country=new country();
       $Country->name=['en'=>$var['name_en'],'ar'=>$var['name_ar']];
       $Country->user_add=(Auth::user()->id);
       $Country->save();

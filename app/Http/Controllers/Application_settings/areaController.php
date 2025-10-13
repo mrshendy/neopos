@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Requests\Storearea;
 use App\models\city;
-use App\models\countries;
+use App\models\country;
 use App\models\governorate;
 use App\models\area;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +24,9 @@ class areaController extends Controller
   {
     $city=city::all();
     $governoratees=governorate::all();
-    $countries=countries::all();
+    $country=country::all();
     $areaes=area::all();
-    return view('settings.area',compact('areaes','governoratees','countries','city'));
+    return view('settings.area',compact('areaes','governoratees','country','city'));
 
   }
 

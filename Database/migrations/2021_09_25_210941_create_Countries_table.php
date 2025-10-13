@@ -3,11 +3,11 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-class CreateCountriesTable extends Migration {
+class CreatecountryTable extends Migration {
 
 	public function up()
 	{
-		Schema::create('countries', function(Blueprint $table) {
+		Schema::create('country', function(Blueprint $table) {
             $table->bigIncrements('id');
 			$table->text('name');
 			$table->text('notes')->nullable();
@@ -20,6 +20,6 @@ class CreateCountriesTable extends Migration {
 
 	public function down()
 	{
-		Schema::drop('countries');
+		Schema::drop('country');
 	}
 }

@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\customer\customerscontroller;
+use App\Http\Controllers\supplier\suppliercontroller;
+
 
 Auth::routes(['verify' => true]);
 /*
@@ -33,8 +35,8 @@ Route::group(
         Route::group(['namespace' => 'Application_settings'], function () {
             //Place settings
             Route::resource('places_settings', 'place_settingsController');
-            //countries
-            Route::resource('countries', 'CountriesController');
+            //country
+            Route::resource('country', 'countryController');
             //city
             Route::get('/city/{id}', 'CityController@getgovernorate');
             Route::resource('city', 'CityController');
@@ -67,6 +69,10 @@ Route::group(
             'update' => 'customers.update',
             'destroy' => 'customers.destroy',
         ]);
+
+        Route::resource('suppliers', suppliercontroller::class)
+    ->parameters(['suppliers' => 'supplier'])    // يضمن Binding صحيح
+    ->names('suppliers');                        // أسماء routes: suppliers.index ..etc
         Route::get('/{page}', 'AdminController@index');
 
     });

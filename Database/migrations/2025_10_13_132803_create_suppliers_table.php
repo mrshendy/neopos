@@ -36,7 +36,7 @@ return new class extends Migration {
             $table->foreign('payment_term_id')->references('id')->on('payment_terms');
 
             // أسماء جغرافياك كما هي (Case Sensitive)
-            $table->foreign('country_id')->references('id')->on('Countries');
+            $table->foreign('country_id')->references('id')->on('country');
             $table->foreign('governorate_id')->references('id')->on('governorate');
             $table->foreign('city_id')->references('id')->on('city');
             $table->foreign('area_id')->references('id')->on('Area');

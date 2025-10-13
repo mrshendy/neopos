@@ -388,4 +388,98 @@ return [
     // متفرقات
     'credit_used'              => 'نسبة استخدام الائتمان',
     'tt_copy'                  => 'نسخ إلى الحافظة',
+
+
+
+    // عناوين الصفحات
+    'supplier_title'   => 'المورّدون',
+    'supplier_list'    => 'قائمة المورّدين',
+    'supplier_create'  => 'إنشاء مورّد',
+    'supplier_edit'    => 'تعديل مورّد',
+    'supplier_show'    => 'عرض بيانات المورّد',
+
+    // الحقول الأساسية
+    'supplier_code'    => 'كود المورّد',
+    'supplier_name'    => 'اسم المورّد',
+    'name_ar'          => 'الاسم بالعربية',
+    'name_en'          => 'الاسم بالإنجليزية',
+    'commercial_register' => 'السجل التجاري',
+    'tax_number'       => 'الرقم الضريبي',
+    'category'         => 'التصنيف',
+    'payment_term'     => 'شروط الدفع',
+
+    // الجغرافيا
+    'country'          => 'الدولة',
+    'governorate'      => 'المحافظة',
+    'city'             => 'المدينة',
+    'area'             => 'المنطقة',
+
+    // الحالة والعمليات
+    'status'           => 'الحالة',
+    'status_active'    => 'نشط',
+    'status_inactive'  => 'غير نشط',
+    'actions'          => 'العمليات',
+
+    // أزرار
+    'btn_save'         => 'حفظ',
+    'btn_update'       => 'تحديث',
+    'btn_back'         => 'رجوع',
+    'btn_create'       => 'إضافة مورّد',
+    'btn_show'         => 'عرض',
+    'btn_edit'         => 'تعديل',
+    'btn_delete'       => 'حذف',
+    'btn_toggle'       => 'تغيير الحالة',
+
+    // نصوص عامة
+    'no_data'          => 'لا توجد بيانات',
+    'search_supplier'  => 'ابحث بالاسم/الكود',
+
+    // نجاح/تنبيهات
+    'created_success'  => '✅ تم إنشاء المورّد بنجاح.',
+    'updated_success'  => '✅ تم تحديث بيانات المورّد بنجاح.',
+    'deleted_success'  => '✅ تم حذف السجل بنجاح.',
+    'status_changed'   => 'تم تغيير الحالة بنجاح.',
+    'warn_inactive_supplier' => 'تنبيه: المورّد غير نشط — لن يُسمح بالشراء منه حتى يتم تفعيله.',
+
+    // Placeholders + Descriptions
+    'ph_code'          => 'أدخل كود فريد للمورّد',
+    'desc_code'        => 'يُستخدم الكود للربط مع باقي الوحدات.',
+    'ph_name_ar'       => 'أدخل الاسم بالعربية',
+    'desc_name_ar'     => 'الاسم الرسمي كما في الوثائق.',
+    'ph_name_en'       => 'Enter English name',
+    'desc_name_en'     => 'Official supplier name in English.',
+    'ph_cr'            => 'رقم السجل التجاري (اختياري)',
+    'desc_cr'          => 'لأغراض التحقق القانوني.',
+    'ph_tax'           => 'الرقم الضريبي (اختياري)',
+    'desc_tax'         => 'مطلوب للفواتير الضريبية.',
+    'ph_category'      => 'اختر التصنيف',
+    'desc_category'    => 'لتسهيل التقارير والفلترة.',
+    'ph_payment_term'  => 'اختر شرط الدفع',
+    'desc_payment_term'=> 'عدد أيام الاستحقاق والسماح بالدفعات الجزئية.',
+    'desc_status'      => 'يمكنك إيقاف المورد مؤقتًا دون حذفه.',
+
+    'ph_country'       => 'اختر الدولة',
+    'desc_country'     => 'الدولة التي يتبع لها المورد.',
+    'ph_governorate'   => 'اختر المحافظة',
+    'desc_governorate' => 'المحافظة ضمن الدولة.',
+    'ph_city'          => 'اختر المدينة',
+    'desc_city'        => 'المدينة التابعة للمحافظة.',
+    'ph_area'          => 'اختر المنطقة',
+    'desc_area'        => 'المنطقة داخل المدينة.',
+
+    // فلاتر
+    'filter_category'    => 'تصفية بالتصنيف',
+    'filter_governorate' => 'تصفية بالمحافظة',
+    'filter_city'        => 'تصفية بالمدينة',
+    'filter_status'      => 'تصفية بالحالة',
+
+    // تنبيهات الحذف (SweetAlert2)
+    'alert_delete_title'    => 'تحذير',
+    'alert_delete_text'     => '⚠️ هل أنت متأكد من الحذف؟ لا يمكن التراجع!',
+    'alert_delete_confirm'  => 'نعم، احذف',
+    'alert_delete_cancel'   => 'إلغاء',
+    'alert_deleted'         => 'تم الحذف!',
+    'alert_deleted_text'    => '✅ تم الحذف بنجاح.',
+
+
 ];

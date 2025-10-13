@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Application_settings;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Storenationalities;
-use App\models\countries;
+use App\models\country;
 use App\models\nationalities ;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -19,9 +19,9 @@ class nationalities_settingsController extends Controller
    */
   public function index()
   {
-    $Countries=Countries::all();
+    $country=country::all();
     $nationalitieses=nationalities::all();
-    return view('settings.nationalities',compact('nationalitieses','Countries'));
+    return view('settings.nationalities',compact('nationalitieses','country'));
 
   }
 
