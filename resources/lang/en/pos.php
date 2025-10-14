@@ -530,4 +530,13 @@ return [
     'err_price_conflict'=>'Price conflict — please adjust period or priority.',
     'err_price_conflict_banner'=>'Conflicting price for the same product within the same list and period.',
     'err_price_negative'=>'Price cannot be below 0.',
+       // ... your previous translations
+
+    'valid' => 'Valid',
+    'invalid' => 'Invalid',
+    'valid_from' => 'Valid From',
+    'valid_to' => 'Valid To',
+    'valid_date' => 'Valid Date',
+    'valid_input' => 'Valid Input',
+    'please_enter_valid_value' => 'Please enter a valid value',
 ];
