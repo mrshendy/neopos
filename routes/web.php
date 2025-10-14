@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\customer\customerscontroller;
+use App\Http\Controllers\pricing\pricingcontroller;
+use App\Http\Controllers\product\productcontroller;
+use App\Http\Controllers\supplier\suppliercontroller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use App\Http\Controllers\customer\customerscontroller;
-use App\Http\Controllers\supplier\suppliercontroller;
-
 
 Auth::routes(['verify' => true]);
 /*
@@ -71,8 +72,22 @@ Route::group(
         ]);
 
         Route::resource('suppliers', suppliercontroller::class)
-    ->parameters(['suppliers' => 'supplier'])    // يضمن Binding صحيح
-    ->names('suppliers');                        // أسماء routes: suppliers.index ..etc
+            ->parameters(['suppliers' => 'supplier'])    // يضمن Binding صحيح
+            ->names('suppliers');                        // أسماء routes: suppliers.index ..etc
+
+        //products
+        Route::prefix('products')->group(function () {
+            Route::get('/', [productcontroller::class, 'index'])->name('products.index');
+            Route::get('/create', [productcontroller::class, 'create'])->name('products.create');
+            Route::get('/{id}/edit', [productcontroller::class, 'edit'])->name('products.edit');
+        });
+        //categories
+        Route::prefix('pricing')->group(function () {
+            Route::get('/lists', [pricingcontroller::class, 'index'])->name('pricing.lists.index');
+            Route::get('/lists/create', [pricingcontroller::class, 'create'])->name('pricing.lists.create');
+            Route::get('/lists/{id}/edit', [pricingcontroller::class, 'edit'])->name('pricing.lists.edit');
+        });
+
         Route::get('/{page}', 'AdminController@index');
 
     });

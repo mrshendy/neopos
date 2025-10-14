@@ -7,15 +7,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
+    if (!Schema::hasTable('products')) {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('sku', 100)->unique();
             $table->string('barcode', 100)->unique()->nullable();
-            $table->json('name');          // ar/en
-            $table->json('description')->nullable(); // ar/en
+            $table->json('name');
+            $table->json('description')->nullable();
             $table->foreignId('unit_id')->constrained('units')->restrictOnDelete();
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->decimal('tax_rate', 8, 3)->default(0); // %
+            $table->decimal('tax_rate', 8, 3)->default(0);
             $table->integer('opening_stock')->default(0);
             $table->enum('status', ['active','inactive'])->default('active');
             $table->softDeletes();
@@ -23,5 +24,7 @@ return new class extends Migration {
             $table->index(['status','category_id']);
         });
     }
+}
+
     public function down(): void { Schema::dropIfExists('products'); }
 };

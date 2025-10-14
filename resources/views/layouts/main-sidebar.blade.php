@@ -59,6 +59,23 @@
                                 <span data-key="t-suppliers">{{ __('pos.supplier_title') }}</span>
                             </a>
                         </li>
+                        {{-- المنتجات --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'products.')) active @endif"
+                                href="{{ route('products.index') }}">
+                                <i class="mdi mdi-cube-outline"></i>
+                                <span data-key="t-products">{{ __('pos.products_index_title') }}</span>
+                            </a>
+                        </li>
+
+                        {{-- التسعير / قوائم الأسعار --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'pricing.lists.')) active @endif"
+                                href="{{ route('pricing.lists.index') }}">
+                                <i class="mdi mdi-cash-multiple"></i>
+                                <span data-key="t-pricing">{{ __('pos.price_lists_title') }}</span>
+                            </a>
+                        </li>
 
                         <!--user management-->
                         <li class="menu-title"><i class="ri-more-fill"></i> <span

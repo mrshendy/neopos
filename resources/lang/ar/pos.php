@@ -481,5 +481,76 @@ return [
     'alert_deleted'         => 'تم الحذف!',
     'alert_deleted_text'    => '✅ تم الحذف بنجاح.',
 
+       // Titles
+    'products_index_title' => 'إدارة المنتجات',
+    'product_create_title' => 'إنشاء منتج',
+    'price_lists_title'    => 'قوائم الأسعار',
+
+    // Common
+    'search' => 'بحث',
+    'all' => 'الكل',
+    'choose' => 'اختر',
+    'actions' => 'الإجراءات',
+    'no_data' => 'لا توجد بيانات.',
+    'status' => 'الحالة',
+    'status_active' => 'نشط',
+    'status_inactive' => 'غير نشط',
+
+    // Fields
+    'sku' => 'SKU',
+    'barcode' => 'الباركود',
+    'name' => 'الاسم',
+    'name_ar' => 'الاسم (عربي)',
+    'name_en' => 'الاسم (إنجليزي)',
+    'description_ar' => 'الوصف (عربي)',
+    'description_en' => 'الوصف (إنجليزي)',
+    'unit' => 'الوحدة',
+    'category' => 'الفئة',
+    'tax_rate' => 'نسبة الضريبة %',
+    'opening_stock' => 'الرصيد الافتتاحي',
+
+    // Placeholders/Hints
+    'ph_search_sku_barcode_name' => 'ابحث بالـ SKU/باركود/الاسم…',
+    'ph_sku' => 'أدخل كود المنتج الداخلي',
+    'ph_barcode' => 'أدخل الباركود (إن وجد)',
+    'ph_name_ar' => 'أدخل الاسم بالعربية',
+    'ph_name_en' => 'أدخل الاسم بالإنجليزية',
+    'ph_desc_ar' => 'وصف مختصر بالعربية',
+    'ph_desc_en' => 'Brief English description',
+    'hint_search_products' => 'استخدم الكلمات المفتاحية للوصول السريع.',
+    'hint_sku' => 'SKU فريد لمنع التكرار.',
+    'hint_barcode' => 'لا يمكن تكرار الباركود.',
+    'hint_name_ar' => 'سيظهر في الواجهات العربية.',
+    'hint_name_en' => 'سيظهر في الواجهات الإنجليزية.',
+    'hint_unit' => 'اختر وحدة قياس مناسبة.',
+    'hint_category' => 'اختيار فئة يُحسّن التقارير.',
+    'hint_tax_rate' => 'النطاق 0 – 100.',
+    'hint_opening_stock' => 'قيمة أول المدة في المخزون.',
+    'hint_status' => 'يمكن تغييره لاحقًا من الأكشنز.',
+
+    // Filters
+    'filter_category' => 'تصفية بالفئة',
+    'filter_unit' => 'تصفية بالوحدة',
+    'filter_status' => 'تصفية بالحالة',
+
+    // Buttons
+    'btn_new_product' => 'منتج جديد',
+    'btn_save' => 'حفظ',
+    'btn_back' => 'رجوع',
+
+    // Alerts/SweetAlert2
+    'alert_title' => 'تحذير',
+    'alert_text' => '⚠️ هل أنت متأكد من الحذف؟ لا يمكن التراجع!',
+    'alert_confirm' => 'نعم، احذف',
+    'alert_cancel' => 'إلغاء',
+    'deleted' => 'تم الحذف',
+    'msg_deleted_ok' => '✅ تم الحذف بنجاح.',
+    'msg_saved_ok' => '✅ تم الحفظ بنجاح.',
+    'msg_status_changed' => 'تم تغيير الحالة.',
+
+    // Pricing errors
+    'err_price_conflict' => 'تعارض أسعار — الرجاء ضبط الفترة أو الأولوية.',
+    'err_price_conflict_banner' => 'تعارض أسعار لنفس المنتج ضمن نفس القائمة في نفس الفترة.',
+    'err_price_negative' => 'السعر لا يمكن أن يكون أقل من 0.',
 
 ];
