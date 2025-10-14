@@ -20,4 +20,8 @@ class pricingcontroller extends Controller
     {
         return view('pricing.edit', compact('id'));
     }
+    public function show($id)
+    {
+        return view('pricing.show', compact('id'));
+    }
 }

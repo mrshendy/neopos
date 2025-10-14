@@ -4,7 +4,9 @@ namespace App\Http\Livewire\Pricing\Pricelists;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 use App\models\pricing\price_list;
+use App\models\pricing\price_item;
 
 class Index extends Component
 {
@@ -15,39 +17,66 @@ class Index extends Component
 
     public $search = '';
     public $status = '';
+    public $date_from = '';
+    public $date_to = '';
+    public $perPage = 10;
 
-    public function updating($field)
+    protected $queryString = [
+        'search'    => ['except' => ''],
+        'status'    => ['except' => ''],
+        'date_from' => ['except' => ''],
+        'date_to'   => ['except' => ''],
+        'perPage'   => ['except' => 10],
+        'page'      => ['except' => 1],
+    ];
+
+    public function updating($name, $value)
     {
-        if (in_array($field, ['search','status'])) $this->resetPage();
+        if (in_array($name, ['search','status','date_from','date_to','perPage'])) {
+            $this->resetPage();
+        }
     }
 
     public function delete($id)
     {
-        $row = price_list::findOrFail($id);
-        $row->delete();
-        session()->flash('success', __('pos.msg_deleted_ok'));
-    }
-
-    public function toggleStatus($id)
-    {
-        $row = price_list::findOrFail($id);
-        $row->status = $row->status === 'active' ? 'inactive' : 'active';
-        $row->save();
-        session()->flash('success', __('pos.msg_status_changed'));
+        DB::beginTransaction();
+        try {
+            price_item::where('price_list_id', $id)->delete();
+            price_list::where('id', $id)->delete();
+            DB::commit();
+            session()->flash('success', __('pos.msg_deleted_ok') ?? 'تم الحذف بنجاح.');
+            $this->resetPage();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            session()->flash('error', 'تعذر الحذف: '.$e->getMessage());
+        }
     }
 
     public function render()
     {
-        $q = price_list::query()
-            ->when($this->search, function($x){
-                $x->where('name->ar','like',"%{$this->search}%")
-                  ->orWhere('name->en','like',"%{$this->search}%");
-            })
-            ->when($this->status, fn($x)=>$x->where('status',$this->status))
-            ->orderByDesc('id');
+        $q = price_list::query();
 
-        return view('livewire.pricing.pricelists.index', [
-            'rows'=>$q->paginate(10)
-        ]);
+        if ($this->search !== '') {
+            $term = '%'.mb_strtolower($this->search).'%';
+            $q->whereRaw('LOWER(`name`) LIKE ?', [$term]);
+        }
+        if ($this->status !== '') {
+            $q->where('status', $this->status);
+        }
+        if ($this->date_from !== '') {
+            $q->whereDate('valid_from', '>=', $this->date_from);
+        }
+        if ($this->date_to !== '') {
+            $q->whereDate('valid_to', '<=', $this->date_to);
+        }
+
+        $lists = $q->orderBy('id','desc')->paginate((int)$this->perPage);
+
+        $counts = price_item::select('price_list_id', DB::raw('COUNT(*) as cnt'))
+            ->whereIn('price_list_id', $lists->pluck('id'))
+            ->groupBy('price_list_id')
+            ->pluck('cnt', 'price_list_id');
+
+        return view('livewire.pricing.pricelists.index', compact('lists','counts'));
     }
 }

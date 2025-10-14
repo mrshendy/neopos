@@ -601,4 +601,68 @@ return [
     'products_title' => 'Products',
     'products_management_sub' => 'Manage product data and basic configurations.',
 
+    // Headings
+    'price_lists_title'        => 'Price Lists',
+    'price_lists_create_title' => 'Create Price List',
+    'price_lists_edit_title'   => 'Edit Price List',
+    'basic_info'               => 'Basic Information',
+
+    // Fields
+    'name'    => 'Name',
+    'name_ar' => 'Name (Arabic)',
+    'name_en' => 'Name (English)',
+
+    // Placeholders & Hints
+    'ph_name_ar'   => 'Enter the Arabic name',
+    'ph_name_en'   => 'Enter the English name',
+    'hint_name_ar' => 'This name will be shown to Arabic users.',
+    'hint_name_en' => 'This name will be shown to English users.',
+    'show'=> 'show',
+    // Dates
+    'valid_from'       => 'Valid From',
+    'valid_to'         => 'Valid To',
+    'hint_valid_from'  => 'Start date of the list validity.',
+    'hint_valid_to'    => 'Leave empty for open-ended.',
+    'validity'         => 'Validity',
+
+    // Status
+    'status'          => 'Status',
+    'status_active'   => 'Active',
+    'status_inactive' => 'Inactive',
+    'hint_status'     => 'Enable or disable this list.',
+
+    // Price Items
+    'price_items' => 'Price Items',
+    'add_row'     => 'Add Item',
+    'product'     => 'Product',
+    'price'       => 'Price',
+    'min_qty'     => 'Min Qty',
+    'max_qty'     => 'Max Qty',
+
+    // Actions & Buttons
+    'actions'   => 'Actions',
+    'btn_new'   => 'New',
+    'btn_edit'  => 'Edit',
+    'btn_delete'=> 'Delete',
+    'btn_save'  => 'Save',
+    'btn_back'  => 'Back',
+    'choose'    => 'Choose',
+
+    // Filters & Search
+    'search'     => 'Search',
+    'ph_search'  => 'Search by name...',
+    'all'        => 'All',
+    'per_page'   => 'Rows per page',
+    'items_count'=> 'Items Count',
+
+    // System messages
+    'no_data'        => 'No data found',
+    'showing'        => 'Showing',
+    'of'             => 'of',
+    'msg_saved_ok'   => 'Saved successfully.',
+    'msg_updated_ok' => 'Updated successfully.',
+    'msg_deleted_ok' => 'Deleted successfully.',
+
+
+
 ];

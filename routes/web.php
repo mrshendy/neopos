@@ -92,6 +92,9 @@ Route::group(
             Route::get('/lists', [pricingcontroller::class, 'index'])->name('pricing.lists.index');
             Route::get('/lists/create', [pricingcontroller::class, 'create'])->name('pricing.lists.create');
             Route::get('/lists/{id}/edit', [pricingcontroller::class, 'edit'])->name('pricing.lists.edit');
+            Route::get('/lists/{id}/show', [pricingcontroller::class, 'show'])->name('pricing.lists.show');
+
+
         });
 
         Route::get('/{page}', 'AdminController@index');

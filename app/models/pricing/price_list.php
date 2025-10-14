@@ -13,7 +13,12 @@ class price_list extends Model
 
     protected $table = 'price_lists';
     protected $fillable = [
-        'name','sales_channel_id','customer_group_id','valid_from','valid_to','status'
+        'name',
+        'sales_channel_id',
+        'customer_id',
+        'valid_from',
+        'valid_to',
+        'status',
     ];
     public $translatable = ['name'];
 

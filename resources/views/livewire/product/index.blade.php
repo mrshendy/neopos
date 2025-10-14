@@ -17,6 +17,7 @@
             </a>
         </div>
     </div>
+
     {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
@@ -75,8 +76,6 @@
                     </select>
                     <small class="text-muted">{{ __('pos.hint_status') }}</small>
                 </div>
-
-              
             </div>
 
             {{-- Mini status line --}}
@@ -126,9 +125,9 @@
                                         {!! DNS1D::getBarcodeHTML($row->barcode, 'C128', 1.8, 44) !!}
                                         <div class="small text-muted mt-1">{{ $row->barcode }}</div>
                                         <button class="btn btn-outline-primary btn-xs rounded-pill mt-1"
-                                                onclick="printBarcode('{{ $row->barcode }}','{{ addslashes($row->getTranslation('name', app()->getLocale())) }}')"
-                                                data-bs-toggle="tooltip" title="{{ __('pos.print') ?? 'طباعة' }}">
-                                            <i class="mdi mdi-printer"></i>
+                                                onclick="viewBarcode('{{ $row->barcode }}','{{ addslashes($row->getTranslation('name', app()->getLocale())) }}')"
+                                                data-bs-toggle="tooltip" title="{{ __('pos.view') ?? 'عرض' }}">
+                                            <i class="mdi mdi-eye"></i>
                                         </button>
                                     </div>
                                 @else
@@ -156,18 +155,18 @@
 
                             <td class="text-end">
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-secondary btn-sm rounded-pill"
+                                    <button class="btn btn-outline-secondary btn-md rounded-pill m-1"
                                             wire:click="toggleStatus({{ $row->id }})"
                                             data-bs-toggle="tooltip" title="{{ __('pos.status') }}">
                                         <i class="mdi mdi-toggle-switch"></i>
                                     </button>
                                     <a href="{{ route('products.edit',$row->id) }}"
-                                       class="btn btn-primary btn-sm rounded-pill"
+                                       class="btn btn-primary btn-md rounded-pill m-1"
                                        data-bs-toggle="tooltip" title="{{ __('pos.btn_edit') ?? 'تعديل' }}">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                     <button onclick="confirmDelete({{ $row->id }})"
-                                            class="btn btn-danger btn-sm rounded-pill"
+                                            class="btn btn-danger btn-md rounded-pill m-1"
                                             data-bs-toggle="tooltip" title="{{ __('pos.btn_delete') ?? 'حذف' }}">
                                         <i class="mdi mdi-delete-outline"></i>
                                     </button>
@@ -200,6 +199,30 @@
     </div>
 </div>
 
+{{-- Barcode Modal --}}
+<div class="modal fade" id="barcodeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-sm">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="mdi mdi-barcode me-2"></i> {{ __('pos.barcode') }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('pos.close') ?? 'إغلاق' }}"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div id="barcodeLabel" class="fw-600 mb-2"></div>
+        <svg id="barcodeSvg"></svg>
+        <div id="barcodeCode" class="small text-muted mt-2"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">
+          <i class="mdi mdi-close"></i> {{ __('pos.close') ?? 'إغلاق' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {{-- Page styles (scoped) --}}
 <style>
     .pretty-table thead th{
@@ -224,8 +247,9 @@
     .fw-600{ font-weight:600; }
 </style>
 
-{{-- SweetAlert2 + tooltips + print --}}
+{{-- SweetAlert2 + JsBarcode + tooltips --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script>
     function confirmDelete(id) {
         Swal.fire({
@@ -252,33 +276,32 @@
         }
     });
 
-    // Print small barcode label
-    function printBarcode(code, label) {
-        const w = window.open('', '_blank', 'width=380,height=240');
-        const html = `
-        <html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
-        <head>
-          <meta charset="utf-8">
-          <title>Print</title>
-          <style>
-            body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:10px;text-align:center}
-            .lbl{margin-top:6px;font-size:12px}
-            .code{font-size:11px;color:#555}
-          </style>
-        </head>
-        <body>
-          <div class="lbl"></div>
-          <svg id="bc" jsbarcode-value="" jsbarcode-format="CODE128"
-               jsbarcode-fontSize="12" jsbarcode-height="48" jsbarcode-width="2"></svg>
-          <div class="code"></div>
-          <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
-          <script>
-            try { JsBarcode("#bc").init(); } catch (e) {}
-            window.print();
-            setTimeout(()=>window.close(), 300);
-          <\/script>
-        </body>
-        </html>`;
-        w.document.open(); w.document.write(html); w.document.close();
+    // Show barcode in modal
+    function viewBarcode(code, label) {
+        // Fill labels
+        document.getElementById('barcodeLabel').textContent = label || '';
+        document.getElementById('barcodeCode').textContent  = code || '';
+
+        // Generate barcode into SVG
+        const svg = document.getElementById('barcodeSvg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild); // clear previous
+        try {
+            JsBarcode(svg, code, {
+                format: "CODE128",
+                height: 80,
+                fontSize: 14,
+                displayValue: false // we show the numeric code separately
+            });
+        } catch (e) {
+            console.error(e);
+        }
+
+        // Open modal
+        const modalEl = document.getElementById('barcodeModal');
+        if (window.bootstrap && bootstrap.Modal) {
+            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        } else {
+            modalEl.style.display = 'block';
+        }
     }
 </script>
