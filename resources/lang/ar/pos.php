@@ -392,7 +392,7 @@ return [
 
 
     // عناوين الصفحات
-    'supplier_title'   => 'المورّدون',
+    'supplier_title'   => 'المورّدين',
     'supplier_list'    => 'قائمة المورّدين',
     'supplier_create'  => 'إنشاء مورّد',
     'supplier_edit'    => 'تعديل مورّد',
