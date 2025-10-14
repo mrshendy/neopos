@@ -4,16 +4,36 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-
-return new class extends Migration {
-    public function up(): void {
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->json('name'); // ar/en
-            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->softDeletes();
+
+            // الاسم متعدد اللغات
+            $table->json('name');
+
+            // الوصف متعدد اللغات
+            $table->json('description')->nullable();
+
+            // حالة القسم
+            $table->enum('status', ['active', 'inactive'])->default('active');
+
+            // التوقيتات والحذف الناعم
             $table->timestamps();
+            $table->softDeletes();
         });
     }
-    public function down(): void { Schema::dropIfExists('categories'); }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('categories');
+    }
 };

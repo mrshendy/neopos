@@ -6,119 +6,144 @@
         </div>
     @endif
 
+    <style>
+        .preview-chip{
+            display:inline-flex;align-items:center;gap:.35rem;
+            background:#f8f9fa;border:1px solid rgba(0,0,0,.06);
+            border-radius:999px;padding:.25rem .6rem;font-size:.8rem;color:#6c757d
+        }
+        .field-block{position:relative}
+        .field-block label{font-weight:600}
+        .help{font-size:.8rem;color:#6c757d}
+        .stylish-card{border:1px solid rgba(0,0,0,.06)}
+    </style>
+
     <div class="card shadow-sm rounded-4 stylish-card">
-        <div class="card-header bg-light fw-bold"><i class="mdi mdi-plus-box"></i> {{ __('pos.product_create_title') }}</div>
+        <div class="card-header bg-light fw-bold">
+            <i class="mdi mdi-plus-box"></i> {{ __('pos.product_create_title') }}
+        </div>
+
         <div class="card-body row g-3">
 
-            <div class="col-md-4">
+            {{-- SKU --}}
+            <div class="col-md-4 field-block">
                 <label class="form-label"><i class="mdi mdi-identifier"></i> {{ __('pos.sku') }}</label>
-                <input type="text" class="form-control" wire:model.defer="sku" placeholder="{{ __('pos.ph_sku') }}">
-                <small class="text-muted">{{ __('pos.hint_sku') }}</small>
+                <input type="text" class="form-control" wire:model.live="sku" placeholder="{{ __('pos.ph_sku') }}">
+                <div class="help">{{ __('pos.hint_sku') }}</div>
                 @error('sku') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $sku }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $sku ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-4">
+            {{-- Barcode --}}
+            <div class="col-md-4 field-block">
                 <label class="form-label"><i class="mdi mdi-barcode"></i> {{ __('pos.barcode') }}</label>
-                <input type="text" class="form-control" wire:model.defer="barcode" placeholder="{{ __('pos.ph_barcode') }}">
-                <small class="text-muted">{{ __('pos.hint_barcode') }}</small>
+                <input type="text" class="form-control" wire:model.live="barcode" placeholder="{{ __('pos.ph_barcode') }}">
+                <div class="help">{{ __('pos.hint_barcode') }}</div>
                 @error('barcode') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $barcode }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $barcode ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-4">
+            {{-- Name AR --}}
+            <div class="col-md-4 field-block">
                 <label class="form-label"><i class="mdi mdi-translate"></i> {{ __('pos.name_ar') }}</label>
-                <input type="text" class="form-control" wire:model.defer="name.ar" placeholder="{{ __('pos.ph_name_ar') }}">
-                <small class="text-muted">{{ __('pos.hint_name_ar') }}</small>
+                <input type="text" class="form-control" wire:model.live="name.ar" placeholder="{{ __('pos.ph_name_ar') }}">
+                <div class="help">{{ __('pos.hint_name_ar') }}</div>
                 @error('name.ar') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $name['ar'] }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $name['ar'] ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-4">
+            {{-- Name EN --}}
+            <div class="col-md-4 field-block">
                 <label class="form-label"><i class="mdi mdi-translate-variant"></i> {{ __('pos.name_en') }}</label>
-                <input type="text" class="form-control" wire:model.defer="name.en" placeholder="{{ __('pos.ph_name_en') }}">
-                <small class="text-muted">{{ __('pos.hint_name_en') }}</small>
+                <input type="text" class="form-control" wire:model.live="name.en" placeholder="{{ __('pos.ph_name_en') }}">
+                <div class="help">{{ __('pos.hint_name_en') }}</div>
                 @error('name.en') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $name['en'] }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $name['en'] ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-4">
+            {{-- Unit --}}
+            <div class="col-md-4 field-block">
                 <label class="form-label"><i class="mdi mdi-weight-kilogram"></i> {{ __('pos.unit') }}</label>
-                <select class="form-select" wire:model.defer="unit_id">
+                <select class="form-select" wire:model.live="unit_id">
                     <option value="">{{ __('pos.choose') }}</option>
                     @foreach($units as $u)
                         <option value="{{ $u->id }}">{{ $u->getTranslation('name', app()->getLocale()) }}</option>
                     @endforeach
                 </select>
-                <small class="text-muted">{{ __('pos.hint_unit') }}</small>
+                <div class="help">{{ __('pos.hint_unit') }}</div>
                 @error('unit_id') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $unit_id }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $unit_id ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-4">
+            {{-- Category --}}
+            <div class="col-md-4 field-block">
                 <label class="form-label"><i class="mdi mdi-shape"></i> {{ __('pos.category') }}</label>
-                <select class="form-select" wire:model.defer="category_id">
+                <select class="form-select" wire:model.live="category_id">
                     <option value="">{{ __('pos.choose') }}</option>
                     @foreach($categories as $c)
                         <option value="{{ $c->id }}">{{ $c->getTranslation('name', app()->getLocale()) }}</option>
                     @endforeach
                 </select>
-                <small class="text-muted">{{ __('pos.hint_category') }}</small>
+                <div class="help">{{ __('pos.hint_category') }}</div>
                 @error('category_id') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $category_id }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $category_id ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-3">
+            {{-- Tax Rate --}}
+            <div class="col-md-3 field-block">
                 <label class="form-label"><i class="mdi mdi-percent"></i> {{ __('pos.tax_rate') }}</label>
-                <input type="number" step="0.001" class="form-control" wire:model.defer="tax_rate">
-                <small class="text-muted">{{ __('pos.hint_tax_rate') }}</small>
+                <input type="number" step="0.001" class="form-control" wire:model.live="tax_rate">
+                <div class="help">{{ __('pos.hint_tax_rate') }}</div>
                 @error('tax_rate') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $tax_rate }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $tax_rate ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-3">
+            {{-- Opening Stock --}}
+            <div class="col-md-3 field-block">
                 <label class="form-label"><i class="mdi mdi-warehouse"></i> {{ __('pos.opening_stock') }}</label>
-                <input type="number" class="form-control" wire:model.defer="opening_stock">
-                <small class="text-muted">{{ __('pos.hint_opening_stock') }}</small>
+                <input type="number" class="form-control" wire:model.live="opening_stock">
+                <div class="help">{{ __('pos.hint_opening_stock') }}</div>
                 @error('opening_stock') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $opening_stock }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $opening_stock ?? '' }}</span></div>
             </div>
 
-            <div class="col-md-3">
+            {{-- Status --}}
+            <div class="col-md-3 field-block">
                 <label class="form-label"><i class="mdi mdi-toggle-switch"></i> {{ __('pos.status') }}</label>
-                <select class="form-select" wire:model.defer="status">
+                <select class="form-select" wire:model.live="status">
                     <option value="active">{{ __('pos.status_active') }}</option>
                     <option value="inactive">{{ __('pos.status_inactive') }}</option>
                 </select>
-                <small class="text-muted">{{ __('pos.hint_status') }}</small>
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $status }}</div>
+                <div class="help">{{ __('pos.hint_status') }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $status ?? '' }}</span></div>
             </div>
 
-            <div class="col-12">
+            {{-- Description AR --}}
+            <div class="col-12 field-block">
                 <label class="form-label"><i class="mdi mdi-text-box-outline"></i> {{ __('pos.description_ar') }}</label>
-                <textarea class="form-control" rows="2" wire:model.defer="description.ar" placeholder="{{ __('pos.ph_desc_ar') }}"></textarea>
-                <small class="text-muted">{{ __('pos.hint_desc_ar') }}</small>
+                <textarea class="form-control" rows="2" wire:model.live="description.ar" placeholder="{{ __('pos.ph_desc_ar') }}"></textarea>
+                <div class="help">{{ __('pos.hint_desc_ar') }}</div>
                 @error('description.ar') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $description['ar'] }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $description['ar'] ?? '' }}</span></div>
             </div>
 
-            <div class="col-12">
+            {{-- Description EN --}}
+            <div class="col-12 field-block">
                 <label class="form-label"><i class="mdi mdi-text-box-outline"></i> {{ __('pos.description_en') }}</label>
-                <textarea class="form-control" rows="2" wire:model.defer="description.en" placeholder="{{ __('pos.ph_desc_en') }}"></textarea>
-                <small class="text-muted">{{ __('pos.hint_desc_en') }}</small>
+                <textarea class="form-control" rows="2" wire:model.live="description.en" placeholder="{{ __('pos.ph_desc_en') }}"></textarea>
+                <div class="help">{{ __('pos.hint_desc_en') }}</div>
                 @error('description.en') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="preview mt-1"><i class="mdi mdi-eye-outline"></i> {{ $description['en'] }}</div>
+                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $description['en'] ?? '' }}</span></div>
             </div>
 
             <div class="col-12 text-end">
-                <button wire:click="save" class="btn btn-success rounded-pill px-4 shadow-sm">
+                <button type="button" wire:click="save" class="btn btn-success rounded-pill px-4 shadow-sm">
                     <i class="mdi mdi-content-save"></i> {{ __('pos.btn_save') }}
                 </button>
                 <a href="{{ route('products.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
                     <i class="mdi mdi-arrow-left"></i> {{ __('pos.btn_back') }}
                 </a>
             </div>
-
         </div>
     </div>
 </div>

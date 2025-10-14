@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\customer\customerscontroller;
 use App\Http\Controllers\pricing\pricingcontroller;
+use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
 use Illuminate\Support\Facades\Auth;
@@ -75,13 +76,18 @@ Route::group(
             ->parameters(['suppliers' => 'supplier'])    // يضمن Binding صحيح
             ->names('suppliers');                        // أسماء routes: suppliers.index ..etc
 
-        //products
         Route::prefix('products')->group(function () {
             Route::get('/', [productcontroller::class, 'index'])->name('products.index');
             Route::get('/create', [productcontroller::class, 'create'])->name('products.create');
             Route::get('/{id}/edit', [productcontroller::class, 'edit'])->name('products.edit');
+
+            // categories (منفصلة داخل إدارة المنتجات)
+            Route::get('/categories', [categorycontroller::class, 'index'])->name('categories.index');
+            Route::get('/categories/create', [categorycontroller::class, 'create'])->name('categories.create');
+            Route::get('/categories/{id}/edit', [categorycontroller::class, 'edit'])->name('categories.edit');
         });
-        //categories
+
+       // pricing 
         Route::prefix('pricing')->group(function () {
             Route::get('/lists', [pricingcontroller::class, 'index'])->name('pricing.lists.index');
             Route::get('/lists/create', [pricingcontroller::class, 'create'])->name('pricing.lists.create');

@@ -43,4 +43,11 @@ public function area()       { return $this->belongsTo(\App\models\area::class, 
     public function approvals()     { return $this->hasMany(\App\models\customer\customerapproval::class, 'customer_id'); }
     public function transactions()  { return $this->hasMany(\App\models\customer\customertransaction::class, 'customer_id'); }
 
+    
+    // ✅ العلاقة مع مجموعة العملاء
+    public function group()
+    {
+        return $this->belongsTo(\App\models\product\customer_group::class, 'customer_group_id');
+    }
+
 }
