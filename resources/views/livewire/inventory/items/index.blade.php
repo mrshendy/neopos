@@ -13,6 +13,92 @@
         </div>
     @endif
 
+    {{-- ======= Modules Toolbar (Modern Buttons) ======= --}}
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+            <div class="row g-3 modules-toolbar">
+
+                {{-- ⚙️ Settings --}}
+                <div class="col-6 col-md-4 col-xl-2">
+                    <a href="{{ route('inventory.settings.index') }}" class="module-btn">
+                        <i class="mdi mdi-cog-outline"></i>
+                        <span>{{ __('pos.inventory_settings_title') ?? 'Settings' }}</span>
+                    </a>
+                </div>
+
+                {{-- 📦 Counts --}}
+                <div class="col-6 col-md-4 col-xl-2">
+                    <a href="{{ route('inventory.counts.index') }}" class="module-btn">
+                        <i class="mdi mdi-clipboard-list-outline"></i>
+                        <span>{{ __('pos.inventory_counts_title') ?? 'Counts' }}</span>
+                    </a>
+                </div>
+
+                {{-- 🚨 Alerts --}}
+                <div class="col-6 col-md-4 col-xl-2">
+                    <a href="{{ route('inventory.alerts.index') }}" class="module-btn">
+                        <i class="mdi mdi-alert-decagram-outline"></i>
+                        <span>{{ __('pos.inventory_alerts_title') ?? 'Alerts' }}</span>
+                    </a>
+                </div>
+
+                {{-- 🔄 Transactions --}}
+                <div class="col-6 col-md-4 col-xl-2">
+                    <a href="{{ route('inventory.transactions.index') }}" class="module-btn">
+                        <i class="mdi mdi-swap-horizontal-bold"></i>
+                        <span>{{ __('pos.inventory_transactions_title') ?? 'Transactions' }}</span>
+                    </a>
+                </div>
+
+                {{-- 🏠 Warehouses --}}
+                <div class="col-6 col-md-4 col-xl-2">
+                    <a href="{{ route('inventory.warehouses.index') }}" class="module-btn">
+                        <i class="mdi mdi-warehouse"></i>
+                        <span>{{ __('pos.inventory_warehouses_title') ?? 'Warehouses' }}</span>
+                    </a>
+                </div>
+
+                {{-- 🧱 Items --}}
+                <div class="col-6 col-md-4 col-xl-2">
+                    <a href="{{ route('inventory.items.index') }}" class="module-btn">
+                        <i class="mdi mdi-package-variant-closed"></i>
+                        <span>{{ __('pos.inventory_items_title') ?? 'Items' }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 💅 Styles for modules toolbar --}}
+    <style>
+        .modules-toolbar .module-btn{
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            gap:.4rem;text-decoration:none;width:100%;height:100%;
+            border-radius:1rem;padding:1rem 0.75rem;text-align:center;
+            background:linear-gradient(135deg,#198754 0%,#1a5490 100%);
+            color:#fff;border:none;box-shadow:0 .5rem 1rem rgba(0,0,0,.06);
+            transition:transform .25s ease, box-shadow .25s ease, filter .25s ease, background .25s ease;
+            min-height:84px;
+        }
+        .modules-toolbar .module-btn i{
+            font-size:1.65rem;line-height:1;
+        }
+        .modules-toolbar .module-btn span{
+            font-weight:600;font-size:.95rem;letter-spacing:.2px;
+        }
+        .modules-toolbar .module-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0 .85rem 1.6rem rgba(0,0,0,.10);
+            filter:saturate(1.08);
+            background:linear-gradient(135deg,#1a5490 0%,#198754 100%);
+            color:#fff;
+        }
+        @media (max-width: 575.98px){
+            .modules-toolbar .module-btn span{ font-size:.85rem; }
+            .modules-toolbar .module-btn{ min-height:76px; }
+        }
+    </style>
+
     {{-- Filters --}}
     <div class="card shadow-sm rounded-4 mb-3">
         <div class="card-body">
@@ -106,7 +192,7 @@
         </div>
     </div>
 
-   {{-- ✅ SweetAlert2 --}}
+    {{-- ✅ SweetAlert2 --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmDelete(id) {
@@ -127,6 +213,4 @@
             })
         }
     </script>
-
-
 </div>

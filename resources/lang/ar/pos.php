@@ -624,66 +624,347 @@ return [
     'products_title' => 'إدارة المنتجات',
     'products_management_sub' => 'إدارة بيانات المنتجات وإعداداتها الأساسية.',
     // عناوين عامة
-    'price_lists_title'        => 'قوائم الأسعار',
+    'price_lists_title' => 'قوائم الأسعار',
     'price_lists_create_title' => 'إنشاء قائمة أسعار',
-    'price_lists_edit_title'   => 'تعديل قائمة أسعار',
-    'basic_info'               => 'البيانات الأساسية',
+    'price_lists_edit_title' => 'تعديل قائمة أسعار',
+    'basic_info' => 'البيانات الأساسية',
 
     // الحقول العامة
-    'name'     => 'الاسم',
-    'name_ar'  => 'الاسم (عربي)',
-    'name_en'  => 'الاسم (إنجليزي)',
+    'name' => 'الاسم',
+    'name_ar' => 'الاسم (عربي)',
+    'name_en' => 'الاسم (إنجليزي)',
 
     // Placeholders & Hints
-    'ph_name_ar'  => 'اكتب الاسم بالعربية',
-    'ph_name_en'  => 'اكتب الاسم بالإنجليزية',
-    'hint_name_ar'=> 'سيظهر هذا الاسم للمستخدمين باللغة العربية.',
-    'hint_name_en'=> 'سيظهر هذا الاسم للمستخدمين باللغة الإنجليزية.',
+    'ph_name_ar' => 'اكتب الاسم بالعربية',
+    'ph_name_en' => 'اكتب الاسم بالإنجليزية',
+    'hint_name_ar' => 'سيظهر هذا الاسم للمستخدمين باللغة العربية.',
+    'hint_name_en' => 'سيظهر هذا الاسم للمستخدمين باللغة الإنجليزية.',
 
     // التواريخ
-    'valid_from'        => 'من تاريخ',
-    'valid_to'          => 'إلى تاريخ',
-    'hint_valid_from'   => 'تاريخ بداية صلاحية القائمة.',
-    'hint_valid_to'     => 'اتركه فارغًا لغير محددة.',
-    'validity'          => 'الصلاحية',
+    'valid_from' => 'من تاريخ',
+    'valid_to' => 'إلى تاريخ',
+    'hint_valid_from' => 'تاريخ بداية صلاحية القائمة.',
+    'hint_valid_to' => 'اتركه فارغًا لغير محددة.',
+    'validity' => 'الصلاحية',
 
     // الحالة
-    'status'         => 'الحالة',
-    'status_active'  => 'نشط',
-    'status_inactive'=> 'غير نشط',
-    'hint_status'    => 'حالة تفعيل/تعطيل القائمة.',
+    'status' => 'الحالة',
+    'status_active' => 'نشط',
+    'status_inactive' => 'غير نشط',
+    'hint_status' => 'حالة تفعيل/تعطيل القائمة.',
 
     // بنود الأسعار
     'price_items' => 'بنود الأسعار',
-    'add_row'     => 'إضافة بند',
-    'product'     => 'المنتج',
-    'price'       => 'السعر',
-    'min_qty'     => 'الحد الأدنى',
-    'max_qty'     => 'الحد الأقصى',
+    'add_row' => 'إضافة بند',
+    'product' => 'المنتج',
+    'price' => 'السعر',
+    'min_qty' => 'الحد الأدنى',
+    'max_qty' => 'الحد الأقصى',
 
     // أزرار وإجراءات
-    'actions'   => 'الإجراءات',
-    'btn_new'   => 'جديد',
-    'btn_edit'  => 'تعديل',
-    'btn_delete'=> 'حذف',
-    'btn_save'  => 'حفظ',
-    'btn_back'  => 'رجوع',
-    'choose'    => 'اختر',
+    'actions' => 'الإجراءات',
+    'btn_new' => 'جديد',
+    'btn_edit' => 'تعديل',
+    'btn_delete' => 'حذف',
+    'btn_save' => 'حفظ',
+    'btn_back' => 'رجوع',
+    'choose' => 'اختر',
 
     // فلاتر وبحث
-    'search'     => 'بحث',
-    'ph_search'  => 'ابحث بالاسم...',
-    'all'        => 'الكل',
-    'per_page'   => 'عدد الصفوف',
-    'items_count'=> 'عدد البنود',
+    'search' => 'بحث',
+    'ph_search' => 'ابحث بالاسم...',
+    'all' => 'الكل',
+    'per_page' => 'عدد الصفوف',
+    'items_count' => 'عدد البنود',
 
     // رسائل نظام
-    'no_data'       => 'لا توجد بيانات',
-    'showing'       => 'عرض',
-    'of'            => 'من',
-    'msg_saved_ok'  => 'تم الحفظ بنجاح.',
-    'msg_updated_ok'=> 'تم تحديث البيانات بنجاح.',
-    'msg_deleted_ok'=> 'تم الحذف بنجاح.',
-    'show'=> 'عرض',
+    'no_data' => 'لا توجد بيانات',
+    'showing' => 'عرض',
+    'of' => 'من',
+    'msg_saved_ok' => 'تم الحفظ بنجاح.',
+    'msg_updated_ok' => 'تم تحديث البيانات بنجاح.',
+    'msg_deleted_ok' => 'تم الحذف بنجاح.',
+    'show' => 'عرض',
+
+    // ===== Common / Global =====
+    'inventory_title' => 'المخزون',
+    'inventory_dashboard_title' => 'لوحة تحكم المخزون',
+
+    'search' => 'بحث',
+    'status' => 'الحالة',
+    'all' => 'الكل',
+    'active' => 'نشط',
+    'inactive' => 'غير نشط',
+    'yes' => 'نعم',
+    'no' => 'لا',
+    'none' => 'بدون',
+    'choose' => 'اختر',
+    'actions' => 'الإجراءات',
+    'no_data' => 'لا توجد بيانات',
+    'notes' => 'ملاحظات',
+    'hint_notes' => 'يمكن كتابة سبب أو ملاحظة عامة هنا',
+    'date_from' => 'من تاريخ',
+    'date_to' => 'إلى تاريخ',
+
+    // Buttons
+    'btn_save' => 'حفظ',
+    'btn_cancel' => 'إلغاء',
+    'btn_back' => 'رجوع',
+    'btn_new' => 'إضافة',
+    'btn_edit' => 'تعديل',
+    'btn_delete' => 'حذف',
+    'btn_refresh' => 'تحديث',
+    'btn_export' => 'تصدير',
+    'btn_print' => 'طباعة',
+
+    // Alerts / Flash
+    'saved_success' => 'تم الحفظ بنجاح',
+    'deleted' => 'تم الحذف',
+    'deleted_success' => '✅ تم الحذف بنجاح.',
+    'alert_title' => 'تحذير',
+    'alert_delete_text' => '⚠️ هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه!',
+    'alert_confirm_yes' => 'نعم، احذف',
+    'alert_confirm_cancel' => 'إلغاء',
+
+    // Statuses / Workflow
+    'draft' => 'مسودة',
+    'posted' => 'مرحّلة',
+    'cancelled' => 'ملغاة',
+
+    // ===== Items =====
+    'inventory_items_title' => 'إدارة الأصناف',
+    'btn_new_item' => 'إضافة صنف',
+    'add_new_item' => 'إضافة صنف جديد',
+
+    'item_name' => 'اسم الصنف',
+    'item_name_ar' => 'اسم الصنف (عربي)',
+    'item_name_en' => 'اسم الصنف (إنجليزي)',
+    'sku' => 'الكود (SKU)',
+    'uom' => 'الوحدة',
+    'track_batch' => 'تتبع الدُفعات',
+    'track_serial' => 'تتبع السيريال',
+
+    'ph_search_sku_name' => 'ابحث بالاسم أو الكود',
+    'ph_item_name_ar' => 'مثال: بنادول',
+    'ph_item_name_en' => 'e.g., Panadol',
+    'ph_sku' => 'مثال: PND-001',
+    'ph_uom' => 'مثال: علبة',
+
+    'hint_item_name' => 'اكتب اسمًا واضحًا للصنف',
+    'hint_uom' => 'أدخل وحدة القياس المناسبة',
+    'hint_sku' => 'أدخل كودًا فريدًا للصنف',
+    'hint_filter_status' => 'فلترة حسب الحالة',
+
+    'inventory_deleted_success' => 'تم حذف الصنف بنجاح',
+    'inventory_item_status_changed' => 'تم تغيير حالة الصنف بنجاح',
+
+    // Validations (Items)
+    'val_item_name_ar_required' => 'الاسم بالعربية مطلوب',
+    'val_item_name_en_required' => 'الاسم بالإنجليزية مطلوب',
+    'val_item_sku_required' => 'كود الصنف (SKU) مطلوب',
+    'val_item_sku_unique' => 'كود الصنف مستخدم من قبل',
+    'val_item_uom_required' => 'وحدة القياس مطلوبة',
+
+    // ===== Warehouses =====
+    'inventory_warehouses_title' => 'إدارة المخازن',
+    'btn_new_warehouse' => 'إضافة مخزن',
+    'warehouse' => 'المخزن',
+    'warehouse_code' => 'كود المخزن',
+    'warehouse_branch' => 'الفرع',
+
+    'warehouse_deleted_success' => 'تم حذف المخزن بنجاح',
+    'warehouse_status_changed' => 'تم تغيير حالة المخزن بنجاح',
+
+    // Validations (Warehouses)
+    'val_wh_name_ar_required' => 'اسم المخزن بالعربية مطلوب',
+    'val_wh_name_en_required' => 'اسم المخزن بالإنجليزية مطلوب',
+    'val_wh_code_required' => 'كود المخزن مطلوب',
+    'val_wh_code_unique' => 'كود المخزن مستخدم من قبل',
+
+    // ===== Transactions =====
+    'inventory_transactions_title' => 'إدارة الحركات',
+    'inventory_transactions_create' => 'إنشاء حركة مخزون',
+    'btn_new_transaction' => 'حركة جديدة',
+    'add_new_transaction' => 'إضافة حركة جديدة',
+
+    'trx_no' => 'رقم الحركة',
+    'type' => 'النوع',
+    'trx_date' => 'تاريخ الحركة',
+    'from' => 'من',
+    'to' => 'إلى',
+    'from_warehouse' => 'من مخزن',
+    'to_warehouse' => 'إلى مخزن',
+
+    'ph_search_trx_no' => 'ابحث برقم الحركة',
+
+    'lines' => 'بنود الحركة',
+    'add_line' => 'إضافة بند',
+    'item' => 'الصنف',
+    'qty' => 'الكمية',
+    'reason' => 'السبب',
+
+    'hint_trx_type' => 'اختر نوع الحركة',
+    'hint_trx_date' => 'تاريخ ووقت الحركة',
+    'hint_from_wh' => 'اختر مخزن المصدر (اختياري)',
+    'hint_to_wh' => 'اختر مخزن الوجهة (اختياري)',
+    'hint_item' => 'اختر الصنف',
+    'hint_qty' => 'أدخل الكمية المطلوبة',
+
+    // Transaction Types
+    'trx_sales_issue' => 'صرف بيع',
+    'trx_sales_return' => 'مرتجع بيع',
+    'trx_adjustment' => 'تسوية',
+    'trx_transfer' => 'تحويل',
+    'trx_purchase_receive' => 'استلام مشتريات',
+
+    // Transaction messages
+    'cannot_post_non_draft' => 'لا يمكن ترحيل حركة ليست مسودة',
+    'posted_success' => 'تم ترحيل الحركة بنجاح',
+    'cannot_cancel_posted' => 'لا يمكن إلغاء حركة مُرحّلة',
+    'cancelled_success' => 'تم إلغاء الحركة بنجاح',
+    'cannot_delete_posted' => 'لا يمكن حذف حركة مُرحّلة',
+
+    // Validations (Transactions)
+    'val_trx_type_required' => 'نوع الحركة مطلوب',
+    'val_trx_date_required' => 'تاريخ الحركة مطلوب',
+    'val_trx_item_required' => 'يجب اختيار الصنف',
+    'val_trx_qty_min' => 'الكمية يجب أن تكون أكبر من صفر',
+    'val_trx_uom_required' => 'وحدة القياس مطلوبة',
+
+    // ===== Counts (Stock Count) =====
+    'inventory_counts_title' => 'الجردات',
+    'count_start' => 'بدء جرد',
+    'count_policy' => 'نوع الجرد',
+    'count_policy_periodic' => 'جرد دوري',
+    'count_policy_spot' => 'جرد مفاجئ',
+    'count_started' => 'تم بدء الجرد بنجاح',
+    'count_open' => 'مفتوح',
+    'count_review' => 'قيد المراجعة',
+    'count_approved' => 'تم الاعتماد',
+    'count_rejected' => 'مرفوض',
+    'count_system_qty' => 'الكمية النظامية',
+    'count_counted_qty' => 'الكمية الفعلية',
+    'count_difference_qty' => 'فرق الكمية',
+    'count_approve' => 'اعتماد الجرد',
+    'count_approved_success' => 'تم اعتماد الجرد وتحديث الأرصدة بنجاح',
+    'count_reject' => 'رفض الجرد',
+    'count_rejected_success' => 'تم رفض الجرد',
+
+    // Count validations/messages
+    'val_count_warehouse_required' => 'اختَر المخزن للجرد',
+    'val_count_policy_required' => 'نوع الجرد مطلوب',
+    'val_count_policy_invalid' => 'نوع الجرد غير صحيح',
+
+    // ===== Alerts =====
+    'inventory_alerts_title' => 'تنبيهات المخزون',
+    'reorder_alerts' => 'تنبيهات إعادة الطلب',
+    'expiry_alerts' => 'تنبيهات قرب الانتهاء',
+    'expired_stock' => 'عناصر منتهية الصلاحية',
+    'reorder_suggest' => 'اقتراح إنشاء طلب شراء أو تحويل',
+    'expiry_days_left' => 'أيام متبقية للانتهاء',
+    'alert_generated' => 'تم إصدار التنبيه',
+
+    // ===== Reports =====
+    'inventory_reports_title' => 'تقارير المخزون',
+    'report_stock_movements' => 'تقرير حركة المخزون',
+    'report_counts_diff' => 'تقرير الجرد والفروقات',
+    'report_batches' => 'تقرير الدُفعات',
+    'report_alerts' => 'تقرير التنبيهات',
+    'report_transfers' => 'تقرير التحويلات بين الفروع',
+    'report_negative' => 'تقرير الأصناف ذات مخزون سالب',
+
+    // ===== Settings =====
+    'inventory_settings_title' => 'إعدادات المخزون',
+    'negative_stock_policy' => 'سياسة السالب',
+    'negative_stock_block' => 'منع السالب نهائيًا',
+    'negative_stock_warn' => 'السماح بالسالب مع تحذير',
+    'expiry_alert_days' => 'أيام تنبيه الانتهاء',
+    'transaction_sequences' => 'ترقيم الحركات',
+    'sequence_pattern' => 'نمط الترقيم (مثال: INV-TRX-{YYYY}-{####})',
+
+    // Negative stock system messages
+    'neg_blocked' => 'منع سالب المخزون – الكمية المطلوبة تتجاوز المتاح.',
+    'neg_allowed_warn' => 'سُمح بالسالب مع تحذير وتسجيل في سجل الفروقات.',
+
+    // ===== Filters / Headings helpers =====
+    'warehouse_filter' => 'فلتر المخزن',
+    'from_warehouse_filter' => 'من المخزن',
+    'to_warehouse_filter' => 'إلى المخزن',
+     // العناوين العامة
+    'inventory_items_title'        => 'الأصناف',
+    'inventory_warehouses_title'   => 'المخازن',
+    'inventory_transactions_title' => 'الحركات',
+    'inventory_counts_title'       => 'الجردات',
+    'inventory_alerts_title'       => 'التنبيهات',
+    'inventory_settings_title'     => 'الإعدادات',
+    'inventory_reports_title'      => 'التقارير',
+
+    // الأزرار العامة
+    'btn_new_item' => 'إضافة صنف جديد',
+    'btn_save'     => 'حفظ',
+    'btn_cancel'   => 'إلغاء',
+    'btn_edit'     => 'تعديل',
+    'btn_delete'   => 'حذف',
+
+    // الرسائل
+    'no_data'     => 'لا توجد بيانات متاحة.',
+    'saved_success'   => 'تم الحفظ بنجاح ✅',
+    'deleted_success' => 'تم الحذف بنجاح ✅',
+    'status_changed'  => 'تم تغيير الحالة بنجاح',
+    'export_in_progress' => 'جاري تجهيز ملف التصدير...',
+    'alert_title'   => 'تحذير',
+    'alert_delete_text' => '⚠️ هل أنت متأكد من الحذف؟ لا يمكن التراجع عن العملية!',
+    'alert_confirm_yes' => 'نعم، احذفها',
+    'alert_confirm_cancel' => 'إلغاء',
+    'deleted' => 'تم الحذف!',
+
+    // الحقول
+    'item_name'     => 'اسم الصنف',
+    'sku'           => 'كود الصنف (SKU)',
+    'uom'           => 'وحدة القياس',
+    'track_batch'   => 'تتبع الدُفعات',
+    'track_serial'  => 'تتبع الأرقام التسلسلية',
+    'status'        => 'الحالة',
+    'actions'       => 'الإجراءات',
+
+    // الحالات
+    'active'   => 'نشط',
+    'inactive' => 'غير نشط',
+    'yes' => 'نعم',
+    'no'  => 'لا',
+    'all' => 'الكل',
+
+    // البحث والفلاتر
+    'search' => 'بحث',
+    'ph_search_sku_name' => 'ابحث بالاسم أو الكود...',
+    'hint_search_items'   => 'يمكنك البحث بالاسم العربي أو الإنجليزي أو كود الصنف.',
+
+    // الفلاتر الخاصة بالحركات
+    'filter_warehouse' => 'المخزن',
+    'filter_item'      => 'الصنف',
+    'filter_type'      => 'نوع الحركة',
+    'date_from'        => 'من تاريخ',
+    'date_to'          => 'إلى تاريخ',
+
+    // أنواع الحركات
+    'type_sales_issue'     => 'صرف مبيعات',
+    'type_sales_return'    => 'مرتجع مبيعات',
+    'type_adjustment'      => 'تسوية مخزون',
+    'type_transfer'        => 'تحويل مخزون',
+    'type_purchase_receive'=> 'استلام مشتريات',
+
+    // الحقول الإضافية في التقارير
+    'trx_no'           => 'رقم الحركة',
+    'trx_date'         => 'تاريخ الحركة',
+    'warehouse_from'   => 'من مخزن',
+    'warehouse_to'     => 'إلى مخزن',
+    'type'             => 'النوع',
+    'status_posted'    => 'مرحّل',
+    'status_cancelled' => 'ملغي',
+    'status_draft'     => 'مسودة',
+
+    // التقارير
+    'inventory_reports' => 'تقارير المخزون',
+    'export_excel'      => 'تصدير Excel',
 
 ];

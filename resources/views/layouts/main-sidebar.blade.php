@@ -77,6 +77,17 @@
                             </a>
                         </li>
 
+                        {{-- المخزون --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font 
+        @if (Str::startsWith(Route::currentRouteName(), 'inventory.')) active @endif"
+                                href="{{ route('inventory.items.index') }}">
+                                <i class="mdi mdi-warehouse"></i>
+                                <span data-key="t-inventory">{{ __('pos.inventory_title') ?? 'المخزون' }}</span>
+                            </a>
+                        </li>
+
+
                         <!--user management-->
                         <li class="menu-title"><i class="ri-more-fill"></i> <span
                                 data-key="t-components">{{ trans('main_trans.user_management') }}</span></li>

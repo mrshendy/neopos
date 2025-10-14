@@ -1,6 +1,13 @@
 <?php
 
 use App\Http\Controllers\customer\customerscontroller;
+use App\Http\Controllers\inventory\alertscontroller;
+use App\Http\Controllers\inventory\countscontroller;
+use App\Http\Controllers\inventory\itemscontroller;
+use App\Http\Controllers\inventory\reportscontroller;
+use App\Http\Controllers\inventory\settingscontroller;
+use App\Http\Controllers\inventory\transactionscontroller;
+use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\pricing\pricingcontroller;
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
@@ -87,14 +94,53 @@ Route::group(
             Route::get('/categories/{id}/edit', [categorycontroller::class, 'edit'])->name('categories.edit');
         });
 
-       // pricing 
+        // pricing
         Route::prefix('pricing')->group(function () {
             Route::get('/lists', [pricingcontroller::class, 'index'])->name('pricing.lists.index');
             Route::get('/lists/create', [pricingcontroller::class, 'create'])->name('pricing.lists.create');
             Route::get('/lists/{id}/edit', [pricingcontroller::class, 'edit'])->name('pricing.lists.edit');
             Route::get('/lists/{id}/show', [pricingcontroller::class, 'show'])->name('pricing.lists.show');
 
+        });
 
+        // ✅ مجموعة مسارات المخزون
+        Route::prefix('inventory')->group(function () {
+
+            // 🧱 Items
+            Route::get('items', [itemscontroller::class, 'index'])->name('inventory.items.index');
+            Route::get('items/create', [itemscontroller::class, 'create'])->name('inventory.items.create');
+            Route::post('items/store', [itemscontroller::class, 'store'])->name('inventory.items.store');
+            Route::get('items/{id}/edit', [itemscontroller::class, 'edit'])->name('inventory.items.edit');
+            Route::post('items/{id}/update', [itemscontroller::class, 'update'])->name('inventory.items.update');
+            Route::post('items/{id}/delete', [itemscontroller::class, 'destroy'])->name('inventory.items.destroy');
+
+            // 🏠 Warehouses
+            Route::get('warehouses', [warehousescontroller::class, 'index'])->name('inventory.warehouses.index');
+            Route::get('warehouses/create', [warehousescontroller::class, 'create'])->name('inventory.warehouses.create');
+            Route::post('warehouses/store', [warehousescontroller::class, 'store'])->name('inventory.warehouses.store');
+            Route::get('warehouses/{id}/edit', [warehousescontroller::class, 'edit'])->name('inventory.warehouses.edit');
+            Route::post('warehouses/{id}/update', [warehousescontroller::class, 'update'])->name('inventory.warehouses.update');
+            Route::post('warehouses/{id}/delete', [warehousescontroller::class, 'destroy'])->name('inventory.warehouses.destroy');
+
+            // 🔄 Transactions
+            Route::get('transactions', [transactionscontroller::class, 'index'])->name('inventory.transactions.index');
+            Route::get('transactions/create', [transactionscontroller::class, 'create'])->name('inventory.transactions.create');
+            Route::post('transactions/store', [transactionscontroller::class, 'store'])->name('inventory.transactions.store');
+            Route::post('transactions/{id}/delete', [transactionscontroller::class, 'destroy'])->name('inventory.transactions.destroy');
+
+            // 📋 Counts
+            Route::get('counts', [countscontroller::class, 'index'])->name('inventory.counts.index');
+            Route::post('counts/filter', [countscontroller::class, 'filter'])->name('inventory.counts.filter');
+
+            // 🚨 Alerts
+            Route::get('alerts', [alertscontroller::class, 'index'])->name('inventory.alerts.index');
+            Route::post('alerts/filter', [alertscontroller::class, 'filter'])->name('inventory.alerts.filter');
+
+        
+
+            // ⚙️ Settings
+            Route::get('settings', [settingscontroller::class, 'index'])->name('inventory.settings.index');
+            Route::post('settings/update', [settingscontroller::class, 'update'])->name('inventory.settings.update');
         });
 
         Route::get('/{page}', 'AdminController@index');
