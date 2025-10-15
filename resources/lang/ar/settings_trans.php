@@ -32,8 +32,13 @@ return [
     'update' => 'تحديث',
     'delete' => 'حذف',
 
-    
-    
+    'units_settings' => 'إعدادات الوحدات',
+'Go_to_settings_now' => 'اذهب إلى الإعدادات الآن',
+'Place_settings' => 'إعدادات الأماكن',
+'specialization_settings' => 'إعدادات التخصصات',
+'medical_settings' => 'الإعدادات الطبية',
+'currency_settings' => 'إعدادات العملات',
+'nationalities_settings' => 'إعدادات الجنسيات', 
 
    
     

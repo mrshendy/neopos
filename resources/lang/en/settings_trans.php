@@ -286,5 +286,12 @@ return [
        'thursday'  => 'Thursday',
        'friday'  => 'Friday',
        'doctor'  => 'Doctor',
-
+'units_settings' => 'Units Settings',
+'Go_to_settings_now' => 'Go to settings now',
+'Place_settings' => 'Place settings',
+'specialization_settings' => 'Specialization settings',
+'medical_settings' => 'Medical settings',
+'currency_settings' => 'Currency settings',
+'nationalities_settings' => 'Nationalities settings', 
+'contract_settings' => 'Contract settings', 
 ];

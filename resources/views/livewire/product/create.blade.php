@@ -7,11 +7,7 @@
     @endif
 
     <style>
-        .preview-chip{
-            display:inline-flex;align-items:center;gap:.35rem;
-            background:#f8f9fa;border:1px solid rgba(0,0,0,.06);
-            border-radius:999px;padding:.25rem .6rem;font-size:.8rem;color:#6c757d
-        }
+        .preview-chip{display:inline-flex;align-items:center;gap:.35rem;background:#f8f9fa;border:1px solid rgba(0,0,0,.06);border-radius:999px;padding:.25rem .6rem;font-size:.8rem;color:#6c757d}
         .field-block{position:relative}
         .field-block label{font-weight:600}
         .help{font-size:.8rem;color:#6c757d}
@@ -24,6 +20,40 @@
         </div>
 
         <div class="card-body row g-3">
+            {{-- صورة المنتج --}}
+            <div class="col-12 field-block">
+                <label class="form-label"><i class="mdi mdi-image-multiple-outline"></i> {{ __('pos.product_image') ?? 'صورة المنتج' }}</label>
+                <div class="d-flex flex-wrap gap-3 align-items-start">
+                    <div>
+                        @php
+                            $preview = null;
+                            if ($image ?? null) { $preview = $image->temporaryUrl(); }
+                            elseif (!empty($image_path)) { $preview = asset('storage/'.$image_path); }
+                        @endphp
+                        @if($preview)
+                            <img src="{{ $preview }}" alt="preview" class="rounded-4 border" style="width:160px;height:160px;object-fit:cover;">
+                        @else
+                            <div class="d-flex align-items-center justify-content-center rounded-4 border bg-light"
+                                 style="width:160px;height:160px;">
+                                <i class="mdi mdi-image-off-outline fs-1 text-muted"></i>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="flex-grow-1">
+                        <input type="file" class="form-control" wire:model="image" accept="image/*">
+                        <small class="help">{{ __('pos.hint_image') ?? 'الحد الأقصى 2MB. الامتدادات: jpg, jpeg, png, webp.' }}</small>
+                        <div class="mt-2 d-flex gap-2">
+                            @if($image || $image_path)
+                                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill" wire:click="removeImage">
+                                    <i class="mdi mdi-trash-can-outline"></i> {{ __('pos.remove_image') ?? 'إزالة الصورة' }}
+                                </button>
+                            @endif
+                        </div>
+                        @error('image') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+                <hr class="my-2">
+            </div>
 
             {{-- SKU --}}
             <div class="col-md-4 field-block">
@@ -89,22 +119,13 @@
                 <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $category_id ?? '' }}</span></div>
             </div>
 
-            {{-- Tax Rate --}}
+            {{-- Tax --}}
             <div class="col-md-3 field-block">
                 <label class="form-label"><i class="mdi mdi-percent"></i> {{ __('pos.tax_rate') }}</label>
                 <input type="number" step="0.001" class="form-control" wire:model.live="tax_rate">
                 <div class="help">{{ __('pos.hint_tax_rate') }}</div>
                 @error('tax_rate') <div class="text-danger small">{{ $message }}</div> @enderror
                 <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $tax_rate ?? '' }}</span></div>
-            </div>
-
-            {{-- Opening Stock --}}
-            <div class="col-md-3 field-block">
-                <label class="form-label"><i class="mdi mdi-warehouse"></i> {{ __('pos.opening_stock') }}</label>
-                <input type="number" class="form-control" wire:model.live="opening_stock">
-                <div class="help">{{ __('pos.hint_opening_stock') }}</div>
-                @error('opening_stock') <div class="text-danger small">{{ $message }}</div> @enderror
-                <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $opening_stock ?? '' }}</span></div>
             </div>
 
             {{-- Status --}}
@@ -116,6 +137,31 @@
                 </select>
                 <div class="help">{{ __('pos.hint_status') }}</div>
                 <div class="mt-1"><span class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $status ?? '' }}</span></div>
+            </div>
+
+            {{-- Flags --}}
+            <div class="col-md-3 field-block">
+                <div class="form-check form-switch mt-4">
+                    <input class="form-check-input" type="checkbox" role="switch" id="batchSwitch" wire:model.live="track_batch">
+                    <label class="form-check-label" for="batchSwitch">{{ __('pos.track_batch') }}</label>
+                </div>
+                <div class="help">{{ __('pos.hint_track_batch') ?? 'فعّلها للأصناف ذات الدُفعات.' }}</div>
+            </div>
+
+            <div class="col-md-3 field-block">
+                <div class="form-check form-switch mt-4">
+                    <input class="form-check-input" type="checkbox" role="switch" id="serialSwitch" wire:model.live="track_serial">
+                    <label class="form-check-label" for="serialSwitch">{{ __('pos.track_serial') }}</label>
+                </div>
+                <div class="help">{{ __('pos.hint_track_serial') ?? 'فعّلها للأجهزة التي تتطلب رقم تسلسلي.' }}</div>
+            </div>
+
+            {{-- Reorder --}}
+            <div class="col-md-3 field-block">
+                <label class="form-label"><i class="mdi mdi-bell-outline"></i> {{ __('pos.reorder_level') }}</label>
+                <input type="number" step="1" class="form-control" wire:model.live="reorder_level" placeholder="مثال: 10">
+                @error('reorder_level') <div class="text-danger small">{{ $message }}</div> @enderror
+                <div class="help">{{ __('pos.hint_reorder') ?? 'يصدر النظام تنبيهًا عند نزول الرصيد دونه.' }}</div>
             </div>
 
             {{-- Description AR --}}
@@ -140,7 +186,7 @@
                 <button type="button" wire:click="save" class="btn btn-success rounded-pill px-4 shadow-sm">
                     <i class="mdi mdi-content-save"></i> {{ __('pos.btn_save') }}
                 </button>
-                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                <a href="{{ route('product.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
                     <i class="mdi mdi-arrow-left"></i> {{ __('pos.btn_back') }}
                 </a>
             </div>

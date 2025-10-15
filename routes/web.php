@@ -4,13 +4,13 @@ use App\Http\Controllers\customer\customerscontroller;
 use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
 use App\Http\Controllers\inventory\itemscontroller;
-use App\Http\Controllers\inventory\reportscontroller;
 use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\pricing\pricingcontroller;
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
+use App\Http\Controllers\product\unitscontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -84,9 +84,9 @@ Route::group(
             ->names('suppliers');                        // أسماء routes: suppliers.index ..etc
 
         Route::prefix('products')->group(function () {
-            Route::get('/', [productcontroller::class, 'index'])->name('products.index');
-            Route::get('/create', [productcontroller::class, 'create'])->name('products.create');
-            Route::get('/{id}/edit', [productcontroller::class, 'edit'])->name('products.edit');
+            Route::get('/', [productcontroller::class, 'index'])->name('product.index');
+            Route::get('/create', [productcontroller::class, 'create'])->name('product.create');
+            Route::get('/{id}/edit', [productcontroller::class, 'edit'])->name('product.edit');
 
             // categories (منفصلة داخل إدارة المنتجات)
             Route::get('/categories', [categorycontroller::class, 'index'])->name('categories.index');
@@ -102,7 +102,9 @@ Route::group(
             Route::get('/lists/{id}/show', [pricingcontroller::class, 'show'])->name('pricing.lists.show');
 
         });
-
+        Route::get('units', [unitscontroller::class, 'index'])->name('units.index');
+        Route::get('units/create', [unitscontroller::class, 'create'])->name('units.create');
+        Route::get('units/{unit}/edit', [unitscontroller::class, 'edit'])->name('units.edit');
         // ✅ مجموعة مسارات المخزون
         Route::prefix('inventory')->group(function () {
 
@@ -135,8 +137,6 @@ Route::group(
             // 🚨 Alerts
             Route::get('alerts', [alertscontroller::class, 'index'])->name('inventory.alerts.index');
             Route::post('alerts/filter', [alertscontroller::class, 'filter'])->name('inventory.alerts.filter');
-
-        
 
             // ⚙️ Settings
             Route::get('settings', [settingscontroller::class, 'index'])->name('inventory.settings.index');

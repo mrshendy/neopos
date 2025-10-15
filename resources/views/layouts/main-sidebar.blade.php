@@ -62,7 +62,7 @@
                         {{-- المنتجات --}}
                         <li class="nav-item">
                             <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'products.')) active @endif"
-                                href="{{ route('products.index') }}">
+                                href="{{ route('product.index') }}">
                                 <i class="mdi mdi-cube-outline"></i>
                                 <span data-key="t-products">{{ __('pos.products_index_title') }}</span>
                             </a>

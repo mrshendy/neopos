@@ -29,7 +29,7 @@
             </div>
 
             <div class="col-md-5 text-end d-flex gap-2 justify-content-end">
-                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                <a href="{{ route('product.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
                     <i class="mdi mdi-arrow-left"></i> {{ __('pos.btn_back') }}
                 </a>
                 <a href="{{ route('categories.create') }}" class="btn btn-success rounded-pill px-4 shadow-sm">
