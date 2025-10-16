@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 
 class productcontroller extends Controller
 {
+    public function manage()
+    {
+        return view('product.manage');
+    }
+
     public function index()
     {
         return view('product.index');

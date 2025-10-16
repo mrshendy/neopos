@@ -959,45 +959,316 @@ return [
     'btn_yes_delete' => 'Yes, delete',
     'btn_cancel' => 'Cancel',
     'remove_image' => 'Remove Image',
-'units_settings' => 'Units Settings',
-'Go_to_settings_now' => 'Go to settings now',
- 'view_image' => 'View Image',
-    'close'      => 'Close',
-     // ===== Inventory Count (Stocktaking) =====
-    'start_new_count'  => 'Start New Count',
-    'warehouse'        => 'Warehouse',
-    'choose'           => 'Choose',
-    'policy'           => 'Counting Policy',
-    'count_periodic'   => 'Periodic Count',
-    'count_spot'       => 'Spot Count',
-    'notes'            => 'Notes',
-    'hint_notes'       => 'Optional notes…',
-    'btn_start'        => 'Start',
-    'previous_counts'  => 'Previous Counts',
-    'status'           => 'Status',
-    'started_at'       => 'Started At',
-    'no_data'          => 'No data available',
+    'units_settings' => 'Units Settings',
+    'Go_to_settings_now' => 'Go to settings now',
+    'view_image' => 'View Image',
+    'close' => 'Close',
+    // ===== Inventory Count (Stocktaking) =====
+    'start_new_count' => 'Start New Count',
+    'warehouse' => 'Warehouse',
+    'choose' => 'Choose',
+    'policy' => 'Counting Policy',
+    'count_periodic' => 'Periodic Count',
+    'count_spot' => 'Spot Count',
+    'notes' => 'Notes',
+    'hint_notes' => 'Optional notes…',
+    'btn_start' => 'Start',
+    'previous_counts' => 'Previous Counts',
+    'status' => 'Status',
+    'started_at' => 'Started At',
+    'no_data' => 'No data available',
 
     // statuses (used with __('pos.' . $c->status))
-    'open'             => 'Open',
-    'closed'           => 'Closed',
-     // ===== Inventory Alerts =====
+    'open' => 'Open',
+    'closed' => 'Closed',
+    // ===== Inventory Alerts =====
     'inventory_alerts_title' => 'Inventory Alerts',
-    'alert_type'             => 'Alert Type',
-    'alert_reorder'          => 'Reorder',
-    'alert_expiry'           => 'Near Expiry',
-    'alert_expired'          => 'Expired',
+    'alert_type' => 'Alert Type',
+    'alert_reorder' => 'Reorder',
+    'alert_expiry' => 'Near Expiry',
+    'alert_expired' => 'Expired',
 
-    'item'                   => 'Item',
-    'warehouse'              => 'Warehouse',
-    'qty'                    => 'Qty',
-    'alert_message'          => 'Alert Message',
-    'created_at'             => 'Created At',
-    'no_alerts'              => 'No alerts found',
+    'item' => 'Item',
+    'warehouse' => 'Warehouse',
+    'qty' => 'Qty',
+    'alert_message' => 'Alert Message',
+    'created_at' => 'Created At',
+    'no_alerts' => 'No alerts found',
 
     // Dynamic messages
-    'reorder_alert_msg'      => 'Available quantity of :item is below the reorder level.',
-    'expiry_alert_msg'       => ':item is approaching its expiry date — sell/rotate first.',
-    'expired_alert_msg'      => ':item has expired — stop selling and take proper action.',
+    'reorder_alert_msg' => 'Available quantity of :item is below the reorder level.',
+    'expiry_alert_msg' => ':item is approaching its expiry date — sell/rotate first.',
+    'expired_alert_msg' => ':item has expired — stop selling and take proper action.',
+
+    'units_title' => 'Units Management',
+    'units_index' => 'Units List',
+    'units_create' => 'Create Unit',
+    'units_edit' => 'Edit Unit',
+
+    'name_ar' => 'Name (Arabic)',
+    'name_en' => 'Name (English)',
+    'description_ar' => 'Description (Arabic)',
+    'description_en' => 'Description (English)',
+    'level' => 'Level',
+    'status' => 'Status',
+    'minor' => 'Minor Unit',
+    'middle' => 'Middle Unit',
+    'major' => 'Major Unit',
+    'active' => 'Active',
+    'inactive' => 'Inactive',
+
+    'btn_save' => 'Save',
+    'btn_update' => 'Update',
+    'btn_cancel' => 'Cancel',
+    'btn_new' => 'New Unit',
+    'btn_edit' => 'Edit',
+    'btn_delete' => 'Delete',
+    'btn_toggle_status' => 'Toggle Status',
+    'btn_search' => 'Search',
+    'btn_reset' => 'Reset',
+
+    'th_id' => '#',
+    'th_name' => 'Name',
+    'th_level' => 'Level',
+    'th_status' => 'Status',
+    'th_actions' => 'Actions',
+
+    'hint_name_ar' => 'Enter the unit name in Arabic.',
+    'hint_name_en' => 'Enter the unit name in English.',
+    'hint_description_ar' => 'Short Arabic description (optional).',
+    'hint_description_en' => 'Short English description (optional).',
+    'hint_level' => 'Choose the unit level (minor/middle/major).',
+    'hint_status' => 'Choose the activation status.',
+
+    'filter_search' => 'Search by name',
+    'filter_level' => 'Filter by level',
+    'filter_status' => 'Filter by status',
+
+    'msg_created' => '✅ Unit created successfully.',
+    'msg_updated' => '✅ Unit updated successfully.',
+    'msg_deleted' => '✅ Unit deleted successfully.',
+    'msg_status_toggled' => '✅ Unit status updated.',
+    // Manage page
+    'page_manage_products_title' => 'Products Management',
+    'page_manage_products_sub' => 'Quick shortcuts to Units, Categories, Items Data, and Settings',
+
+    // Cards
+    'nav_units' => 'Units',
+    'nav_units_sub' => 'Manage measurement units (Minor/Middle/Major)',
+    'nav_categories' => 'Categories',
+    'nav_categories_sub' => 'Manage product categories',
+    'nav_products_data' => 'Items Data',
+    'nav_products_data_sub' => 'Manage products, barcodes, and pricing',
+    'nav_general_settings' => 'General Settings',
+    'nav_general_settings_sub' => 'System options & preferences',
+    'categories_index_sub' => 'Browse, search, and manage product categories.',
+    // ===== Create Product Page =====
+    'product_create_title' => 'Create Product',
+    'product_create_sub' => 'Enter basic information, units & settings, then save.',
+
+    // Image
+    'product_image' => 'Product Image',
+    'hint_product_image' => 'Supported: PNG / JPG / WEBP — Max size 2MB',
+    'remove' => 'Remove',
+
+    // Basic fields (4-in-a-row)
+    'sku' => 'SKU',
+    'hint_sku' => 'Manual SKU used in reports/integrations',
+    'barcode' => 'Barcode',
+    'hint_barcode' => 'Optional — CODE128 compatible',
+    'name_ar' => 'Name (Arabic)',
+    'name_en' => 'Name (English)',
+
+    // Description
+    'description_ar' => 'Description (Arabic)',
+    'description_en' => 'Description (English)',
+
+    // Dropdowns
+    'category' => 'Category',
+    'supplier' => 'Supplier',
+    'choose' => 'Choose',
+
+    // Status
+    'status' => 'Status',
+    'status_active' => 'Active',
+    'status_inactive' => 'Inactive',
+
+    // Units matrix
+    'units_matrix' => 'Units Matrix',
+    'field' => 'Field',
+    'minor' => 'Minor Unit',
+    'middle' => 'Middle Unit',
+    'major' => 'Major Unit',
+    'cost_price' => 'Cost Price',
+    'sale_price' => 'Sale Price',
+    'conv_factor' => 'Conversion Factor',
+    'sale_unit' => 'Sale Unit',
+    'purchase_unit' => 'Purchase Unit',
+
+    // Expiry
+    'expiry_settings' => 'Item Expiry',
+    'has_expiry' => 'Has expiry?',
+    'expiry_unit' => 'Expiry Unit',
+    'expiry_value' => 'Value',
+    'expiry_weekdays' => 'Weekdays',
+    'day' => 'Day',
+    'month' => 'Month',
+    'year' => 'Year',
+
+    // Weekdays (if you want to use from translations)
+    'wd_sat' => 'Saturday',
+    'wd_sun' => 'Sunday',
+    'wd_mon' => 'Monday',
+    'wd_tue' => 'Tuesday',
+    'wd_wed' => 'Wednesday',
+    'wd_thu' => 'Thursday',
+    'wd_fri' => 'Friday',
+
+    // Buttons
+    'btn_save' => 'Save',
+    'btn_cancel' => 'Cancel',
+    'btn_back' => 'Back',
+
+    // Generic/success
+    'saved_success' => 'Saved successfully',
+
+    // (Optional) common validation messages for create
+    'val_sku_required' => 'SKU is required.',
+    'val_sku_unique' => 'This SKU is already taken.',
+    'val_name_ar_required' => 'Arabic name is required.',
+    'val_name_en_required' => 'English name is required.',
+    'val_factor_min' => 'Conversion factor must be at least 1.',
+    'val_expiry_unit_req' => 'Please choose an expiry unit.',
+    'view' => 'View',
+
+    'print_selected' => 'Print Selected',
+    'print_page_title' => 'Barcode Print',
+    'print_page_hint' => 'Review the preview then click Print',
+    'btn_print' => 'Print',
+
+    // === Common / Buttons ===
+    'btn_back' => 'Back',
+    'btn_cancel' => 'Cancel',
+    'btn_save' => 'Save',
+    'btn_update' => 'Update',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'choose' => 'Choose',
+
+    // === Products: headers ===
+    'product_create_title' => 'Create Product',
+    'product_create_sub' => 'Enter basic data, unit matrix, and expiry settings',
+    'product_edit_title' => 'Edit Product',
+    'product_edit_sub' => 'Update basic data, unit matrix, and expiry settings',
+    'saved_success' => 'Saved/updated successfully',
+
+    // === Image ===
+    'product_image' => 'Product Image',
+    'hint_product_image' => 'Supported: PNG / JPG / WEBP up to 2MB',
+    'remove' => 'Remove',
+    'preview_selected_file' => 'An image is selected',
+    'preview_existing_image' => 'An image already exists',
+    'preview_no_image' => 'No image',
+
+    // === Basics (4 fields) ===
+    'sku' => 'SKU',
+    'ph_sku' => 'e.g., PRD-0001',
+    'hint_sku' => 'Unique internal identifier; appears in reports',
+
+    'barcode' => 'Barcode',
+    'ph_barcode' => 'e.g., 6221234567890',
+    'hint_barcode' => 'Optional — enter item barcode if available (CODE128/EAN-13…)',
+
+    'name_ar' => 'Name (Arabic)',
+    'ph_name_ar' => 'Enter Arabic name',
+    'hint_name_ar' => 'Shown in Arabic UI and Arabic invoices',
+
+    'name_en' => 'Name (English)',
+    'ph_name_en' => 'Enter English name',
+    'hint_name_en' => 'Shown in English UI and English invoices',
+
+    'description_ar' => 'Description (Arabic)',
+    'ph_description_ar' => 'Short Arabic description',
+    'description_en' => 'Description (English)',
+    'ph_description_en' => 'Short English description',
+    'hint_description' => 'Optional — helps clarify item details to users',
+
+    'category' => 'Category',
+    'hint_category' => 'Choose the category that the item belongs to for easier search/reporting',
+
+    'supplier' => 'Supplier',
+    'hint_supplier' => 'Pick the primary supplier used for purchase orders',
+
+    'status' => 'Status',
+    'status_active' => 'Active',
+    'status_inactive' => 'Inactive',
+    'hint_status' => 'Control enabling/disabling the item for listing and sales',
+
+    // === Units matrix ===
+    'units_matrix' => 'Units Matrix',
+    'field' => 'Field',
+    'minor' => 'Minor Unit',
+    'middle' => 'Middle Unit',
+    'major' => 'Major Unit',
+
+    'unit' => 'Unit',
+    'hint_pick_unit' => 'Choose a unit for this level from the system units',
+
+    'cost_price' => 'Cost Price',
+    'hint_cost' => 'Enter purchase/manufacturing cost per unit',
+
+    'sale_price' => 'Sale Price',
+    'hint_price' => 'Enter suggested sale price per unit',
+
+    'conv_factor' => 'Conversion Factor',
+    'hint_factor' => 'Number of smaller units composing this unit (default 1)',
+
+    'sale_unit' => 'Sale Unit',
+    'hint_sale_unit' => 'Must be one of the three units selected above',
+
+    'purchase_unit' => 'Purchase Unit',
+    'hint_purchase_unit' => 'Must be one of the three units selected above',
+
+    // === Expiry ===
+    'expiry_settings' => 'Expiry Settings',
+    'has_expiry' => 'Has expiry?',
+    'expiry_unit' => 'Expiry Unit',
+    'hint_expiry_unit' => 'Choose whether expiry is in days, months, or years',
+    'expiry_value' => 'Value',
+    'hint_expiry_value' => 'Enter number of days/months/years according to chosen unit',
+    'expiry_weekdays' => 'Weekdays',
+    'hint_expiry_days' => 'Pick allowed weekdays when the unit is day',
+
+    'day' => 'Day',
+    'month' => 'Month',
+    'year' => 'Year',
+
+    'sat' => 'Saturday',
+    'sun' => 'Sunday',
+    'mon' => 'Monday',
+    'tue' => 'Tuesday',
+    'wed' => 'Wednesday',
+    'thu' => 'Thursday',
+    'fri' => 'Friday',
+
+    // === Print page (optional) ===
+    'print_page_title' => 'Barcode Printing',
+    'print_page_hint' => 'Review the preview then click Print',
+    'btn_print' => 'Print',
+    'basic_info_title' => ' Basic Information',
+
+    'clear_selection' => 'Clear selection',
+    'select_all' => 'Select all',
+    'deselect_all' => 'Deselect all',
+    'invert_selection' => 'Invert selection',
+    'bulk_actions' => 'Bulk actions',
+    'delete_selected' => 'Delete selected',
+    'restore_selected' => 'Restore selected',
+    'export_selected' => 'Export selected',
+    'print_selected' => 'Print selected',
+    'change_status' => 'Change status',
+    'mark_active' => 'Mark as active',
+    'mark_inactive' => 'Mark as inactive',
+    'selected_rows' => '{0} No rows selected|{1} 1 row selected|[2,*] :count rows selected',
 
 ];

@@ -1,6 +1,6 @@
 <div class="page-wrap">
 
-    {{-- Alerts --}}
+    {{-- ✅ Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
@@ -8,71 +8,74 @@
         </div>
     @endif
 
-    {{-- Page Header --}}
-    <div class="d-flex align-products-center justify-content-between mb-3">
+    {{-- 🏷️ Header --}}
+    <div class="d-flex align-items-center justify-content-between mb-3">
         <div>
-            <h3 class="mb-1 fw-bold"><i class="mdi mdi-package-variant-closed me-2"></i> {{ __('pos.products_title') }}</h3>
-            <div class="text-muted small">{{ __('pos.products_management_sub') }}</div>
+            <h3 class="mb-1 fw-bold">
+                <i class="mdi mdi-package-variant-closed me-2"></i> {{ __('pos.products_title') ?? 'إدارة المنتجات' }}
+            </h3>
+            <div class="text-muted small">{{ __('pos.products_management_sub') ?? 'بحث، تصفية، تعديل، وحذف المنتجات' }}
+            </div>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('categories.index') }}" class="btn btn-outline-primary rounded-pill px-3 shadow-sm">
-                <i class="mdi mdi-shape-outline"></i> {{ __('pos.category_title') }}
+                <i class="mdi mdi-shape-outline"></i> {{ __('pos.category_title') ?? 'الأقسام' }}
             </a>
             <a href="{{ route('product.create') }}" class="btn btn-success rounded-pill px-4 shadow-sm">
-                <i class="mdi mdi-plus"></i> {{ __('pos.btn_new_product') }}
+                <i class="mdi mdi-plus"></i> {{ __('pos.btn_new_product') ?? 'منتج جديد' }}
             </a>
         </div>
     </div>
 
-    {{-- Toolbar / Filters --}}
-    <div class="card shadow-sm rounded-4 mb-3">
+    {{-- 🔎 Filters --}}
+    <div class="card shadow-sm rounded-4 mb-2">
         <div class="card-body">
-            <div class="row g-3 align-products-end">
+            <div class="row g-3 align-items-end">
                 <div class="col-lg-3">
                     <label class="form-label mb-1">
-                        <i class="mdi mdi-magnify"></i> {{ __('pos.search') }}
+                        <i class="mdi mdi-magnify"></i> {{ __('pos.search') ?? 'بحث' }}
                     </label>
                     <input type="text" class="form-control" wire:model.debounce.400ms="search"
-                        placeholder="{{ __('pos.ph_search_sku_barcode_name') }}">
-                    <small class="text-muted">{{ __('pos.hint_search_products') }}</small>
+                        placeholder="{{ __('pos.ph_search_sku_barcode_name') ?? 'ابحث بـ SKU/باركود/اسم' }}">
+                    <small
+                        class="text-muted">{{ __('pos.hint_search_products') ?? 'اكتب جزء من الكود أو الاسم' }}</small>
                 </div>
 
                 <div class="col-lg-3">
                     <label class="form-label mb-1">
-                        <i class="mdi mdi-shape-outline"></i> {{ __('pos.filter_category') }}
+                        <i class="mdi mdi-shape-outline"></i> {{ __('pos.filter_category') ?? 'القسم' }}
                     </label>
                     <select class="form-select" wire:model="category_id">
-                        <option value="">{{ __('pos.all') }}</option>
+                        <option value="">{{ __('pos.all') ?? 'الكل' }}</option>
                         @foreach ($categories as $c)
-                            <option value="{{ $c->id }}">{{ $c->getTranslation('name', app()->getLocale()) }}</option>
+                            <option value="{{ $c->id }}">{{ $c->getTranslation('name', app()->getLocale()) }}
+                            </option>
                         @endforeach
                     </select>
-                    <small class="text-muted">{{ __('pos.hint_category') }}</small>
                 </div>
 
                 <div class="col-lg-2">
                     <label class="form-label mb-1">
-                        <i class="mdi mdi-weight-kilogram"></i> {{ __('pos.filter_unit') }}
+                        <i class="mdi mdi-weight-kilogram"></i> {{ __('pos.filter_unit') ?? 'الوحدة' }}
                     </label>
                     <select class="form-select" wire:model="unit_id">
-                        <option value="">{{ __('pos.all') }}</option>
+                        <option value="">{{ __('pos.all') ?? 'الكل' }}</option>
                         @foreach ($units as $u)
-                            <option value="{{ $u->id }}">{{ $u->getTranslation('name', app()->getLocale()) }}</option>
+                            <option value="{{ $u->id }}">{{ $u->getTranslation('name', app()->getLocale()) }}
+                            </option>
                         @endforeach
                     </select>
-                    <small class="text-muted">{{ __('pos.hint_unit') }}</small>
                 </div>
 
                 <div class="col-lg-2">
                     <label class="form-label mb-1">
-                        <i class="mdi mdi-toggle-switch"></i> {{ __('pos.filter_status') }}
+                        <i class="mdi mdi-toggle-switch"></i> {{ __('pos.filter_status') ?? 'الحالة' }}
                     </label>
                     <select class="form-select" wire:model="status">
-                        <option value="">{{ __('pos.all') }}</option>
-                        <option value="active">{{ __('pos.status_active') }}</option>
-                        <option value="inactive">{{ __('pos.status_inactive') }}</option>
+                        <option value="">{{ __('pos.all') ?? 'الكل' }}</option>
+                        <option value="active">{{ __('pos.status_active') ?? 'نشط' }}</option>
+                        <option value="inactive">{{ __('pos.status_inactive') ?? 'غير نشط' }}</option>
                     </select>
-                    <small class="text-muted">{{ __('pos.hint_status') }}</small>
                 </div>
 
                 <div class="col-lg-2 text-end">
@@ -83,12 +86,12 @@
                 </div>
             </div>
 
-            {{-- Mini status line --}}
-            <div class="d-flex align-products-center mt-3 small text-muted">
+            {{-- Summary --}}
+            <div class="d-flex align-items-center mt-3 small text-muted">
                 <i class="mdi mdi-dots-grid me-1"></i>
-                <span>{{ __('pos.search') }}:</span>
+                <span>{{ __('pos.search') ?? 'بحث' }}:</span>
                 <span class="badge bg-light text-dark ms-1">{{ $search ?: '—' }}</span>
-                <span class="ms-3">{{ __('pos.filter_status') }}:</span>
+                <span class="ms-3">{{ __('pos.filter_status') ?? 'الحالة' }}:</span>
                 <span class="badge bg-light text-dark ms-1">
                     {{ $status ? __($status == 'active' ? 'pos.status_active' : 'pos.status_inactive') : __('pos.all') }}
                 </span>
@@ -101,45 +104,83 @@
         </div>
     </div>
 
-    {{-- Table --}}
+    {{-- ✅ Bulk actions bar: زر طباعة الباركود --}}
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="small text-muted">
+            @if (!empty($selected))
+                <i class="mdi mdi-check-all me-1"></i>
+                <strong>{{ count($selected) }}</strong> {{ __('pos.selected_rows') ?? 'سجل/سجلات محددة' }}
+            @endif
+        </div>
+        <div class="d-flex gap-2">
+            @if (!empty($selected))
+                <button class="btn btn-outline-secondary rounded-pill px-3"
+                    wire:click="$set('selected', []); $set('select_all_current_page', false)">
+                    <i class="mdi mdi-close"></i> {{ __('pos.clear_selection') ?? 'إلغاء التحديد' }}
+                </button>
+            @endif
+
+            {{-- زر الطباعة (يعتمد على goPrintSelected في الكومبوننت) --}}
+            <button class="btn btn-primary rounded-pill px-3" wire:click="goPrintSelected"
+                {{ empty($selected) ? 'disabled' : '' }}>
+                <i class="mdi mdi-printer"></i> {{ __('pos.print_selected') ?? 'طباعة الباركود' }}
+            </button>
+        </div>
+    </div>
+
+    {{-- 🧾 Table --}}
     <div class="card shadow-sm rounded-4">
         <div class="table-responsive">
             <table class="table table-hover table-borderless align-middle mb-0 pretty-table">
-                <thead>
+                <thead class="table-light">
                     <tr>
+                        {{-- تحديد الصفحة الحالية --}}
+                        <th class="w-1">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAll"
+                                    wire:click="toggleSelectAllCurrentPage" @checked($select_all_current_page)>
+                            </div>
+                        </th>
+
                         <th class="sticky-col">#</th>
                         <th>{{ __('pos.image') ?? 'الصورة' }}</th>
-                        <th>{{ __('pos.sku') }}</th>
-                        <th>{{ __('pos.barcode') }}</th>
-                        <th>{{ __('pos.name') }}</th>
-                        <th>{{ __('pos.unit') }}</th>
-                        <th>{{ __('pos.category') }}</th>
-                        <th>{{ __('pos.status') }}</th>
-                        <th class="text-end">{{ __('pos.actions') }}</th>
+                        <th>{{ __('pos.sku') ?? 'كود' }}</th>
+                        <th>{{ __('pos.barcode') ?? 'الباركود' }}</th>
+                        <th>{{ __('pos.name') ?? 'الاسم' }}</th>
+                        <th>{{ __('pos.category') ?? 'القسم' }}</th>
+                        <th>{{ __('pos.status') ?? 'الحالة' }}</th>
+                        <th class="text-end">{{ __('pos.actions') ?? 'إجراءات' }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($rows as $row)
                         <tr>
+                            {{-- checkbox + qty --}}
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="checkbox" class="form-check-input" value="{{ $row->id }}"
+                                        wire:model="selected">
+                                    @if (in_array($row->id, $selected))
+                                        <input type="number" min="1" class="form-control form-control-sm"
+                                            style="width:80px" wire:model.lazy="qty.{{ $row->id }}"
+                                            placeholder="1" title="{{ __('pos.print_qty') ?? 'كمية الطباعة' }}">
+                                    @endif
+                                </div>
+                            </td>
+
                             <td class="sticky-col text-muted">{{ $row->id }}</td>
 
-                            {{-- المنتج: الصورة من attachments/$row->image_path --}}
+                            {{-- الصورة --}}
                             <td>
                                 @php
-                                    $imagePath = $row->image_path ?? null; // اجعل عمودك بهذا الاسم أو عدّله
-                                    $imgUrl = $imagePath ? asset('attachments/' . ltrim($imagePath, '/')) : null;
+                                    $img = $row->image_path ? asset('attachments/' . ltrim($row->image_path, '/')) : null;
                                 @endphp
-
-                                @if ($imgUrl)
-                                    <img src="{{ $imgUrl }}"
-                                         alt="{{ $row->getTranslation('name', app()->getLocale()) }}"
-                                         title="{{ $row->getTranslation('name', app()->getLocale()) }}"
-                                         class="rounded-3 border" width="42" height="42" loading="lazy"
-                                         decoding="async" style="object-fit:cover"
-                                         onerror="this.onerror=null;this.src='{{ asset('assets/img/placeholder-product.png') }}';">
+                                @if ($img)
+                                    <img src="{{ $img }}" alt="" class="rounded-3 border"
+                                        width="42" height="42" style="object-fit:cover">
                                 @else
-                                    <div class="rounded-3 border bg-light d-inline-flex align-products-center justify-content-center"
-                                         style="width:42px;height:42px;">
+                                    <div class="rounded-3 border bg-light d-inline-flex align-items-center justify-content-center"
+                                        style="width:42px;height:42px;">
                                         <i class="mdi mdi-image-off-outline text-muted"></i>
                                     </div>
                                 @endif
@@ -166,35 +207,31 @@
                                 @endif
                             </td>
 
-                            {{-- Name --}}
-                            <td class="text-truncate name-col"
+                            {{-- الاسم --}}
+                            <td class="text-truncate" style="max-width: 260px;"
                                 title="{{ $row->getTranslation('name', app()->getLocale()) }}">
                                 {{ $row->getTranslation('name', app()->getLocale()) }}
                             </td>
 
-                            {{-- Unit --}}
-                            <td class="text-truncate">
-                                {{ optional($row->unit)->getTranslation('name', app()->getLocale()) ?: '—' }}
-                            </td>
-
-                            {{-- Category --}}
-                            <td class="text-truncate">
+                            {{-- القسم --}}
+                            <td class="text-truncate" style="max-width: 220px;">
                                 {{ optional($row->category)->getTranslation('name', app()->getLocale()) ?: '—' }}
                             </td>
 
-                            {{-- Status --}}
+                            {{-- الحالة --}}
                             <td>
-                                <span class="badge rounded-pill px-3 {{ $row->status == 'active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">
-                                    {{ $row->status == 'active' ? __('pos.status_active') : __('pos.status_inactive') }}
+                                <span
+                                    class="badge rounded-pill px-3 {{ $row->status == 'active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">
+                                    {{ $row->status == 'active' ? __('pos.status_active') ?? 'نشط' : __('pos.status_inactive') ?? 'غير نشط' }}
                                 </span>
                             </td>
 
-                            {{-- Actions --}}
+                            {{-- الإجراءات --}}
                             <td class="text-end">
                                 <div class="btn-group">
                                     <button class="btn btn-outline-secondary btn-sm rounded-pill m-1"
                                         wire:click="toggleStatus({{ $row->id }})" data-bs-toggle="tooltip"
-                                        title="{{ __('pos.status') }}">
+                                        title="{{ __('pos.toggle_status') ?? 'تغيير الحالة' }}">
                                         <i class="mdi mdi-toggle-switch"></i>
                                     </button>
                                     <a href="{{ route('product.edit', $row->id) }}"
@@ -215,7 +252,7 @@
                             <td colspan="9">
                                 <div class="py-5 text-center text-muted">
                                     <i class="mdi mdi-package-variant-closed fs-1 d-block mb-2"></i>
-                                    {{ __('pos.no_data') }}
+                                    {{ __('pos.no_data') ?? 'لا توجد بيانات' }}
                                 </div>
                             </td>
                         </tr>
@@ -224,87 +261,63 @@
             </table>
         </div>
 
-        <div class="card-body d-flex justify-content-between align-products-center">
+        {{-- Pagination --}}
+        <div class="card-body d-flex justify-content-between align-items-center">
             <div class="small text-muted">
                 <i class="mdi mdi-information-outline"></i>
                 {{ $rows->firstItem() }}–{{ $rows->lastItem() }} / {{ $rows->total() }}
             </div>
-            <div>
-                {{ $rows->onEachSide(1)->links() }}
-            </div>
+            <div>{{ $rows->onEachSide(1)->links() }}</div>
         </div>
     </div>
-
-    {{-- Barcode Modal --}}
-    <div class="modal fade" id="barcodeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 shadow-sm">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="mdi mdi-barcode me-2"></i> {{ __('pos.barcode') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="{{ __('pos.close') ?? 'إغلاق' }}"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <div id="barcodeLabel" class="fw-600 mb-2"></div>
-                    <svg id="barcodeSvg"></svg>
-                    <div id="barcodeCode" class="small text-muted mt-2"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">
-                        <i class="mdi mdi-close"></i> {{ __('pos.close') ?? 'إغلاق' }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
-{{-- Styles --}}
-<style>
-    .pretty-table thead th {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        background: var(--bs-light, #f8f9fa);
-        border-bottom: 1px solid rgba(0, 0, 0, .06);
-    }
-    .pretty-table tbody tr:hover { background: rgba(13, 110, 253, .03); }
-    .sticky-col { position: sticky; left: 0; background: #fff; }
-    .barcode-card { border: 1px dashed rgba(0, 0, 0, .15); background: #fff; border-radius: .75rem; padding: .35rem .5rem; min-width: 140px; box-shadow: 0 1px 2px rgba(16, 24, 40, .05); }
-    .btn-xs { padding: .15rem .5rem; font-size: .75rem; }
-    .name-col { max-width: 260px; }
-    .fw-600 { font-weight: 600; }
-</style>
+{{-- ✅ Modal لعرض الباركود --}}
+<div class="modal fade" id="barcodeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-sm">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="mdi mdi-barcode me-2"></i> {{ __('pos.barcode') ?? 'الباركود' }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="{{ __('pos.close') ?? 'إغلاق' }}"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="barcodeLabel" class="fw-600 mb-2"></div>
+                <svg id="barcodeSvg"></svg>
+                <div id="barcodeCode" class="small text-muted mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">
+                    <i class="mdi mdi-close"></i> {{ __('pos.close') ?? 'إغلاق' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-{{-- JS: SweetAlert2 + JsBarcode + tooltips --}}
+{{-- ✅ SweetAlert2 + JsBarcode + Tooltips --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script>
     function confirmDelete(id) {
         Swal.fire({
             title: '{{ __('pos.alert_title') ?? 'تحذير' }}',
-            text: '⚠️ {{ __('pos.confirm_delete_text') ?? 'هل أنت متأكد من الحذف؟ لا يمكن التراجع!' }}',
+            text: '{{ __('pos.alert_text') ?? 'هل أنت متأكد من الحذف؟ لا يمكن التراجع!' }}',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#198754',
             cancelButtonColor: '#0d6efd',
-            confirmButtonText: '{{ __('pos.btn_yes_delete') ?? 'نعم، احذف' }}',
-            cancelButtonText: '{{ __('pos.btn_cancel') ?? 'إلغاء' }}'
+            confirmButtonText: '{{ __('pos.alert_confirm') ?? 'نعم، احذف' }}',
+            cancelButtonText: '{{ __('pos.alert_cancel') ?? 'إلغاء' }}'
         }).then((r) => {
             if (r.isConfirmed) {
-                Livewire.emit("deleteConfirmed", id);
+                Livewire.emit('deleteConfirmed', id);
                 Swal.fire('{{ __('pos.deleted') ?? 'تم الحذف' }}',
-                    '✅ {{ __('pos.deleted_success') ?? 'تم الحذف بنجاح.' }}', 'success');
+                    '{{ __('pos.deleted_success') ?? 'تم الحذف بنجاح' }}', 'success');
             }
         })
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        if (window.bootstrap) {
-            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
-        }
-    });
 
     function viewBarcode(code, label) {
         document.getElementById('barcodeLabel').textContent = label || '';
@@ -312,8 +325,15 @@
         const svg = document.getElementById('barcodeSvg');
         while (svg.firstChild) svg.removeChild(svg.firstChild);
         try {
-            JsBarcode(svg, code, { format: "CODE128", height: 80, fontSize: 14, displayValue: false });
-        } catch (e) { console.error(e); }
+            JsBarcode(svg, code, {
+                format: "CODE128",
+                height: 80,
+                fontSize: 14,
+                displayValue: false
+            });
+        } catch (e) {
+            console.error(e);
+        }
         const modalEl = document.getElementById('barcodeModal');
         if (window.bootstrap && bootstrap.Modal) {
             bootstrap.Modal.getOrCreateInstance(modalEl).show();
@@ -321,4 +341,52 @@
             modalEl.style.display = 'block';
         }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.bootstrap) {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+        }
+    });
 </script>
+
+<style>
+    .pretty-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--bs-light, #f8f9fa);
+    }
+
+    .sticky-col {
+        position: sticky;
+        left: 0;
+        background: #fff;
+    }
+
+    .table-hover tbody tr:hover {
+        background: rgba(13, 110, 253, .03);
+    }
+
+    .fw-600 {
+        font-weight: 600;
+    }
+
+    .w-1 {
+        width: 1%;
+        white-space: nowrap;
+    }
+
+    .barcode-card {
+        border: 1px dashed rgba(0, 0, 0, .15);
+        background: #fff;
+        border-radius: .75rem;
+        padding: .35rem .5rem;
+        min-width: 140px;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, .05);
+    }
+
+    .btn-xs {
+        padding: .15rem .5rem;
+        font-size: .75rem;
+    }
+</style>

@@ -7,11 +7,11 @@ use App\Http\Controllers\inventory\inventorycontroller;
 use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
-use App\Http\Controllers\pricing\pricingcontroller;
 use App\Http\Controllers\product\categorycontroller;
+use App\Http\Controllers\product\printbarcodecontroller;
 use App\Http\Controllers\product\productcontroller;
-use App\Http\Controllers\product\unitscontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
+use App\Http\Controllers\unitcontroller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -87,6 +87,7 @@ Route::group(
             Route::get('/', [productcontroller::class, 'index'])->name('product.index');
             Route::get('/create', [productcontroller::class, 'create'])->name('product.create');
             Route::get('/{id}/edit', [productcontroller::class, 'edit'])->name('product.edit');
+            Route::get('/manage', [productcontroller::class, 'manage'])->name('product.manage');
 
             // categories (منفصلة داخل إدارة المنتجات)
             Route::get('/categories', [categorycontroller::class, 'index'])->name('categories.index');
@@ -94,23 +95,23 @@ Route::group(
             Route::get('/categories/{id}/edit', [categorycontroller::class, 'edit'])->name('categories.edit');
         });
 
-        // pricing
-        Route::prefix('pricing')->group(function () {
-            Route::get('/lists', [pricingcontroller::class, 'index'])->name('pricing.lists.index');
-            Route::get('/lists/create', [pricingcontroller::class, 'create'])->name('pricing.lists.create');
-            Route::get('/lists/{id}/edit', [pricingcontroller::class, 'edit'])->name('pricing.lists.edit');
-            Route::get('/lists/{id}/show', [pricingcontroller::class, 'show'])->name('pricing.lists.show');
+            // طباعة الباركود
+      Route::get('/products/barcodes/print/{payload?}', \App\Http\Controllers\product\printbarcodecontroller::class.'@show')
+    ->name('product.barcodes');
 
+Route::post('/products/barcodes/print', \App\Http\Controllers\product\printbarcodecontroller::class.'@showPost')
+    ->name('product.barcodes.post');
+
+        Route::prefix('units')->group(function () {
+            Route::get('/', [unitcontroller::class, 'index'])->name('units.index');
+            Route::get('/create', [unitcontroller::class, 'create'])->name('units.create');
+            Route::get('/{id}/edit', [unitcontroller::class, 'edit'])->name('units.edit');
         });
-        Route::get('units', [unitscontroller::class, 'index'])->name('units.index');
-        Route::get('units/create', [unitscontroller::class, 'create'])->name('units.create');
-        Route::get('units/{unit}/edit', [unitscontroller::class, 'edit'])->name('units.edit');
         // ✅ مجموعة مسارات المخزون
         Route::prefix('inventory')->group(function () {
 
             // 🧱 inventory
             Route::get('/', [inventorycontroller::class, 'manage'])->name('inventory.manage');
-      
 
             // 🏠 Warehouses
             Route::get('warehouses', [warehousescontroller::class, 'index'])->name('inventory.warehouses.index');
