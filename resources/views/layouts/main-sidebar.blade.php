@@ -68,15 +68,7 @@
                             </a>
                         </li>
 
-                        {{-- التسعير / قوائم الأسعار --}}
-                        <li class="nav-item">
-                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'pricing.lists.')) active @endif"
-                                href="{{ route('pricing.lists.index') }}">
-                                <i class="mdi mdi-cash-multiple"></i>
-                                <span data-key="t-pricing">{{ __('pos.price_lists_title') }}</span>
-                            </a>
-                        </li>
-
+                   
                         {{-- المخزون --}}
                         <li class="nav-item">
                             <a class="nav-link menu-link font 
