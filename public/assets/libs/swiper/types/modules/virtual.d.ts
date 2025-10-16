@@ -15,7 +15,7 @@ export interface VirtualMethods {
   to: number;
 
   /**
-   * Array with slide products passed by `virtual.slides` parameter
+   * Array with slide items passed by `virtual.slides` parameter
    */
   slides: any[];
 
@@ -73,7 +73,7 @@ export interface VirtualData {
    */
   to: number;
   /**
-   * array with slide products to be rendered
+   * array with slide items to be rendered
    */
   slides: any[];
 }
@@ -121,7 +121,7 @@ export interface VirtualOptions {
    * - `offset` - slides left/top offset in px
    * - `from` - index of first slide required to be rendered
    * - `to` - index of last slide required to be rendered
-   * - `slides` - array with slide products to be rendered
+   * - `slides` - array with slide items to be rendered
    *
    * @default null
    */

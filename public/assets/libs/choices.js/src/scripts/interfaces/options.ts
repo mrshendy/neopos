@@ -25,7 +25,7 @@ export interface Options {
   silent: boolean;
 
   /**
-   * Add pre-selected products (see terminology) to text input.
+   * Add pre-selected items (see terminology) to text input.
    *
    * **Input types affected:** text
    *
@@ -53,7 +53,7 @@ export interface Options {
    *
    * @default []
    */
-  products: string[] | Choice[];
+  items: string[] | Choice[];
 
   /**
    * Add choices (see terminology) to select input.
@@ -94,7 +94,7 @@ export interface Options {
   renderChoiceLimit: number;
 
   /**
-   * The amount of products a user can input/select `("-1" indicates no limit)`.
+   * The amount of items a user can input/select `("-1" indicates no limit)`.
    *
    * **Input types affected:** text, select-multiple
    *
@@ -103,13 +103,13 @@ export interface Options {
   maxItemCount: number;
 
   /**
-   * Whether a user can add products.
+   * Whether a user can add items.
    *
    * **Input types affected:** text
    *
    * @default true
    */
-  addproducts: boolean;
+  addItems: boolean;
 
   /**
    * A filter that will need to pass for a user to successfully add an item.
@@ -133,13 +133,13 @@ export interface Options {
   addItemText: string | Types.NoticeStringFunction;
 
   /**
-   * Whether a user can remove products.
+   * Whether a user can remove items.
    *
    * **Input types affected:** text, select-multiple
    *
    * @default true
    */
-  removeproducts: boolean;
+  removeItems: boolean;
 
   /**
    * Whether each item should have a remove button.
@@ -151,13 +151,13 @@ export interface Options {
   removeItemButton: boolean;
 
   /**
-   * Whether a user can edit products. An item's value can be edited by pressing the backspace.
+   * Whether a user can edit items. An item's value can be edited by pressing the backspace.
    *
    * **Input types affected:** text
    *
    * @default false
    */
-  editproducts: boolean;
+  editItems: boolean;
 
   /**
    * Whether each inputted/chosen item should be unique.
@@ -166,7 +166,7 @@ export interface Options {
    *
    * @default true
    */
-  duplicateproductsAllowed: boolean;
+  duplicateItemsAllowed: boolean;
 
   /**
    * What divides each value. The default delimiter separates each value with a comma: `"Value 1, Value 2, Value 3"`.
@@ -261,16 +261,16 @@ export interface Options {
   shouldSort: boolean;
 
   /**
-   * Whether products should be sorted. If false, products will appear in the order they were selected.
+   * Whether items should be sorted. If false, items will appear in the order they were selected.
    *
    * **Input types affected:** text, select-multiple
    *
    * @default false
    */
-  shouldSortproducts: boolean;
+  shouldSortItems: boolean;
 
   /**
-   * The function that will sort choices and products before they are displayed (unless a user is searching). By default choices and products are sorted by alphabetical order.
+   * The function that will sort choices and items before they are displayed (unless a user is searching). By default choices and items are sorted by alphabetical order.
    *
    * **Input types affected:** select-one, select-multiple
    *
@@ -386,7 +386,7 @@ export interface Options {
    *
    * @default 'Press to select'
    */
-  productselectText: string;
+  itemSelectText: string;
 
   /**
    * The text that is shown when a user has focus on the input but has already reached the **max item count** [https://github.com/jshjohnson/Choices#maxitemcount]. To access the max item count, pass a function with a `maxItemCount` argument (see the **default config** [https://github.com/jshjohnson/Choices#setup] for an example), otherwise pass a string.
@@ -466,14 +466,14 @@ export interface Options {
    *     return {
    *       item: (data) => {
    *         return template(`
-   *           <div class="${classNames.item} ${data.highlighted ? classNames.highlightedState : classNames.productselectable}" data-item data-id="${data.id}" data-value="${data.value}" ${data.active ? 'aria-selected="true"' : ''} ${data.disabled ? 'aria-disabled="true"' : ''}>
+   *           <div class="${classNames.item} ${data.highlighted ? classNames.highlightedState : classNames.itemSelectable}" data-item data-id="${data.id}" data-value="${data.value}" ${data.active ? 'aria-selected="true"' : ''} ${data.disabled ? 'aria-disabled="true"' : ''}>
    *             <span>&bigstar;</span> ${data.label}
    *           </div>
    *         `);
    *       },
    *       choice: (data) => {
    *         return template(`
-   *           <div class="${classNames.item} ${classNames.itemChoice} ${data.disabled ? classNames.itemDisabled : classNames.productselectable}" data-select-text="${this.config.productselectText}" data-choice ${data.disabled ? 'data-choice-disabled aria-disabled="true"' : 'data-choice-selectable'} data-id="${data.id}" data-value="${data.value}" ${data.groupId > 0 ? 'role="treeitem"' : 'role="option"'}>
+   *           <div class="${classNames.item} ${classNames.itemChoice} ${data.disabled ? classNames.itemDisabled : classNames.itemSelectable}" data-select-text="${this.config.itemSelectText}" data-choice ${data.disabled ? 'data-choice-disabled aria-disabled="true"' : 'data-choice-selectable'} data-id="${data.id}" data-value="${data.value}" ${data.groupId > 0 ? 'role="treeitem"' : 'role="option"'}>
    *             <span>&bigstar;</span> ${data.label}
    *           </div>
    *         `);

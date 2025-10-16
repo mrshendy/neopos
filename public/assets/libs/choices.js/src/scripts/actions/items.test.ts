@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import * as actions from './products';
+import * as actions from './items';
 
-describe('actions/products', () => {
+describe('actions/items', () => {
   describe('addItem action', () => {
     it('returns ADD_ITEM action', () => {
       const value = 'test';

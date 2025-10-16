@@ -63,7 +63,8 @@
     border-radius: 50%;
   }
   .app-check {
-    display: flex;
+      display: inline-flex;
+      margin: 2px;
   }
   .app-border {
     border: 1px solid #ece9e9;

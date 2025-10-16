@@ -109,7 +109,7 @@
 			"valueName": "value",
 			"callable" : function (data, names) {
 				console.log("Selected ID：" + data)
-				$("#selectedproductspan").text(names)
+				$("#selectedItemSpan").text(names)
 			}
 		};
 		Transfer.transfer(settings);

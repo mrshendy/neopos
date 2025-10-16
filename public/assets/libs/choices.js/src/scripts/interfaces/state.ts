@@ -5,6 +5,6 @@ import { Item } from './item';
 export interface State {
   choices: Choice[];
   groups: Group[];
-  products: Item[];
+  items: Item[];
   loading: boolean;
 }

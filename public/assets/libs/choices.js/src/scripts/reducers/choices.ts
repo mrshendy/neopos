@@ -4,7 +4,7 @@ import {
   ActivateChoicesAction,
   ClearChoicesAction,
 } from '../actions/choices';
-import { AddItemAction, RemoveItemAction } from '../actions/products';
+import { AddItemAction, RemoveItemAction } from '../actions/items';
 import { Choice } from '../interfaces/choice';
 
 export const defaultState = [];

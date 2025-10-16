@@ -60,7 +60,7 @@ export default function Pagination({
   }
 
   function update() {
-    // Render || Update Pagination bullets/products
+    // Render || Update Pagination bullets/items
     const rtl = swiper.rtl;
     const params = swiper.params.pagination;
     if (isPaginationDisabled()) return;

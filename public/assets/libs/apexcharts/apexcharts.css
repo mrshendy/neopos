@@ -142,7 +142,7 @@
   display: none;
   text-align: left;
   justify-content: left;
-  align-products: center
+  align-items: center
 }
 
 .apexcharts-tooltip-series-group.apexcharts-active .apexcharts-tooltip-marker {
@@ -481,7 +481,7 @@
   padding: 0 6px 2px;
   display: flex;
   justify-content: space-between;
-  align-products: center
+  align-items: center
 }
 
 .apexcharts-menu {

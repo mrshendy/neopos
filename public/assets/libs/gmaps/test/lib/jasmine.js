@@ -1130,7 +1130,7 @@ jasmine.JsApiReporter.prototype.reportSuiteResults = function(suite) {
 //noinspection JSUnusedLocalSymbols
 jasmine.JsApiReporter.prototype.reportSpecResults = function(spec) {
   this.results_[spec.id] = {
-    messages: spec.results().getproducts(),
+    messages: spec.results().getItems(),
     result: spec.results().failedCount > 0 ? "failed" : "passed"
   };
 };
@@ -1817,7 +1817,7 @@ jasmine.NestedResults = function() {
   /**
    * @ignore
    */
-  this.products_ = [];
+  this.items_ = [];
 };
 
 /**
@@ -1836,14 +1836,14 @@ jasmine.NestedResults.prototype.rollupCounts = function(result) {
  * @param values Array of message parts which will be concatenated later.
  */
 jasmine.NestedResults.prototype.log = function(values) {
-  this.products_.push(new jasmine.MessageResult(values));
+  this.items_.push(new jasmine.MessageResult(values));
 };
 
 /**
  * Getter for the results: message & results.
  */
-jasmine.NestedResults.prototype.getproducts = function() {
-  return this.products_;
+jasmine.NestedResults.prototype.getItems = function() {
+  return this.items_;
 };
 
 /**
@@ -1852,7 +1852,7 @@ jasmine.NestedResults.prototype.getproducts = function() {
  */
 jasmine.NestedResults.prototype.addResult = function(result) {
   if (result.type != 'log') {
-    if (result.products_) {
+    if (result.items_) {
       this.rollupCounts(result);
     } else {
       this.totalCount++;
@@ -1863,7 +1863,7 @@ jasmine.NestedResults.prototype.addResult = function(result) {
       }
     }
   }
-  this.products_.push(result);
+  this.items_.push(result);
 };
 
 /**

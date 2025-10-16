@@ -389,12 +389,12 @@ var GMaps = (function(global) {
 
       context_menu_element.innerHTML = html;
 
-      var context_menu_products = context_menu_element.getElementsByTagName('a'),
-          context_menu_products_count = context_menu_products.length,
+      var context_menu_items = context_menu_element.getElementsByTagName('a'),
+          context_menu_items_count = context_menu_items.length,
           i;
 
-      for (i = 0; i &lt; context_menu_products_count; i++) {
-        var context_menu_item = context_menu_products[i];
+      for (i = 0; i &lt; context_menu_items_count; i++) {
+        var context_menu_item = context_menu_items[i];
 
         var assign_menu_item_action = function(ev){
           ev.preventDefault();
@@ -449,7 +449,7 @@ var GMaps = (function(global) {
      *
      * @param {object} options - The `options` object should contain:
      * * `control` (string): Kind of control the context menu will be attached. Can be "map" or "marker".
-     * * `options` (array): A collection of context menu products:
+     * * `options` (array): A collection of context menu items:
      *   * `title` (string): Item's title shown in the context menu.
      *   * `name` (string): Item's identifier.
      *   * `action` (function): Function triggered after selecting the context menu item.

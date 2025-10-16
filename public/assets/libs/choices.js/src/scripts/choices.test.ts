@@ -6,7 +6,7 @@ import Choices from './choices';
 
 import { EVENTS, ACTION_TYPES, KEY_CODES } from './constants';
 import { WrappedSelect, WrappedInput } from './components/index';
-import { removeItem } from './actions/products';
+import { removeItem } from './actions/items';
 import templates from './templates';
 import { Choice } from './interfaces/choice';
 import { Group } from './interfaces/group';
@@ -956,10 +956,10 @@ describe('choices', () => {
     });
 
     describe('highlightAll', () => {
-      let storeGetproductsStub;
-      let highlightproductstub;
+      let storeGetItemsStub;
+      let highlightItemStub;
 
-      const products = [
+      const items = [
         {
           id: 1,
           value: 'Test 1',
@@ -971,17 +971,17 @@ describe('choices', () => {
       ];
 
       beforeEach(() => {
-        storeGetproductsStub = stub(instance._store, 'products').get(() => products);
-        highlightproductstub = stub();
+        storeGetItemsStub = stub(instance._store, 'items').get(() => items);
+        highlightItemStub = stub();
 
-        instance.highlightItem = highlightproductstub;
+        instance.highlightItem = highlightItemStub;
 
         output = instance.highlightAll();
       });
 
       afterEach(() => {
-        highlightproductstub.reset();
-        storeGetproductsStub.reset();
+        highlightItemStub.reset();
+        storeGetItemsStub.reset();
       });
 
       it('returns this', () => {
@@ -989,17 +989,17 @@ describe('choices', () => {
       });
 
       it('highlights each item in store', () => {
-        expect(highlightproductstub.callCount).to.equal(products.length);
-        expect(highlightproductstub.firstCall.args[0]).to.equal(products[0]);
-        expect(highlightproductstub.lastCall.args[0]).to.equal(products[1]);
+        expect(highlightItemStub.callCount).to.equal(items.length);
+        expect(highlightItemStub.firstCall.args[0]).to.equal(items[0]);
+        expect(highlightItemStub.lastCall.args[0]).to.equal(items[1]);
       });
     });
 
     describe('unhighlightAll', () => {
-      let storeGetproductsStub;
-      let unhighlightproductstub;
+      let storeGetItemsStub;
+      let unhighlightItemStub;
 
-      const products = [
+      const items = [
         {
           id: 1,
           value: 'Test 1',
@@ -1011,17 +1011,17 @@ describe('choices', () => {
       ];
 
       beforeEach(() => {
-        storeGetproductsStub = stub(instance._store, 'products').get(() => products);
-        unhighlightproductstub = stub();
+        storeGetItemsStub = stub(instance._store, 'items').get(() => items);
+        unhighlightItemStub = stub();
 
-        instance.unhighlightItem = unhighlightproductstub;
+        instance.unhighlightItem = unhighlightItemStub;
 
         output = instance.unhighlightAll();
       });
 
       afterEach(() => {
         instance.unhighlightItem.reset();
-        storeGetproductsStub.reset();
+        storeGetItemsStub.reset();
       });
 
       it('returns this', () => {
@@ -1029,9 +1029,9 @@ describe('choices', () => {
       });
 
       it('unhighlights each item in store', () => {
-        expect(unhighlightproductstub.callCount).to.equal(products.length);
-        expect(unhighlightproductstub.firstCall.args[0]).to.equal(products[0]);
-        expect(unhighlightproductstub.lastCall.args[0]).to.equal(products[1]);
+        expect(unhighlightItemStub.callCount).to.equal(items.length);
+        expect(unhighlightItemStub.firstCall.args[0]).to.equal(items[0]);
+        expect(unhighlightItemStub.lastCall.args[0]).to.equal(items[1]);
       });
     });
 
@@ -1219,7 +1219,7 @@ describe('choices', () => {
     });
 
     describe('setValue', () => {
-      let setChoiceOrproductstub;
+      let setChoiceOrItemStub;
       const values = [
         'Value 1',
         {
@@ -1228,8 +1228,8 @@ describe('choices', () => {
       ];
 
       beforeEach(() => {
-        setChoiceOrproductstub = stub();
-        instance._setChoiceOrItem = setChoiceOrproductstub;
+        setChoiceOrItemStub = stub();
+        instance._setChoiceOrItem = setChoiceOrItemStub;
       });
 
       afterEach(() => {
@@ -1247,7 +1247,7 @@ describe('choices', () => {
         });
 
         it('returns early', () => {
-          expect(setChoiceOrproductstub.called).to.equal(false);
+          expect(setChoiceOrItemStub.called).to.equal(false);
         });
       });
 
@@ -1262,9 +1262,9 @@ describe('choices', () => {
         });
 
         it('sets each value', () => {
-          expect(setChoiceOrproductstub.callCount).to.equal(2);
-          expect(setChoiceOrproductstub.firstCall.args[0]).to.equal(values[0]);
-          expect(setChoiceOrproductstub.secondCall.args[0]).to.equal(values[1]);
+          expect(setChoiceOrItemStub.callCount).to.equal(2);
+          expect(setChoiceOrItemStub.firstCall.args[0]).to.equal(values[0]);
+          expect(setChoiceOrItemStub.secondCall.args[0]).to.equal(values[1]);
         });
       });
     });
@@ -1346,8 +1346,8 @@ describe('choices', () => {
     });
 
     describe('getValue', () => {
-      let activeproductsStub;
-      const products = [
+      let activeItemsStub;
+      const items = [
         {
           id: '1',
           value: 'Test value 1',
@@ -1359,11 +1359,11 @@ describe('choices', () => {
       ];
 
       beforeEach(() => {
-        activeproductsStub = stub(instance._store, 'activeproducts').get(() => products);
+        activeItemsStub = stub(instance._store, 'activeItems').get(() => items);
       });
 
       afterEach(() => {
-        activeproductsStub.reset();
+        activeItemsStub.reset();
       });
 
       describe('passing true valueOnly flag', () => {
@@ -1374,7 +1374,7 @@ describe('choices', () => {
           });
 
           it('returns a single action value', () => {
-            expect(output).to.equal(products[0].value);
+            expect(output).to.equal(items[0].value);
           });
         });
 
@@ -1385,7 +1385,7 @@ describe('choices', () => {
           });
 
           it('returns all active item values', () => {
-            expect(output).to.eql(products.map((item) => item.value));
+            expect(output).to.eql(items.map((item) => item.value));
           });
         });
       });
@@ -1398,7 +1398,7 @@ describe('choices', () => {
           });
 
           it('returns a single active item', () => {
-            expect(output).to.equal(products[0]);
+            expect(output).to.equal(items[0]);
           });
         });
 
@@ -1408,18 +1408,18 @@ describe('choices', () => {
             output = instance.getValue(false);
           });
 
-          it('returns all active products', () => {
-            expect(output).to.eql(products);
+          it('returns all active items', () => {
+            expect(output).to.eql(items);
           });
         });
       });
     });
 
-    describe('removeActiveproductsByValue', () => {
-      let activeproductsStub;
-      let removeproductstub;
+    describe('removeActiveItemsByValue', () => {
+      let activeItemsStub;
+      let removeItemStub;
       const value = 'Removed';
-      const products = [
+      const items = [
         {
           id: '1',
           value: 'Not removed',
@@ -1435,29 +1435,29 @@ describe('choices', () => {
       ];
 
       beforeEach(() => {
-        removeproductstub = stub();
-        activeproductsStub = stub(instance._store, 'activeproducts').get(() => products);
-        instance._removeItem = removeproductstub;
+        removeItemStub = stub();
+        activeItemsStub = stub(instance._store, 'activeItems').get(() => items);
+        instance._removeItem = removeItemStub;
 
-        output = instance.removeActiveproductsByValue(value);
+        output = instance.removeActiveItemsByValue(value);
       });
 
       afterEach(() => {
-        activeproductsStub.reset();
+        activeItemsStub.reset();
         instance._removeItem.reset();
       });
 
       it('removes each active item in store with matching value', () => {
-        expect(removeproductstub.callCount).to.equal(2);
-        expect(removeproductstub.firstCall.args[0]).to.equal(products[1]);
-        expect(removeproductstub.secondCall.args[0]).to.equal(products[2]);
+        expect(removeItemStub.callCount).to.equal(2);
+        expect(removeItemStub.firstCall.args[0]).to.equal(items[1]);
+        expect(removeItemStub.secondCall.args[0]).to.equal(items[2]);
       });
     });
 
-    describe('removeActiveproducts', () => {
-      let activeproductsStub;
-      let removeproductstub;
-      const products = [
+    describe('removeActiveItems', () => {
+      let activeItemsStub;
+      let removeItemStub;
+      const items = [
         {
           id: '1',
           value: 'Not removed',
@@ -1473,26 +1473,26 @@ describe('choices', () => {
       ];
 
       beforeEach(() => {
-        removeproductstub = stub();
-        activeproductsStub = stub(instance._store, 'activeproducts').get(() => products);
-        instance._removeItem = removeproductstub;
+        removeItemStub = stub();
+        activeItemsStub = stub(instance._store, 'activeItems').get(() => items);
+        instance._removeItem = removeItemStub;
       });
 
       afterEach(() => {
-        activeproductsStub.reset();
+        activeItemsStub.reset();
         instance._removeItem.reset();
       });
 
       describe('not passing id to exclude', () => {
         beforeEach(() => {
-          output = instance.removeActiveproducts();
+          output = instance.removeActiveItems();
         });
 
-        it('removes all active products in store', () => {
-          expect(removeproductstub.callCount).to.equal(products.length);
-          expect(removeproductstub.firstCall.args[0]).to.equal(products[0]);
-          expect(removeproductstub.secondCall.args[0]).to.equal(products[1]);
-          expect(removeproductstub.thirdCall.args[0]).to.equal(products[2]);
+        it('removes all active items in store', () => {
+          expect(removeItemStub.callCount).to.equal(items.length);
+          expect(removeItemStub.firstCall.args[0]).to.equal(items[0]);
+          expect(removeItemStub.secondCall.args[0]).to.equal(items[1]);
+          expect(removeItemStub.thirdCall.args[0]).to.equal(items[2]);
         });
       });
 
@@ -1500,23 +1500,23 @@ describe('choices', () => {
         const idToExclude = '2';
 
         beforeEach(() => {
-          output = instance.removeActiveproducts(idToExclude);
+          output = instance.removeActiveItems(idToExclude);
         });
 
-        it('removes all active products in store with id that does match excludedId', () => {
-          expect(removeproductstub.callCount).to.equal(2);
-          expect(removeproductstub.firstCall.args[0]).to.equal(products[0]);
-          expect(removeproductstub.secondCall.args[0]).to.equal(products[2]);
+        it('removes all active items in store with id that does match excludedId', () => {
+          expect(removeItemStub.callCount).to.equal(2);
+          expect(removeItemStub.firstCall.args[0]).to.equal(items[0]);
+          expect(removeItemStub.secondCall.args[0]).to.equal(items[2]);
         });
       });
     });
 
-    describe('removeHighlightedproducts', () => {
-      let highlightedActiveproductsStub;
-      let removeproductstub;
+    describe('removeHighlightedItems', () => {
+      let highlightedActiveItemsStub;
+      let removeItemStub;
       let triggerChangeStub;
 
-      const products = [
+      const items = [
         {
           id: 1,
           value: 'Test 1',
@@ -1528,26 +1528,26 @@ describe('choices', () => {
       ];
 
       beforeEach(() => {
-        highlightedActiveproductsStub = stub(
+        highlightedActiveItemsStub = stub(
           instance._store,
-          'highlightedActiveproducts',
-        ).get(() => products);
-        removeproductstub = stub();
+          'highlightedActiveItems',
+        ).get(() => items);
+        removeItemStub = stub();
         triggerChangeStub = stub();
 
-        instance._removeItem = removeproductstub;
+        instance._removeItem = removeItemStub;
         instance._triggerChange = triggerChangeStub;
       });
 
       afterEach(() => {
-        highlightedActiveproductsStub.reset();
+        highlightedActiveItemsStub.reset();
         instance._removeItem.reset();
         instance._triggerChange.reset();
       });
 
       describe('runEvent parameter being passed', () => {
         beforeEach(() => {
-          output = instance.removeHighlightedproducts();
+          output = instance.removeHighlightedItems();
         });
 
         it('returns this', () => {
@@ -1555,13 +1555,13 @@ describe('choices', () => {
         });
 
         it('removes each highlighted item in store', () => {
-          expect(removeproductstub.callCount).to.equal(2);
+          expect(removeItemStub.callCount).to.equal(2);
         });
       });
 
       describe('runEvent parameter not being passed', () => {
         beforeEach(() => {
-          output = instance.removeHighlightedproducts(true);
+          output = instance.removeHighlightedItems(true);
         });
 
         it('returns this', () => {
@@ -1570,8 +1570,8 @@ describe('choices', () => {
 
         it('triggers event with item value', () => {
           expect(triggerChangeStub.callCount).to.equal(2);
-          expect(triggerChangeStub.firstCall.args[0]).to.equal(products[0].value);
-          expect(triggerChangeStub.secondCall.args[0]).to.equal(products[1].value);
+          expect(triggerChangeStub.firstCall.args[0]).to.equal(items[0].value);
+          expect(triggerChangeStub.secondCall.args[0]).to.equal(items[1].value);
         });
       });
     });
@@ -2071,8 +2071,8 @@ describe('choices', () => {
     });
 
     describe('_onKeyDown', () => {
-      let activeproducts;
-      let hasproducts;
+      let activeItems;
+      let hasItems;
       let hasActiveDropdown;
       let hasFocussedInput;
 
@@ -2084,8 +2084,8 @@ describe('choices', () => {
         instance._onDirectionKey = stub();
         instance._onDeleteKey = stub();
 
-        ({ activeproducts } = instance._store);
-        hasproducts = instance.itemList.hasChildren();
+        ({ activeItems } = instance._store);
+        hasItems = instance.itemList.hasChildren();
         hasActiveDropdown = instance.dropdown.isActive;
         hasFocussedInput = instance.input.isFocussed;
       });
@@ -2124,7 +2124,7 @@ describe('choices', () => {
 
           expect(instance._onSelectKey).to.have.been.calledWith(
             event,
-            hasproducts,
+            hasItems,
           );
         });
       });
@@ -2139,7 +2139,7 @@ describe('choices', () => {
 
           expect(instance._onEnterKey).to.have.been.calledWith(
             event,
-            activeproducts,
+            activeItems,
             hasActiveDropdown,
           );
         });
@@ -2158,7 +2158,7 @@ describe('choices', () => {
 
             expect(instance._onDeleteKey).to.have.been.calledWith(
               event,
-              activeproducts,
+              activeItems,
               hasFocussedInput,
             );
           });

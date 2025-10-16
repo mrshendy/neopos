@@ -39,24 +39,24 @@ export default class Store {
   }
 
   /**
-   * Get products from store
+   * Get items from store
    */
-  get products(): Item[] {
-    return this.state.products;
+  get items(): Item[] {
+    return this.state.items;
   }
 
   /**
-   * Get active products from store
+   * Get active items from store
    */
-  get activeproducts(): Item[] {
-    return this.products.filter((item) => item.active === true);
+  get activeItems(): Item[] {
+    return this.items.filter((item) => item.active === true);
   }
 
   /**
-   * Get highlighted products from store
+   * Get highlighted items from store
    */
-  get highlightedActiveproducts(): Item[] {
-    return this.products.filter((item) => item.active && item.highlighted);
+  get highlightedActiveItems(): Item[] {
+    return this.items.filter((item) => item.active && item.highlighted);
   }
 
   /**

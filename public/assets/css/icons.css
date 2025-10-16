@@ -46029,11 +46029,11 @@ readers do not read off random characters that represent icons */
   content: "\edd7";
 }
 
-.ri-governorate-fill:before {
+.ri-government-fill:before {
   content: "\edd8";
 }
 
-.ri-governorate-line:before {
+.ri-government-line:before {
   content: "\edd9";
 }
 

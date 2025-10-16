@@ -1434,7 +1434,7 @@
 * __Line Highlight__
     * Batching DOM read/writes to avoid reflows ([#1865](https://github.com/PrismJS/prism/issues/1865)) [`632ce00c`](https://github.com/PrismJS/prism/commit/632ce00c)
 * __Toolbar__
-    * Added `className` option for toolbar products ([#1951](https://github.com/PrismJS/prism/issues/1951)) [`5ab28bbe`](https://github.com/PrismJS/prism/commit/5ab28bbe)
+    * Added `className` option for toolbar items ([#1951](https://github.com/PrismJS/prism/issues/1951)) [`5ab28bbe`](https://github.com/PrismJS/prism/commit/5ab28bbe)
     * Set opacity to 1 when focus is within ([#1927](https://github.com/PrismJS/prism/issues/1927)) [`0b1662dd`](https://github.com/PrismJS/prism/commit/0b1662dd)
 
 ### Updated themes
