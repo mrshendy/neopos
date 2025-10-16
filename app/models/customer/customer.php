@@ -15,7 +15,7 @@ class customer extends Model
 
     protected $fillable = [
         'code','legal_name','trade_name','type','channel',
-        'country_id','government_id','city_id','area_id', // ✅ بديل region_id
+        'country_id','government_id','city_id','area_id', 
         'city','phone','tax_number',
         'price_category_id','sales_rep_id',
         'credit_limit','balance','credit_status','account_status','approval_status',
@@ -32,7 +32,6 @@ public function cityRel()    { return $this->belongsTo(\App\models\city::class, 
 public function area()       { return $this->belongsTo(\App\models\area::class, 'area_id'); }
 
     // 🔗 أخرى
-    public function priceCategory() { return $this->belongsTo(\App\models\pricelist::class, 'price_category_id'); }
     public function salesRep()      { return $this->belongsTo(\App\User::class, 'sales_rep_id'); }
 
     public function addresses()     { return $this->hasMany(\App\models\customer\customeraddress::class, 'customer_id'); }

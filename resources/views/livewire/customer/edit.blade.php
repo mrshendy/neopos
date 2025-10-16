@@ -1,6 +1,5 @@
-{{-- resources/views/customers/edit.blade.php --}}
 <div>
-    {{-- رسائل عامة --}}
+    {{-- alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
@@ -14,68 +13,76 @@
         </div>
     @endif
 
-    <div class="d-flex align-products-center justify-content-between mb-3">
+    {{-- header --}}
+    <div class="d-flex align-items-center justify-content-between mb-3">
         <h4 class="mb-0">
             <i class="mdi mdi-account-edit-outline me-2"></i>
-            {{ __('pos.title_customers_edit') }}
+            {{ __('pos.title_customers_edit') ?? 'تعديل عميل' }}
         </h4>
-        <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
-            <i class="mdi mdi-arrow-left"></i> {{ __('pos.btn_back') }}
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('customers.show', $customer_id ?? ($customer->id ?? null)) }}"
+               class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
+                <i class="mdi mdi-eye-outline"></i> {{ __('pos.btn_view') ?? 'عرض' }}
+            </a>
+            <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                <i class="mdi mdi-arrow-left"></i> {{ __('pos.btn_back') ?? 'رجوع' }}
+            </a>
+        </div>
     </div>
 
+    {{-- form --}}
     <form wire:submit.prevent="update" class="card border-0 shadow-lg rounded-4">
         <div class="card-body">
-            {{-- القسم 1: البيانات الأساسية --}}
+
+            {{-- section: basic --}}
             <div class="border-bottom pb-3 mb-3">
                 <h6 class="text-muted fw-bold mb-3">
                     <i class="mdi mdi-card-account-details-outline me-1"></i> {{ __('pos.section_basic') }}
                 </h6>
                 <div class="row g-3">
-                    {{-- كود العميل --}}
+                    {{-- code --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold">
                             <i class="mdi mdi-shield-key-outline me-1"></i> {{ __('pos.f_code') }}
                         </label>
-                        <input type="text"
-                               class="form-control @error('code') is-invalid @enderror"
-                               wire:model.defer="code"
-                               placeholder="{{ __('pos.ph_code') }}"
-                               autocomplete="off">
-                        <small class="text-muted d-block">{{ __('pos.h_code') }}</small>
+                        <input type="text" class="form-control @error('code') is-invalid @enderror"
+                               wire:model.defer="code" placeholder="{{ __('pos.ph_code') }}">
+                        <small class="text-muted">{{ __('pos.h_code') }}</small>
                         @error('code') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline me-1"></i> {{ $code }}</div>
+                        @if(!empty($code))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $code }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- الاسم القانوني عربي --}}
+                    {{-- legal name ar --}}
                     <div class="col-md-4">
                         <label class="form-label fw-bold">
                             <i class="mdi mdi-alphabetical me-1"></i> {{ __('pos.f_legal_name_ar') }}
                         </label>
-                        <input type="text"
-                               class="form-control @error('legal_name.ar') is-invalid @enderror"
-                               wire:model.defer="legal_name.ar"
-                               placeholder="{{ __('pos.ph_legal_name_ar') }}">
+                        <input type="text" class="form-control @error('legal_name.ar') is-invalid @enderror"
+                               wire:model.defer="legal_name.ar" placeholder="{{ __('pos.ph_legal_name_ar') }}">
                         <small class="text-muted">{{ __('pos.h_legal_ar') }}</small>
                         @error('legal_name.ar') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline me-1"></i> {{ $legal_name['ar'] }}</div>
+                        @if(!empty($legal_name['ar']))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $legal_name['ar'] }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- الاسم القانوني إنجليزي --}}
+                    {{-- legal name en --}}
                     <div class="col-md-4">
                         <label class="form-label fw-bold">
                             <i class="mdi mdi-alphabetical-variant me-1"></i> {{ __('pos.f_legal_name_en') }}
                         </label>
-                        <input type="text"
-                               class="form-control @error('legal_name.en') is-invalid @enderror"
-                               wire:model.defer="legal_name.en"
-                               placeholder="{{ __('pos.ph_legal_name_en') }}">
+                        <input type="text" class="form-control @error('legal_name.en') is-invalid @enderror"
+                               wire:model.defer="legal_name.en" placeholder="{{ __('pos.ph_legal_name_en') }}">
                         <small class="text-muted">{{ __('pos.h_legal_en') }}</small>
                         @error('legal_name.en') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline me-1"></i> {{ $legal_name['en'] }}</div>
+                        @if(!empty($legal_name['en']))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $legal_name['en'] }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- النوع --}}
+                    {{-- type --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold">
                             <i class="mdi mdi-account-badge-outline me-1"></i> {{ __('pos.f_type') }}
@@ -87,10 +94,12 @@
                             <option value="company">{{ __('pos.opt_company') }}</option>
                         </select>
                         <small class="text-muted">{{ __('pos.h_type') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $type }}</div>
+                        @if(!empty($type))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $type }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- القناة --}}
+                    {{-- channel --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold">
                             <i class="mdi mdi-storefront-outline me-1"></i> {{ __('pos.f_channel') }}
@@ -102,18 +111,20 @@
                             <option value="pharmacy">{{ __('pos.opt_pharmacy') }}</option>
                         </select>
                         <small class="text-muted">{{ __('pos.h_channel') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $channel }}</div>
+                        @if(!empty($channel))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $channel }}</span></div>
+                        @endif
                     </div>
                 </div>
             </div>
 
-            {{-- القسم 2: الموقع --}}
+            {{-- section: location --}}
             <div class="border-bottom pb-3 mb-3">
                 <h6 class="text-muted fw-bold mb-3">
                     <i class="mdi mdi-map-outline me-1"></i> {{ __('pos.section_location') }}
                 </h6>
                 <div class="row g-3">
-                    {{-- الدولة --}}
+                    {{-- country --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-earth me-1"></i> {{ __('pos.f_country') }}</label>
                         <select class="form-select @error('country_id') is-invalid @enderror" wire:model="country_id">
@@ -124,11 +135,13 @@
                             @endforeach
                         </select>
                         <small class="text-muted">{{ __('pos.h_country') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $country_id }}</div>
                         @error('country_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @if(!empty($country_id))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $country_id }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- المحافظة --}}
+                    {{-- governorate --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-map me-1"></i> {{ __('pos.f_governorate') }}</label>
                         <select class="form-select @error('governorate_id') is-invalid @enderror" wire:model="governorate_id">
@@ -139,11 +152,13 @@
                             @endforeach
                         </select>
                         <small class="text-muted">{{ __('pos.h_governorate') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $governorate_id }}</div>
                         @error('governorate_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @if(!empty($governorate_id))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $governorate_id }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- المدينة (قائمة) --}}
+                    {{-- city select --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-city-variant-outline me-1"></i> {{ __('pos.f_city_select') }}</label>
                         <select class="form-select @error('city_id') is-invalid @enderror" wire:model="city_id">
@@ -153,11 +168,13 @@
                             @endforeach
                         </select>
                         <small class="text-muted">{{ __('pos.h_city_select') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $city_id }}</div>
                         @error('city_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @if(!empty($city_id))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $city_id }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- المنطقة --}}
+                    {{-- area --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-map-marker-radius-outline me-1"></i> {{ __('pos.f_area') }}</label>
                         <select class="form-select @error('area_id') is-invalid @enderror" wire:model="area_id">
@@ -167,68 +184,63 @@
                             @endforeach
                         </select>
                         <small class="text-muted">{{ __('pos.h_area') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $area_id }}</div>
                         @error('area_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @if(!empty($area_id))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $area_id }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- المدينة (نص) --}}
+                    {{-- city text --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-form-textbox me-1"></i> {{ __('pos.f_city_text') }}</label>
                         <input type="text" class="form-control" wire:model.defer="city" placeholder="{{ __('pos.ph_city_text') }}">
                         <small class="text-muted">{{ __('pos.h_city_text') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $city }}</div>
+                        @if(!empty($city))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $city }}</span></div>
+                        @endif
                     </div>
                 </div>
             </div>
 
-            {{-- القسم 3: التواصل والمالية --}}
+            {{-- section: contact & finance --}}
             <div>
                 <h6 class="text-muted fw-bold mb-3">
                     <i class="mdi mdi-phone-outline me-1"></i> {{ __('pos.section_contact_finance') }}
                 </h6>
                 <div class="row g-3">
-                    {{-- الهاتف --}}
+                    {{-- phone --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-phone-outline me-1"></i> {{ __('pos.f_phone') }}</label>
                         <input type="text" class="form-control" wire:model.defer="phone" placeholder="{{ __('pos.ph_phone') }}">
                         <small class="text-muted">{{ __('pos.h_phone') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $phone }}</div>
+                        @if(!empty($phone))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $phone }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- الرقم الضريبي --}}
+                    {{-- tax number --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-receipt-text-outline me-1"></i> {{ __('pos.f_tax') }}</label>
                         <input type="text" class="form-control" wire:model.defer="tax_number" placeholder="{{ __('pos.ph_tax') }}">
                         <small class="text-muted">{{ __('pos.h_tax') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $tax_number }}</div>
+                        @if(!empty($tax_number))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $tax_number }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- فئة السعر --}}
-                    <div class="col-md-3">
-                        <label class="form-label fw-bold"><i class="mdi mdi-cash-multiple me-1"></i> {{ __('pos.f_price_category') }}</label>
-                        <select class="form-select" wire:model="price_category_id">
-                            <option value="">{{ __('pos.ph_price_category') }}</option>
-                            @foreach ($priceLists as $pl)
-                                @php $nm = method_exists($pl,'getTranslation') ? $pl->getTranslation('name', app()->getLocale()) : ($pl->name ?? ''); @endphp
-                                <option value="{{ $pl->id }}">{{ $nm }}</option>
-                            @endforeach
-                        </select>
-                        <small class="text-muted">{{ __('pos.h_price_category') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $price_category_id }}</div>
-                    </div>
-
-                    {{-- حد الائتمان --}}
+                    {{-- credit limit --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-credit-card-outline me-1"></i> {{ __('pos.f_credit_limit') }}</label>
-                        <input type="number" min="0" step="0.01"
-                               class="form-control @error('credit_limit') is-invalid @enderror"
+                        <input type="number" min="0" step="0.01" class="form-control @error('credit_limit') is-invalid @enderror"
                                wire:model.defer="credit_limit" placeholder="0.00">
                         <small class="text-muted">{{ __('pos.h_credit_limit') }}</small>
                         @error('credit_limit') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $credit_limit }}</div>
+                        @if(strlen((string)$credit_limit))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $credit_limit }}</span></div>
+                        @endif
                     </div>
 
-                    {{-- الحالة --}}
+                    {{-- account status --}}
                     <div class="col-md-3">
                         <label class="form-label fw-bold"><i class="mdi mdi-shield-check-outline me-1"></i> {{ __('pos.f_account_status') }}</label>
                         <select class="form-select" wire:model="account_status">
@@ -237,22 +249,23 @@
                             <option value="suspended">{{ __('pos.status_suspended') }}</option>
                         </select>
                         <small class="text-muted">{{ __('pos.h_account_status') }}</small>
-                        <div class="mt-1 text-muted"><i class="mdi mdi-eye-outline"></i> {{ $account_status }}</div>
+                        @if(!empty($account_status))
+                            <div class="preview-box mt-1"><i class="mdi mdi-eye-outline"></i><span>{{ $account_status }}</span></div>
+                        @endif
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="card-footer d-flex gap-2">
-            {{-- ملاحظة: حسب تفضيلك الموحّد لأزرار النجاح --}}
-            <button class="btn btn-success rounded-pill px-4 shadow-sm">
-                <i class="mdi mdi-content-save-edit-outline"></i> {{ __('pos.btn_update') }}
+            <button class="btn btn-primary rounded-pill px-4 shadow-sm">
+                <i class="mdi mdi-content-save"></i> {{ __('pos.btn_update') ?? 'حفظ التعديلات' }}
             </button>
             <a href="{{ route('customers.index') }}" class="btn btn-secondary rounded-pill px-4 shadow-sm">
                 <i class="mdi mdi-close"></i> {{ __('pos.btn_cancel') }}
             </a>
-
-            <div class="ms-auto d-flex align-products-center">
+            <div class="ms-auto d-flex align-items-center">
                 <span class="text-muted small" wire:loading>
                     <i class="mdi mdi-loading mdi-spin me-1"></i> {{ __('pos.loading') }}
                 </span>
@@ -260,3 +273,15 @@
         </div>
     </form>
 </div>
+
+<style>
+    .preview-box{
+        border:1px dashed rgba(0,0,0,.15);
+        background:#fff;
+        border-radius:.65rem;
+        padding:.35rem .5rem;
+        display:inline-flex; align-items:center; gap:.35rem;
+        font-size:.875rem; color:#334155;
+        box-shadow:0 1px 2px rgba(16,24,40,.05);
+    }
+</style>

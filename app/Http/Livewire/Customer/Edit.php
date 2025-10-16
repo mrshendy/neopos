@@ -1,160 +1,171 @@
 <?php
 
-namespace App\Http\Livewire\customer;
+namespace App\Http\Livewire\Customer;
 
 use Livewire\Component;
-use Illuminate\Validation\Rule;
-use App\models\customer\customer;
-use App\models\country;
-use App\models\governorate;
-use App\models\city;
-use App\models\area;
-use App\models\pricelist;
+use App\Models\customer\customer;
+use App\Models\country;
+use App\Models\governorate;
+use App\Models\city;
+use App\Models\area;
+
 
 class Edit extends Component
 {
     public $customer_id;
+    public $customer;
 
-    public $code;
-    public $legal_name = ['ar'=>'','en'=>''];
-    public $trade_name = ['ar'=>'','en'=>''];
-    public $type = 'b2b';
+    // نفس حقول الإنشاء
+    public $code = '';
+    public $legal_name = ['ar' => '', 'en' => ''];
+    public $type = 'individual';
     public $channel = 'retail';
 
-    public $country_id;
-    public $governorate_id;
-    public $city_id;
-    public $area_id;
+    public $country_id = '';
+    public $governorate_id = '';
+    public $city_id = '';
+    public $area_id = '';
+    public $city = '';
 
-    public $city;
-    public $phone;
-    public $tax_number;
-
-    public $price_category_id;
-    public $sales_rep_id;
-    public $credit_limit = 0;
-    public $balance = 0;
+    public $phone = '';
+    public $tax_number = '';
+    public $credit_limit = null;
     public $account_status = 'active';
 
-    protected function rules()
-    {
-        return [
-            'code'               => ['required','string','max:20', Rule::unique('customers','code')->ignore($this->customer_id)],
-            'legal_name.ar'      => ['required','string','max:255'],
-            'legal_name.en'      => ['required','string','max:255'],
-            'trade_name.ar'      => ['nullable','string','max:255'],
-            'trade_name.en'      => ['nullable','string','max:255'],
-            'type'               => ['required', Rule::in(['individual','company','b2b','b2c'])],
-            'channel'            => ['nullable', Rule::in(['retail','wholesale','online','pharmacy'])],
+    // القوائم
+    public $country = [];
+    public $governorates = [];
+    public $cities = [];
+    public $areas = [];
 
-            'country_id'         => ['nullable','exists:country,id'],
-            'governorate_id'     => ['nullable','exists:governorate,id'],
-            'city_id'            => ['nullable','exists:city,id'],
-            'area_id'            => ['nullable','exists:area,id'],
-
-            'city'               => ['nullable','string','max:100'],
-            'phone'              => ['nullable','string','max:50'],
-            'tax_number'         => ['nullable','string','max:50'],
-
-            'price_category_id'  => ['nullable','exists:price_lists,id'],
-            'sales_rep_id'       => ['nullable','exists:users,id'],
-
-            'credit_limit'       => ['required','numeric','min:0'],
-            'balance'            => ['required','numeric'],
-            'account_status'     => ['required', Rule::in(['active','inactive','suspended'])],
-        ];
-    }
-
-  
-    protected function messages(): array
-    {
-        return [
-        'code.required'          => '⚠ ' . __('pos.val_code_required'),
-        'code.unique'            => '⚠ ' . __('pos.val_code_unique'),
-        'legal_name.ar.required' => '⚠ ' . __('pos.val_legal_ar_required'),
-        'legal_name.en.required' => '⚠ ' . __('pos.val_legal_en_required'),
-        'credit_limit.min'       => '⚠ ' . __('pos.val_credit_limit_min'),
-        'area_id.exists'         => '⚠ ' . __('pos.val_area_exists'),
+    protected $rules = [
+        'code'                  => 'required|string|max:100',
+        'legal_name.ar'         => 'required|string|max:255',
+        'legal_name.en'         => 'required|string|max:255',
+        'type'                  => 'required|in:individual,company,b2b,b2c',
+        'channel'               => 'required|in:retail,wholesale,online,pharmacy',
+        'country_id'            => 'nullable|exists:countries,id',
+        'governorate_id'        => 'nullable|exists:governorates,id',
+        'city_id'               => 'nullable|exists:cities,id',
+        'area_id'               => 'nullable|exists:areas,id',
+        'city'                  => 'nullable|string|max:255',
+        'phone'                 => 'nullable|string|max:100',
+        'tax_number'            => 'nullable|string|max:100',
+        'credit_limit'          => 'nullable|numeric|min:0',
+        'account_status'        => 'required|in:active,inactive,suspended',
     ];
-    }
-    public function mount($id)
+
+    protected $messages = [
+        'code.required'         => 'كود العميل مطلوب.',
+        'legal_name.ar.required'=> 'الاسم القانوني (عربي) مطلوب.',
+        'legal_name.en.required'=> 'الاسم القانوني (إنجليزي) مطلوب.',
+    ];
+
+    public function mount($customer_id)
     {
-        $c = customer::findOrFail($id);
-        $this->customer_id     = $c->id;
+        $this->customer_id = $customer_id;
+        $this->customer = Customer::findOrFail($customer_id);
 
-        $this->code            = $c->code;
-        $this->legal_name      = $c->getTranslations('legal_name');
-        $this->trade_name      = $c->getTranslations('trade_name') ?? ['ar'=>'','en'=>''];
+        // تحميل القوائم
+        $this->country      = Country::orderBy('id','desc')->get();
+        $this->governorates = Governorate::when($this->customer->country_id, fn($q)=>$q->where('country_id',$this->customer->country_id))
+                                         ->orderBy('id','desc')->get();
+        $this->cities       = City::when($this->customer->governorate_id, fn($q)=>$q->where('governorate_id',$this->customer->governorate_id))
+                                  ->orderBy('id','desc')->get();
+        $this->areas        = Area::when($this->customer->city_id, fn($q)=>$q->where('city_id',$this->customer->city_id))
+                                  ->orderBy('id','desc')->get();
 
-        $this->type            = $c->type;
-        $this->channel         = $c->channel;
+        // تعبئة الحقول
+        $this->code = $this->customer->code;
+        $this->legal_name['ar'] = $this->customer->getTranslation('legal_name','ar');
+        $this->legal_name['en'] = $this->customer->getTranslation('legal_name','en');
 
-        $this->country_id      = $c->country_id;
-        $this->governorate_id  = $c->governorate_id;
-        $this->city_id         = $c->city_id;
-        $this->area_id         = $c->area_id;
-        $this->city            = $c->city;
+        $this->type = $this->customer->type;
+        $this->channel = $this->customer->channel;
 
-        $this->phone           = $c->phone;
-        $this->tax_number      = $c->tax_number;
+        $this->country_id = $this->customer->country_id;
+        $this->governorate_id = $this->customer->governorate_id;
+        $this->city_id = $this->customer->city_id;
+        $this->area_id = $this->customer->area_id;
+        $this->city = $this->customer->city;
 
-        $this->price_category_id = $c->price_category_id;
-        $this->sales_rep_id      = $c->sales_rep_id;
-
-        $this->credit_limit      = $c->credit_limit;
-        $this->balance           = $c->balance;
-
-        $this->account_status    = $c->account_status;
+        $this->phone = $this->customer->phone;
+        $this->tax_number = $this->customer->tax_number;
+        $this->credit_limit = $this->customer->credit_limit;
+        $this->account_status = $this->customer->account_status;
     }
 
-    // سلاسل اختيار متتابعة
-    public function updatedCountryId(){ $this->governorate_id = $this->city_id = $this->area_id = null; }
-    public function updatedGovernorateId(){ $this->city_id = $this->area_id = null; }
-    public function updatedCityId(){ $this->area_id = null; }
+    // قوائم تابعة
+    public function updatedCountryId($val)
+    {
+        $this->governorate_id = '';
+        $this->city_id = '';
+        $this->area_id = '';
+        $this->governorates = $val ? Governorate::where('country_id', $val)->orderBy('id','desc')->get() : collect();
+        $this->cities = collect();
+        $this->areas  = collect();
+    }
+
+    public function updatedGovernorateId($val)
+    {
+        $this->city_id = '';
+        $this->area_id = '';
+        $this->cities = $val ? City::where('governorate_id', $val)->orderBy('id','desc')->get() : collect();
+        $this->areas  = collect();
+    }
+
+    public function updatedCityId($val)
+    {
+        $this->area_id = '';
+        $this->areas = $val ? Area::where('city_id', $val)->orderBy('id','desc')->get() : collect();
+    }
 
     public function update()
     {
-        $this->validate();
+        $data = $this->validate();
 
-        $c = customer::findOrFail($this->customer_id);
+        // تأكيد uniqueness على code باستثناء السجل الحالي
+        $exists = Customer::where('code', $this->code)
+                    ->where('id', '!=', $this->customer_id)
+                    ->exists();
+        if ($exists) {
+            $this->addError('code', 'كود العميل مستخدم من قبل.');
+            return;
+        }
 
-        $c->update([
-            'code' => $this->code,
-            'legal_name' => $this->legal_name,
-            'trade_name' => $this->trade_name,
-            'type' => $this->type,
-            'channel' => $this->channel,
+        $c = $this->customer;
+        $c->code = $this->code;
+        $c->setTranslation('legal_name', 'ar', $this->legal_name['ar']);
+        $c->setTranslation('legal_name', 'en', $this->legal_name['en']);
 
-            'country_id'     => $this->country_id,
-            'governorate_id' => $this->governorate_id,
-            'city_id'        => $this->city_id,
-            'area_id'        => $this->area_id,
-            'city'           => $this->city,
+        $c->type = $this->type;
+        $c->channel = $this->channel;
 
-            'phone' => $this->phone,
-            'tax_number' => $this->tax_number,
-            'price_category_id' => $this->price_category_id,
-            'sales_rep_id' => $this->sales_rep_id,
+        $c->country_id = $this->country_id ?: null;
+        $c->governorate_id = $this->governorate_id ?: null;
+        $c->city_id = $this->city_id ?: null;
+        $c->area_id = $this->area_id ?: null;
+        $c->city = $this->city ?: null;
 
-            'credit_limit' => $this->credit_limit,
-            'balance' => $this->balance,
+        $c->phone = $this->phone ?: null;
+        $c->tax_number = $this->tax_number ?: null;
+        $c->credit_limit = $this->credit_limit ?: null;
+        $c->account_status = $this->account_status;
 
-            'account_status' => $this->account_status,
-            'updated_by' => auth()->id(),
-        ]);
+        $c->save();
 
-        session()->flash('success', __('pos.msg_updated'));
-        return redirect()->route('customers.index');
+        session()->flash('success', __('pos.updated_success') ?? 'تم تحديث البيانات بنجاح');
+        return redirect()->route('customers.show', $c->id);
     }
 
     public function render()
     {
-        return view('livewire.customer.edit', [
-            'country'    => country::all(),
-            'governorates' => $this->country_id ? governorate::where('country_id',$this->country_id)->get() : collect(),
-            'cities'       => $this->governorate_id ? city::where('governorate_id',$this->governorate_id)->get() : collect(),
-            'areas'        => $this->city_id ? area::where('city_id',$this->city_id)->get() : collect(),
-            'priceLists'   => pricelist::where('status','active')->get(),
+        return view('customers.edit', [
+            'country'      => $this->country,
+            'governorates' => $this->governorates,
+            'cities'       => $this->cities,
+            'areas'        => $this->areas,
+            'customer'     => $this->customer,
         ]);
     }
 }
