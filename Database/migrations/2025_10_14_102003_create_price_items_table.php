@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('price_items', function (Blueprint $table) {
+        Schema::create('price_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('price_list_id')->constrained('price_lists')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->restrictOnDelete();
@@ -22,5 +22,5 @@ return new class extends Migration {
             $table->unique(['price_list_id','product_id','valid_from','valid_to'],'uq_price_scope');
         });
     }
-    public function down(): void { Schema::dropIfExists('price_items'); }
+    public function down(): void { Schema::dropIfExists('price_products'); }
 };

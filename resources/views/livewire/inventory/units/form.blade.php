@@ -9,7 +9,7 @@
     @endif
 
     {{-- Header --}}
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <div>
             <h3 class="mb-1 fw-bold">
                 <i class="mdi mdi-scale me-2"></i>
@@ -91,7 +91,7 @@
                         @error('ratio_to_parent')<small class="text-danger d-block">{{ $message }}</small>@enderror
                     </div>
 
-                    <div class="col-md-3 d-flex align-items-center">
+                    <div class="col-md-3 d-flex align-products-center">
                         <div class="form-check mt-4">
                             <input type="checkbox" class="form-check-input" id="isDefaultMinor" wire:model="is_default_minor">
                             <label for="isDefaultMinor" class="form-check-label">الوحدة الصغرى الافتراضية لهذه الكبرى</label>

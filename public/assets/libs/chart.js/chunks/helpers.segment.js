@@ -408,14 +408,14 @@ function unlistenArrayEvents(array, listener) {
   });
   delete array._chartjs;
 }
-function _arrayUnique(items) {
+function _arrayUnique(products) {
   const set = new Set();
   let i, ilen;
-  for (i = 0, ilen = items.length; i < ilen; ++i) {
-    set.add(items[i]);
+  for (i = 0, ilen = products.length; i < ilen; ++i) {
+    set.add(products[i]);
   }
   if (set.size === ilen) {
-    return items;
+    return products;
   }
   return Array.from(set);
 }

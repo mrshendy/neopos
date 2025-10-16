@@ -60,7 +60,7 @@ class Index extends Component
         }
 
         // تجهيز قائمة الطباعة: (barcode/label/sku/qty)
-        $items = product::whereIn('id', $ids)
+        $products = product::whereIn('id', $ids)
             ->get(['id','sku','barcode','name'])
             ->map(function($p){
                 $q = (int)($this->qty[$p->id] ?? 1);
@@ -77,13 +77,13 @@ class Index extends Component
             ->values()
             ->toArray();
 
-        if (!$items) {
+        if (!$products) {
             session()->flash('success', __('pos.no_data') ?? 'لا توجد بيانات');
             return;
         }
 
         // إرسال للواجهة (الـ Blade عنده مستمع print-barcodes)
-        $this->dispatchBrowserEvent('print-barcodes', ['items' => $items]);
+        $this->dispatchBrowserEvent('print-barcodes', ['products' => $products]);
     }
 
     protected function baseQuery()

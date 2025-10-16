@@ -10,7 +10,7 @@ Demo: http://sortablejs.github.io/Sortable/
 
  * Supports touch devices and [modern](http://caniuse.com/#search=drag) browsers (including IE9)
  * Can drag from one list to another or within the same list
- * CSS animation when moving items
+ * CSS animation when moving products
  * Supports drag handles *and selectable text* (better than voidberg's html5sortable)
  * Smart auto-scrolling
  * Advanced swap detection
@@ -43,7 +43,7 @@ Demo: http://sortablejs.github.io/Sortable/
 
 ### Articles
 
- * [Dragging Multiple Items in Sortable](https://github.com/SortableJS/Sortable/wiki/Dragging-Multiple-Items-in-Sortable) (April 26, 2019)
+ * [Dragging Multiple products in Sortable](https://github.com/SortableJS/Sortable/wiki/Dragging-Multiple-products-in-Sortable) (April 26, 2019)
  * [Swap Thresholds and Direction](https://github.com/SortableJS/Sortable/wiki/Swap-Thresholds-and-Direction) (December 2, 2018)
  * [Sortable v1.0 — New capabilities](https://github.com/SortableJS/Sortable/wiki/Sortable-v1.0-—-New-capabilities/) (December 22, 2014)
  * [Sorting with the help of HTML5 Drag'n'Drop API](https://github.com/SortableJS/Sortable/wiki/Sorting-with-the-help-of-HTML5-Drag'n'Drop-API/) (December 23, 2013)
@@ -94,7 +94,7 @@ Sortable.mount(new AutoScroll());
 
 ### Usage
 ```html
-<ul id="items">
+<ul id="products">
 	<li>item 1</li>
 	<li>item 2</li>
 	<li>item 3</li>
@@ -102,7 +102,7 @@ Sortable.mount(new AutoScroll());
 ```
 
 ```js
-var el = document.getElementById('items');
+var el = document.getElementById('products');
 var sortable = Sortable.create(el);
 ```
 
@@ -122,12 +122,12 @@ var sortable = new Sortable(el, {
 	touchStartThreshold: 0, // px, how many pixels the point should move before cancelling a delayed drag event
 	disabled: false, // Disables the sortable if set to true.
 	store: null,  // @see Store
-	animation: 150,  // ms, animation speed moving items when sorting, `0` — without animation
+	animation: 150,  // ms, animation speed moving products when sorting, `0` — without animation
 	easing: "cubic-bezier(1, 0, 0, 1)", // Easing for animation. Defaults to null. See https://easings.net/ for examples.
-	handle: ".my-handle",  // Drag handle selector within list items
+	handle: ".my-handle",  // Drag handle selector within list products
 	filter: ".ignore-elements",  // Selectors that do not lead to dragging (String or Function)
 	preventOnFilter: true, // Call `event.preventDefault()` when triggered `filter`
-	draggable: ".item",  // Specifies which items inside the element should be draggable
+	draggable: ".item",  // Specifies which products inside the element should be draggable
 
 	dataIdAttr: 'data-id', // HTML attribute that is used by the `toArray()` method
 
@@ -299,7 +299,7 @@ Demo: http://sortablejs.github.io/Sortable#thresholds
 
 
 #### `invertSwap` option
-Set to `true` to set the swap zone to the sides of the target, for the effect of sorting "in between" items.
+Set to `true` to set the swap zone to the sides of the target, for the effect of sorting "in between" products.
 
 [Read more](https://github.com/SortableJS/Sortable/wiki/Swap-Thresholds-and-Direction#forcing-inverted-swap-zone)
 
@@ -375,7 +375,7 @@ document.getElementById("switcher").onclick = function () {
 
 
 #### `handle` option
-To make list items draggable, Sortable disables text selection by the user.
+To make list products draggable, Sortable disables text selection by the user.
 That's not always desirable. To allow text selection, define a drag handler,
 which is an area of every list element that allows it to be dragged around.
 
@@ -487,7 +487,7 @@ Demo: https://jsbin.com/sibiput/edit?html,css,js,output
 
 #### `fallbackTolerance` option
 Emulates the native drag threshold. Specify in pixels how far the mouse should move before it's considered as a drag.
-Useful if the items are also clickable like in a list of links.
+Useful if the products are also clickable like in a list of links.
 
 When the user clicks inside a sortable element, it's not uncommon for your hand to move a little between the time you press and the time you release.
 Dragging only starts if you move the pointer past a certain tolerance, so that you don't accidentally start dragging every time you click.

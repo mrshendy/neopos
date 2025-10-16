@@ -13,11 +13,11 @@ describe('constants', () => {
           'input',
           'inputCloned',
           'list',
-          'listItems',
+          'listproducts',
           'listSingle',
           'listDropdown',
           'item',
-          'itemSelectable',
+          'productselectable',
           'itemDisabled',
           'itemChoice',
           'placeholder',
@@ -44,17 +44,17 @@ describe('constants', () => {
       });
 
       it('has expected config options', () => {
-        expect(DEFAULT_CONFIG.items).to.be.an('array');
+        expect(DEFAULT_CONFIG.products).to.be.an('array');
         expect(DEFAULT_CONFIG.choices).to.be.an('array');
         expect(DEFAULT_CONFIG.silent).to.be.a('boolean');
         expect(DEFAULT_CONFIG.renderChoiceLimit).to.be.a('number');
         expect(DEFAULT_CONFIG.maxItemCount).to.be.a('number');
-        expect(DEFAULT_CONFIG.addItems).to.be.a('boolean');
+        expect(DEFAULT_CONFIG.addproducts).to.be.a('boolean');
         expect(DEFAULT_CONFIG.addItemFilter).to.equal(null);
-        expect(DEFAULT_CONFIG.removeItems).to.be.a('boolean');
+        expect(DEFAULT_CONFIG.removeproducts).to.be.a('boolean');
         expect(DEFAULT_CONFIG.removeItemButton).to.be.a('boolean');
-        expect(DEFAULT_CONFIG.editItems).to.be.a('boolean');
-        expect(DEFAULT_CONFIG.duplicateItemsAllowed).to.be.a('boolean');
+        expect(DEFAULT_CONFIG.editproducts).to.be.a('boolean');
+        expect(DEFAULT_CONFIG.duplicateproductsAllowed).to.be.a('boolean');
         expect(DEFAULT_CONFIG.delimiter).to.be.a('string');
         expect(DEFAULT_CONFIG.paste).to.be.a('boolean');
         expect(DEFAULT_CONFIG.searchEnabled).to.be.a('boolean');
@@ -64,7 +64,7 @@ describe('constants', () => {
         expect(DEFAULT_CONFIG.searchFields).to.be.an('array');
         expect(DEFAULT_CONFIG.position).to.be.a('string');
         expect(DEFAULT_CONFIG.shouldSort).to.be.a('boolean');
-        expect(DEFAULT_CONFIG.shouldSortItems).to.be.a('boolean');
+        expect(DEFAULT_CONFIG.shouldSortproducts).to.be.a('boolean');
         expect(DEFAULT_CONFIG.placeholder).to.be.a('boolean');
         expect(DEFAULT_CONFIG.placeholderValue).to.equal(null);
         expect(DEFAULT_CONFIG.searchPlaceholderValue).to.equal(null);
@@ -74,7 +74,7 @@ describe('constants', () => {
         expect(DEFAULT_CONFIG.loadingText).to.be.a('string');
         expect(DEFAULT_CONFIG.noResultsText).to.be.a('string');
         expect(DEFAULT_CONFIG.noChoicesText).to.be.a('string');
-        expect(DEFAULT_CONFIG.itemSelectText).to.be.a('string');
+        expect(DEFAULT_CONFIG.productselectText).to.be.a('string');
         expect(DEFAULT_CONFIG.uniqueItemText).to.be.a('string');
         expect(DEFAULT_CONFIG.customAddItemText).to.be.a('string');
         expect(DEFAULT_CONFIG.addItemText).to.be.a('function');

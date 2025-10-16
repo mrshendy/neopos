@@ -9,7 +9,7 @@
     @endif
 
     {{-- Page Header --}}
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <div>
             <h3 class="mb-1 fw-bold"><i class="mdi mdi-package-variant-closed me-2"></i> {{ __('pos.products_title') }}</h3>
             <div class="text-muted small">{{ __('pos.products_management_sub') }}</div>
@@ -27,7 +27,7 @@
     {{-- Toolbar / Filters --}}
     <div class="card shadow-sm rounded-4 mb-3">
         <div class="card-body">
-            <div class="row g-3 align-items-end">
+            <div class="row g-3 align-products-end">
                 <div class="col-lg-3">
                     <label class="form-label mb-1">
                         <i class="mdi mdi-magnify"></i> {{ __('pos.search') }}
@@ -84,7 +84,7 @@
             </div>
 
             {{-- Mini status line --}}
-            <div class="d-flex align-items-center mt-3 small text-muted">
+            <div class="d-flex align-products-center mt-3 small text-muted">
                 <i class="mdi mdi-dots-grid me-1"></i>
                 <span>{{ __('pos.search') }}:</span>
                 <span class="badge bg-light text-dark ms-1">{{ $search ?: '—' }}</span>
@@ -138,7 +138,7 @@
                                          decoding="async" style="object-fit:cover"
                                          onerror="this.onerror=null;this.src='{{ asset('assets/img/placeholder-product.png') }}';">
                                 @else
-                                    <div class="rounded-3 border bg-light d-inline-flex align-items-center justify-content-center"
+                                    <div class="rounded-3 border bg-light d-inline-flex align-products-center justify-content-center"
                                          style="width:42px;height:42px;">
                                         <i class="mdi mdi-image-off-outline text-muted"></i>
                                     </div>
@@ -224,7 +224,7 @@
             </table>
         </div>
 
-        <div class="card-body d-flex justify-content-between align-items-center">
+        <div class="card-body d-flex justify-content-between align-products-center">
             <div class="small text-muted">
                 <i class="mdi mdi-information-outline"></i>
                 {{ $rows->firstItem() }}–{{ $rows->lastItem() }} / {{ $rows->total() }}

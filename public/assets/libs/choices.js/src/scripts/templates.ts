@@ -57,12 +57,12 @@ const templates = {
     {
       list,
       listSingle,
-      listItems,
-    }: Pick<ClassNames, 'list' | 'listSingle' | 'listItems'>,
+      listproducts,
+    }: Pick<ClassNames, 'list' | 'listSingle' | 'listproducts'>,
     isSelectOneElement: boolean,
   ): HTMLDivElement {
     return Object.assign(document.createElement('div'), {
-      className: `${list} ${isSelectOneElement ? listSingle : listItems}`,
+      className: `${list} ${isSelectOneElement ? listSingle : listproducts}`,
     });
   },
 
@@ -81,11 +81,11 @@ const templates = {
       item,
       button,
       highlightedState,
-      itemSelectable,
+      productselectable,
       placeholder,
     }: Pick<
       ClassNames,
-      'item' | 'button' | 'highlightedState' | 'itemSelectable' | 'placeholder'
+      'item' | 'button' | 'highlightedState' | 'productselectable' | 'placeholder'
     >,
     {
       id,
@@ -123,11 +123,11 @@ const templates = {
       div.classList.add(placeholder);
     }
 
-    div.classList.add(highlighted ? highlightedState : itemSelectable);
+    div.classList.add(highlighted ? highlightedState : productselectable);
 
     if (removeItemButton) {
       if (disabled) {
-        div.classList.remove(itemSelectable);
+        div.classList.remove(productselectable);
       }
       div.dataset.deletable = '';
       /** @todo This MUST be localizable, not hardcoded! */
@@ -202,7 +202,7 @@ const templates = {
     {
       item,
       itemChoice,
-      itemSelectable,
+      productselectable,
       selectedState,
       itemDisabled,
       placeholder,
@@ -210,7 +210,7 @@ const templates = {
       ClassNames,
       | 'item'
       | 'itemChoice'
-      | 'itemSelectable'
+      | 'productselectable'
       | 'selectedState'
       | 'itemDisabled'
       | 'placeholder'
@@ -255,7 +255,7 @@ const templates = {
       div.dataset.choiceDisabled = '';
       div.setAttribute('aria-disabled', 'true');
     } else {
-      div.classList.add(itemSelectable);
+      div.classList.add(productselectable);
       div.dataset.choiceSelectable = '';
     }
 

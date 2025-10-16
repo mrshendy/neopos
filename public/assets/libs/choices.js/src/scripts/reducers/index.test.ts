@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import rootReducer from '.';
 import groups from './groups';
 import choices from './choices';
-import items from './items';
+import products from './products';
 import loading from './loading';
 
 describe('reducers/rootReducer', () => {
@@ -14,7 +14,7 @@ describe('reducers/rootReducer', () => {
 
     expect(state.groups).to.equal(groups(undefined, {} as any));
     expect(state.choices).to.equal(choices(undefined, {} as any));
-    expect(state.items).to.equal(items(undefined, {} as any));
+    expect(state.products).to.equal(products(undefined, {} as any));
     expect(state.loading).to.equal(loading(undefined, {} as any));
   });
 
@@ -22,7 +22,7 @@ describe('reducers/rootReducer', () => {
     it('resets state', () => {
       const output = rootReducer(
         {
-          items: [1, 2, 3],
+          products: [1, 2, 3],
           groups: [1, 2, 3],
           choices: [1, 2, 3],
         },
@@ -32,7 +32,7 @@ describe('reducers/rootReducer', () => {
       );
 
       expect(output).to.eql({
-        items: [],
+        products: [],
         groups: [],
         choices: [],
         loading: false,
@@ -44,7 +44,7 @@ describe('reducers/rootReducer', () => {
     it('replaces state with given state', () => {
       const output = rootReducer(
         {
-          items: [1, 2, 3],
+          products: [1, 2, 3],
           groups: [1, 2, 3],
           choices: [1, 2, 3],
         },

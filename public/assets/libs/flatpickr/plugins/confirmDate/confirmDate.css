@@ -4,7 +4,7 @@
 	visibility: hidden;
 	display: flex;
 	justify-content: center;
-	align-items: center;
+	align-products: center;
 	cursor: pointer;
 	background: rgba(0,0,0,0.06)
 }

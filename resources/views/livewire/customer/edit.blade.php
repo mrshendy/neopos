@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <h4 class="mb-0">
             <i class="mdi mdi-account-edit-outline me-2"></i>
             {{ __('pos.title_customers_edit') }}
@@ -252,7 +252,7 @@
                 <i class="mdi mdi-close"></i> {{ __('pos.btn_cancel') }}
             </a>
 
-            <div class="ms-auto d-flex align-items-center">
+            <div class="ms-auto d-flex align-products-center">
                 <span class="text-muted small" wire:loading>
                     <i class="mdi mdi-loading mdi-spin me-1"></i> {{ __('pos.loading') }}
                 </span>

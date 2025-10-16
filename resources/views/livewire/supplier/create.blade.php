@@ -1,7 +1,7 @@
 <div class="supplier-create">
 
     {{-- ✅ رأس الصفحة الصغير --}}
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <h4 class="mb-0">
             <i class="mdi mdi-account-plus-outline me-1 text-primary"></i>
             {{ __('pos.supplier_create') }}

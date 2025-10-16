@@ -1,4 +1,5 @@
 <div>
+    {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
@@ -12,6 +13,7 @@
         </div>
     @endif
 
+    {{-- Toolbar / Filters --}}
     <div class="card shadow-sm rounded-4 mb-3">
         <div class="card-body">
             <div class="row g-3 align-items-end">
@@ -36,6 +38,7 @@
         </div>
     </div>
 
+    {{-- Table --}}
     <div class="card shadow-sm rounded-4">
         <div class="card-body">
             <div class="table-responsive">
@@ -54,10 +57,16 @@
                         @forelse($warehouses as $w)
                             <tr>
                                 <td>{{ $w->id }}</td>
-                                <td>{{ app()->getLocale()=='ar' ? ($w->name['ar'] ?? '') : ($w->name['en'] ?? '') }}</td>
+                                <td>
+                                    {{ app()->getLocale()=='ar' ? ($w->name['ar'] ?? '') : ($w->name['en'] ?? '') }}
+                                </td>
                                 <td>{{ $w->code }}</td>
                                 <td>{{ $w->branch_id ?? '-' }}</td>
-                                <td><span class="badge bg-{{ $w->status=='active'?'success':'secondary' }}">{{ __('pos.'.$w->status) }}</span></td>
+                                <td>
+                                    <span class="badge bg-{{ $w->status=='active'?'success':'secondary' }}">
+                                        {{ __('pos.'.$w->status) }}
+                                    </span>
+                                </td>
                                 <td class="text-end">
                                     <a href="{{ route('inventory.warehouses.edit', $w->id) }}" class="btn btn-sm btn-primary rounded-pill shadow-sm">
                                         <i class="mdi mdi-pencil-outline"></i>
@@ -65,7 +74,7 @@
                                     <button type="button" class="btn btn-sm btn-warning rounded-pill shadow-sm" wire:click="toggleStatus({{ $w->id }})">
                                         <i class="mdi mdi-toggle-switch"></i>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger rounded-pill shadow-sm" wire:click="confirmDelete({{ $w->id }})">
+                                    <button type="button" class="btn btn-sm btn-danger rounded-pill shadow-sm" onclick="confirmDelete({{ $w->id }})">
                                         <i class="mdi mdi-delete-outline"></i>
                                     </button>
                                 </td>
@@ -89,21 +98,19 @@
         function confirmDelete(id) {
             Swal.fire({
                 title: 'تحذير',
-                text: '⚠️ هل أنت متأكد أنك تريد حذف هذا الإجراء لا يمكن التراجع عنه!',
+                text: '⚠️ هل أنت متأكد أنك تريد حذف هذا السجل؟ لا يمكن التراجع!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#198754',
                 cancelButtonColor: '#0d6efd',
-                confirmButtonText: 'نعم، احذفها',
+                confirmButtonText: 'نعم، احذف',
                 cancelButtonText: 'إلغاء'
             }).then((result) => {
                 if (result.isConfirmed) {
                     Livewire.emit('deleteConfirmed', id);
-                    Swal.fire('تم الحذف!', '✅ تم الحذف  بنجاح.', 'success');
+                    Swal.fire('تم الحذف!', '✅ تم حذف السجل بنجاح.', 'success');
                 }
             })
         }
     </script>
-
-
 </div>

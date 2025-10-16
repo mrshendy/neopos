@@ -442,11 +442,11 @@ jasmine.HtmlReporter.SpecView.prototype.appendSummaryToSuiteDiv = function() {
 jasmine.HtmlReporter.SpecView.prototype.appendFailureDetail = function() {
   this.detail.className += ' ' + this.status();
 
-  var resultItems = this.spec.results().getItems();
+  var resultproducts = this.spec.results().getproducts();
   var messagesDiv = this.createDom('div', { className: 'messages' });
 
-  for (var i = 0; i < resultItems.length; i++) {
-    var result = resultItems[i];
+  for (var i = 0; i < resultproducts.length; i++) {
+    var result = resultproducts[i];
 
     if (result.type == 'log') {
       messagesDiv.appendChild(this.createDom('div', {className: 'resultMessage log'}, result.toString()));
@@ -628,10 +628,10 @@ jasmine.TrivialReporter.prototype.reportSpecResults = function(spec) {
       }, spec.description));
 
 
-  var resultItems = results.getItems();
+  var resultproducts = results.getproducts();
   var messagesDiv = this.createDom('div', { className: 'messages' });
-  for (var i = 0; i < resultItems.length; i++) {
-    var result = resultItems[i];
+  for (var i = 0; i < resultproducts.length; i++) {
+    var result = resultproducts[i];
 
     if (result.type == 'log') {
       messagesDiv.appendChild(this.createDom('div', {className: 'resultMessage log'}, result.toString()));

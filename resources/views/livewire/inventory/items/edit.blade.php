@@ -8,7 +8,7 @@
 
     <div class="card border-0 shadow-lg rounded-4 stylish-card mb-4">
         <div class="card-header bg-light fw-bold">
-            <i class="mdi mdi-pencil-outline me-2"></i> {{ __('pos.inventory_items_title') }}
+            <i class="mdi mdi-pencil-outline me-2"></i> {{ __('pos.inventory_products_title') }}
         </div>
         <div class="card-body p-4">
             <form wire:submit.prevent="save" class="row g-3">

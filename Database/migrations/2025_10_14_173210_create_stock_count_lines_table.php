@@ -21,7 +21,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('stock_count_id')->references('id')->on('stock_counts');
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreign('item_id')->references('id')->on('products');
             $table->foreign('batch_id')->references('id')->on('batches');
         });
     }

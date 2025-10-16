@@ -2,7 +2,7 @@ import {
   AddItemAction,
   RemoveItemAction,
   HighlightItemAction,
-} from '../actions/items';
+} from '../actions/products';
 import { Item } from '../interfaces/item';
 import { State } from '../interfaces/state';
 
@@ -14,14 +14,14 @@ type ActionTypes =
   | HighlightItemAction
   | Record<string, never>;
 
-export default function items(
+export default function products(
   state: Item[] = defaultState,
   action: ActionTypes = {},
-): State['items'] {
+): State['products'] {
   switch (action.type) {
     case 'ADD_ITEM': {
       const addItemAction = action as AddItemAction;
-      // Add object to items array
+      // Add object to products array
       const newState = [
         ...state,
         {

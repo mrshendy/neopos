@@ -123,6 +123,8 @@ Route::group(
             // 🔄 Transactions
             Route::get('transactions', [transactionscontroller::class, 'index'])->name('inventory.transactions.index');
             Route::get('transactions/create', [transactionscontroller::class, 'create'])->name('inventory.transactions.create');
+            Route::get('transactions/{id}/edit', [transactionscontroller::class, 'edit'])->name('inventory.transactions.edit');
+            Route::post('transactions/{id}/update', [transactionscontroller::class, 'update'])->name('inventory.transactions.update');
             Route::post('transactions/store', [transactionscontroller::class, 'store'])->name('inventory.transactions.store');
             Route::post('transactions/{id}/delete', [transactionscontroller::class, 'destroy'])->name('inventory.transactions.destroy');
 

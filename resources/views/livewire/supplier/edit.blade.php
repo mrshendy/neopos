@@ -1,7 +1,7 @@
 <div class="supplier-edit">
 
     {{-- ✅ رأس الصفحة --}}
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <h4 class="mb-0">
             <i class="mdi mdi-square-edit-outline me-1 text-primary"></i>
             {{ __('pos.supplier_edit') }}

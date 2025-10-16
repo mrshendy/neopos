@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <h4 class="mb-0">
             <i class="mdi mdi-account-plus-outline me-2"></i>
             {{ __('pos.title_customers_create') }}
@@ -272,7 +272,7 @@
             </a>
 
             {{-- حالة التحميل --}}
-            <div class="ms-auto d-flex align-items-center">
+            <div class="ms-auto d-flex align-products-center">
                 <span class="text-muted small" wire:loading>
                     <i class="mdi mdi-loading mdi-spin me-1"></i> {{ __('pos.loading') }}
                 </span>

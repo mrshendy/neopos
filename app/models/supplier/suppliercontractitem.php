@@ -11,7 +11,7 @@ class suppliercontractitem extends Model
 {
     use HasFactory, SoftDeletes, HasTranslations;
 
-    protected $table = 'supplier_contract_items';
+    protected $table = 'supplier_contract_products';
 
     protected $fillable = [
         'supplier_contract_id','product_sku','product_name',

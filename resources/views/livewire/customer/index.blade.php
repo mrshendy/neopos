@@ -13,7 +13,7 @@
         </div>
     @endif
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <h4 class="mb-0">
             <i class="mdi mdi-account-group-outline me-2"></i> {{ __('pos.title_customers_index') }}
         </h4>

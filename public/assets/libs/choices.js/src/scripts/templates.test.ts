@@ -173,7 +173,7 @@ describe('templates', () => {
     const classes = {
       list: 'class-1',
       listSingle: 'class-2',
-      listItems: 'class-3',
+      listproducts: 'class-3',
     };
 
     describe('select one element', () => {
@@ -190,7 +190,7 @@ describe('templates', () => {
     describe('non select one element', () => {
       it('returns expected html', () => {
         const expectedOutput = strToEl(
-          `<div class="${classes.list} ${classes.listItems}"></div>`,
+          `<div class="${classes.list} ${classes.listproducts}"></div>`,
         );
         const actualOutput = templates.itemList(classes, false);
 
@@ -319,12 +319,12 @@ describe('templates', () => {
       item: 'class-1',
       itemChoice: 'class-2',
       itemDisabled: 'class-3',
-      itemSelectable: 'class-4',
+      productselectable: 'class-4',
       placeholder: 'class-5',
       selectedState: 'class-6',
     };
 
-    const itemSelectText = 'test 6';
+    const productselectText = 'test 6';
 
     let data;
 
@@ -344,8 +344,8 @@ describe('templates', () => {
       it('returns expected html', () => {
         const expectedOutput = strToEl(`
           <div
-            class="${classes.item} ${classes.itemChoice} ${classes.itemSelectable}"
-            data-select-text="${itemSelectText}"
+            class="${classes.item} ${classes.itemChoice} ${classes.productselectable}"
+            data-select-text="${productselectText}"
             data-choice
             data-id="${data.id}"
             data-value="${data.value}"
@@ -356,7 +356,7 @@ describe('templates', () => {
             ${data.label}
           </div>
         `);
-        const actualOutput = templates.choice(classes, data, itemSelectText);
+        const actualOutput = templates.choice(classes, data, productselectText);
 
         expectEqualElements(actualOutput, expectedOutput);
       });
@@ -374,7 +374,7 @@ describe('templates', () => {
         const expectedOutput = strToEl(`
           <div
             class="${classes.item} ${classes.itemChoice} ${classes.itemDisabled}"
-            data-select-text="${itemSelectText}"
+            data-select-text="${productselectText}"
             data-choice
             data-id="${data.id}"
             data-value="${data.value}"
@@ -386,7 +386,7 @@ describe('templates', () => {
             ${data.label}
           </div>
         `);
-        const actualOutput = templates.choice(classes, data, itemSelectText);
+        const actualOutput = templates.choice(classes, data, productselectText);
 
         expectEqualElements(actualOutput, expectedOutput);
       });
@@ -403,8 +403,8 @@ describe('templates', () => {
       it('returns expected html', () => {
         const expectedOutput = strToEl(`
           <div
-            class="${classes.item} ${classes.itemChoice} ${classes.selectedState} ${classes.itemSelectable}"
-            data-select-text="${itemSelectText}"
+            class="${classes.item} ${classes.itemChoice} ${classes.selectedState} ${classes.productselectable}"
+            data-select-text="${productselectText}"
             data-choice
             data-id="${data.id}"
             data-value="${data.value}"
@@ -415,7 +415,7 @@ describe('templates', () => {
             ${data.label}
           </div>
         `);
-        const actualOutput = templates.choice(classes, data, itemSelectText);
+        const actualOutput = templates.choice(classes, data, productselectText);
 
         expectEqualElements(actualOutput, expectedOutput);
       });
@@ -432,8 +432,8 @@ describe('templates', () => {
       it('returns expected html', () => {
         const expectedOutput = strToEl(`
           <div
-            class="${classes.item} ${classes.itemChoice} ${classes.placeholder} ${classes.itemSelectable}"
-            data-select-text="${itemSelectText}"
+            class="${classes.item} ${classes.itemChoice} ${classes.placeholder} ${classes.productselectable}"
+            data-select-text="${productselectText}"
             data-choice
             data-id="${data.id}"
             data-value="${data.value}"
@@ -444,7 +444,7 @@ describe('templates', () => {
             ${data.label}
           </div>
         `);
-        const actualOutput = templates.choice(classes, data, itemSelectText);
+        const actualOutput = templates.choice(classes, data, productselectText);
 
         expectEqualElements(actualOutput, expectedOutput);
       });
@@ -461,8 +461,8 @@ describe('templates', () => {
       it('returns expected html', () => {
         const expectedOutput = strToEl(`
           <div
-            class="${classes.item} ${classes.itemChoice} ${classes.itemSelectable}"
-            data-select-text="${itemSelectText}"
+            class="${classes.item} ${classes.itemChoice} ${classes.productselectable}"
+            data-select-text="${productselectText}"
             data-choice
             data-id="${data.id}"
             data-value="${data.value}"
@@ -473,7 +473,7 @@ describe('templates', () => {
             ${data.label}
           </div>
         `);
-        const actualOutput = templates.choice(classes, data, itemSelectText);
+        const actualOutput = templates.choice(classes, data, productselectText);
 
         expectEqualElements(actualOutput, expectedOutput);
       });

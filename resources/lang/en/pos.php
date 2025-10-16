@@ -631,8 +631,8 @@ return [
     'status_inactive' => 'Inactive',
     'hint_status' => 'Enable or disable this list.',
 
-    // Price Items
-    'price_items' => 'Price Items',
+    // Price products
+    'price_products' => 'Price products',
     'add_row' => 'Add Item',
     'product' => 'Product',
     'price' => 'Price',
@@ -653,7 +653,7 @@ return [
     'ph_search' => 'Search by name...',
     'all' => 'All',
     'per_page' => 'Rows per page',
-    'items_count' => 'Items Count',
+    'products_count' => 'products Count',
 
     // System messages
     'no_data' => 'No data found',
@@ -707,8 +707,8 @@ return [
     'posted' => 'Posted',
     'cancelled' => 'Cancelled',
 
-    // ===== Items =====
-    'inventory_items_title' => 'Inventory Items',
+    // ===== products =====
+    'inventory_products_title' => 'Inventory products',
     'btn_new_item' => 'New Item',
     'add_new_item' => 'Add New Item',
 
@@ -734,7 +734,7 @@ return [
     'inventory_deleted_success' => 'Item deleted successfully',
     'inventory_item_status_changed' => 'Item status changed',
 
-    // Validations (Items)
+    // Validations (products)
     'val_item_name_ar_required' => 'Arabic name is required',
     'val_item_name_en_required' => 'English name is required',
     'val_item_sku_required' => 'SKU is required',
@@ -867,7 +867,7 @@ return [
     'from_warehouse_filter' => 'From Warehouse',
     'to_warehouse_filter' => 'To Warehouse',
     // General Titles
-    'inventory_items_title' => 'Items',
+    'inventory_products_title' => 'products',
     'inventory_warehouses_title' => 'Warehouses',
     'inventory_transactions_title' => 'Transactions',
     'inventory_counts_title' => 'Stock Counts',
@@ -913,7 +913,7 @@ return [
     // Search / Filters
     'search' => 'Search',
     'ph_search_sku_name' => 'Search by name or SKU...',
-    'hint_search_items' => 'You can search by Arabic/English name or SKU.',
+    'hint_search_products' => 'You can search by Arabic/English name or SKU.',
 
     // Filters for Reports
     'filter_warehouse' => 'Warehouse',
@@ -963,4 +963,41 @@ return [
 'Go_to_settings_now' => 'Go to settings now',
  'view_image' => 'View Image',
     'close'      => 'Close',
+     // ===== Inventory Count (Stocktaking) =====
+    'start_new_count'  => 'Start New Count',
+    'warehouse'        => 'Warehouse',
+    'choose'           => 'Choose',
+    'policy'           => 'Counting Policy',
+    'count_periodic'   => 'Periodic Count',
+    'count_spot'       => 'Spot Count',
+    'notes'            => 'Notes',
+    'hint_notes'       => 'Optional notes…',
+    'btn_start'        => 'Start',
+    'previous_counts'  => 'Previous Counts',
+    'status'           => 'Status',
+    'started_at'       => 'Started At',
+    'no_data'          => 'No data available',
+
+    // statuses (used with __('pos.' . $c->status))
+    'open'             => 'Open',
+    'closed'           => 'Closed',
+     // ===== Inventory Alerts =====
+    'inventory_alerts_title' => 'Inventory Alerts',
+    'alert_type'             => 'Alert Type',
+    'alert_reorder'          => 'Reorder',
+    'alert_expiry'           => 'Near Expiry',
+    'alert_expired'          => 'Expired',
+
+    'item'                   => 'Item',
+    'warehouse'              => 'Warehouse',
+    'qty'                    => 'Qty',
+    'alert_message'          => 'Alert Message',
+    'created_at'             => 'Created At',
+    'no_alerts'              => 'No alerts found',
+
+    // Dynamic messages
+    'reorder_alert_msg'      => 'Available quantity of :item is below the reorder level.',
+    'expiry_alert_msg'       => ':item is approaching its expiry date — sell/rotate first.',
+    'expired_alert_msg'      => ':item has expired — stop selling and take proper action.',
+
 ];

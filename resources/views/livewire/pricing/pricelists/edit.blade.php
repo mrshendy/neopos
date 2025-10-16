@@ -16,7 +16,7 @@
     @error('save') <div class="alert alert-danger">{{ $message }}</div> @enderror
 
     <style>
-        .preview-chip{display:inline-flex;align-items:center;gap:.35rem;background:#f8f9fa;border:1px solid rgba(0,0,0,.06);border-radius:999px;padding:.25rem .6rem;font-size:.8rem;color:#6c757d}
+        .preview-chip{display:inline-flex;align-products:center;gap:.35rem;background:#f8f9fa;border:1px solid rgba(0,0,0,.06);border-radius:999px;padding:.25rem .6rem;font-size:.8rem;color:#6c757d}
         .field-block label{font-weight:600}
         .help{font-size:.8rem;color:#6c757d}
         .stylish-card{border:1px solid rgba(0,0,0,.06)}
@@ -72,8 +72,8 @@
 
         {{-- بنود الأسعار --}}
         <div class="card shadow-sm rounded-4 stylish-card">
-            <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
-                <span><i class="mdi mdi-cash"></i> {{ __('pos.price_items') ?? 'بنود الأسعار' }}</span>
+            <div class="card-header bg-light fw-bold d-flex justify-content-between align-products-center">
+                <span><i class="mdi mdi-cash"></i> {{ __('pos.price_products') ?? 'بنود الأسعار' }}</span>
                 <button type="button" class="btn btn-sm btn-primary rounded-pill" wire:click="addItem">
                     <i class="mdi mdi-plus"></i> {{ __('pos.add_row') ?? 'إضافة بند' }}
                 </button>
@@ -94,10 +94,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($items as $idx => $it)
+                            @foreach($products as $idx => $it)
                                 <tr>
                                     <td>
-                                        <select class="form-select" wire:model.defer="items.{{ $idx }}.product_id">
+                                        <select class="form-select" wire:model.defer="products.{{ $idx }}.product_id">
                                             <option value="">{{ __('pos.choose') ?? 'اختر' }}</option>
                                             @foreach($products as $p)
                                                 <option value="{{ $p->id }}">
@@ -105,27 +105,27 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error("items.$idx.product_id") <div class="text-danger small">{{ $message }}</div> @enderror
+                                        @error("products.$idx.product_id") <div class="text-danger small">{{ $message }}</div> @enderror
                                     </td>
                                     <td>
-                                        <input type="number" step="0.01" class="form-control" wire:model.defer="items.{{ $idx }}.price">
-                                        @error("items.$idx.price") <div class="text-danger small">{{ $message }}</div> @enderror
+                                        <input type="number" step="0.01" class="form-control" wire:model.defer="products.{{ $idx }}.price">
+                                        @error("products.$idx.price") <div class="text-danger small">{{ $message }}</div> @enderror
                                     </td>
                                     <td>
-                                        <input type="number" min="1" class="form-control" wire:model.defer="items.{{ $idx }}.min_qty">
-                                        @error("items.$idx.min_qty") <div class="text-danger small">{{ $message }}</div> @enderror
+                                        <input type="number" min="1" class="form-control" wire:model.defer="products.{{ $idx }}.min_qty">
+                                        @error("products.$idx.min_qty") <div class="text-danger small">{{ $message }}</div> @enderror
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" wire:model.defer="items.{{ $idx }}.max_qty">
-                                        @error("items.$idx.max_qty") <div class="text-danger small">{{ $message }}</div> @enderror
+                                        <input type="number" class="form-control" wire:model.defer="products.{{ $idx }}.max_qty">
+                                        @error("products.$idx.max_qty") <div class="text-danger small">{{ $message }}</div> @enderror
                                     </td>
                                     <td>
-                                        <input type="date" class="form-control" wire:model.defer="items.{{ $idx }}.valid_from">
-                                        @error("items.$idx.valid_from") <div class="text-danger small">{{ $message }}</div> @enderror
+                                        <input type="date" class="form-control" wire:model.defer="products.{{ $idx }}.valid_from">
+                                        @error("products.$idx.valid_from") <div class="text-danger small">{{ $message }}</div> @enderror
                                     </td>
                                     <td>
-                                        <input type="date" class="form-control" wire:model.defer="items.{{ $idx }}.valid_to">
-                                        @error("items.$idx.valid_to") <div class="text-danger small">{{ $message }}</div> @enderror
+                                        <input type="date" class="form-control" wire:model.defer="products.{{ $idx }}.valid_to">
+                                        @error("products.$idx.valid_to") <div class="text-danger small">{{ $message }}</div> @enderror
                                     </td>
                                     <td class="text-end">
                                         <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" wire:click="removeItem({{ $idx }})">
@@ -134,7 +134,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            @error('items') <tr><td colspan="7"><div class="text-danger small px-3 pb-3">{{ $message }}</div></td></tr> @enderror
+                            @error('products') <tr><td colspan="7"><div class="text-danger small px-3 pb-3">{{ $message }}</div></td></tr> @enderror
                         </tbody>
                     </table>
                 </div>

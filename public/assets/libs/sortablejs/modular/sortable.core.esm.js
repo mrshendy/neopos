@@ -2383,23 +2383,23 @@ Sortable.prototype =
 
   /**
    * Sorts the elements according to the array.
-   * @param  {String[]}  order  order of the items
+   * @param  {String[]}  order  order of the products
    */
   sort: function sort(order, useAnimation) {
-    var items = {},
+    var products = {},
         rootEl = this.el;
     this.toArray().forEach(function (id, i) {
       var el = rootEl.children[i];
 
       if (closest(el, this.options.draggable, rootEl, false)) {
-        items[id] = el;
+        products[id] = el;
       }
     }, this);
     useAnimation && this.captureAnimationState();
     order.forEach(function (id) {
-      if (items[id]) {
-        rootEl.removeChild(items[id]);
-        rootEl.appendChild(items[id]);
+      if (products[id]) {
+        rootEl.removeChild(products[id]);
+        rootEl.appendChild(products[id]);
       }
     });
     useAnimation && this.animateAll();
@@ -3341,7 +3341,7 @@ function MultiDragPlugin() {
           multiDragElements.forEach(function (multiDragElement) {
             unsetRect(multiDragElement);
           });
-        } // Remove all auxiliary multidrag items from el, if sorting enabled
+        } // Remove all auxiliary multidrag products from el, if sorting enabled
 
 
         if (_this2.options.sort) {
@@ -3720,7 +3720,7 @@ function MultiDragPlugin() {
         });
       });
       return {
-        items: _toConsumableArray(multiDragElements),
+        products: _toConsumableArray(multiDragElements),
         clones: [].concat(multiDragClones),
         oldIndicies: oldIndicies,
         newIndicies: newIndicies

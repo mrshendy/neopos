@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\inventory\items;
+namespace App\Http\Livewire\inventory\products;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -41,9 +41,9 @@ class Index extends Component
         if ($this->track_batch !== '')  $q->where('track_batch', (bool)$this->track_batch);
         if ($this->track_serial !== '') $q->where('track_serial', (bool)$this->track_serial);
 
-        $items = $q->orderByDesc('id')->paginate(10);
+        $products = $q->orderByDesc('id')->paginate(10);
 
-        return view('livewire.inventory.manage', compact('items'));
+        return view('livewire.inventory.manage', compact('products'));
     }
 
     public function toggleStatus($id)

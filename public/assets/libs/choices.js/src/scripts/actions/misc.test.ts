@@ -17,7 +17,7 @@ describe('actions/misc', () => {
     it('returns RESET_TO action', () => {
       const state: State = {
         choices: [],
-        items: [],
+        products: [],
         groups: [],
         loading: false,
       };

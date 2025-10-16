@@ -1,7 +1,7 @@
 <div class="page-wrap">
     {{-- العنوان --}}
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-        <h4 class="mb-0 d-flex align-items-center gap-2">
+    <div class="d-flex align-products-center justify-content-between flex-wrap gap-2 mb-3">
+        <h4 class="mb-0 d-flex align-products-center gap-2">
             <i class="mdi mdi-view-list-outline"></i>
             {{ __('pos.price_lists_title') ?? 'قوائم الأسعار' }}
         </h4>
@@ -31,7 +31,7 @@
         .table thead th{white-space:nowrap}
         .table td,.table th{vertical-align:middle}
         .thead-sticky thead th{position:sticky;top:0;background:#f8f9fa;z-index:5}
-        .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .6rem;border-radius:999px;border:1px solid rgba(0,0,0,.08);background:#fff;font-size:.8rem;color:#6c757d}
+        .chip{display:inline-flex;align-products:center;gap:.35rem;padding:.2rem .6rem;border-radius:999px;border:1px solid rgba(0,0,0,.08);background:#fff;font-size:.8rem;color:#6c757d}
         .badge-status{font-size:.75rem}
         .row-actions .btn{min-width:34px}
         .name-col strong{font-weight:700}
@@ -44,7 +44,7 @@
     {{-- شريط الأدوات --}}
     <div class="card card-modern mb-3">
         <div class="card-body toolbar">
-            <div class="row g-3 align-items-end">
+            <div class="row g-3 align-products-end">
                 <div class="col-lg-4">
                     <label class="form-label"><i class="mdi mdi-magnify"></i> {{ __('pos.search') ?? 'بحث' }}</label>
                     <input type="text" class="form-control" wire:model.debounce.400ms="search" placeholder="{{ __('pos.ph_search') ?? 'ابحث بالاسم...' }}">
@@ -111,7 +111,7 @@
                         <tr>
                             <th style="width:70px">#</th>
                             <th>{{ __('pos.name') ?? 'الاسم' }}</th>
-                            <th class="hide-sm" style="width:150px">{{ __('pos.items_count') ?? 'عدد البنود' }}</th>
+                            <th class="hide-sm" style="width:150px">{{ __('pos.products_count') ?? 'عدد البنود' }}</th>
                             <th class="hide-sm">{{ __('pos.validity') ?? 'الصلاحية' }}</th>
                             <th style="width:120px">{{ __('pos.status') ?? 'الحالة' }}</th>
                             <th style="width:220px" class="text-end">{{ __('pos.actions') ?? 'الإجراءات' }}</th>
@@ -156,11 +156,11 @@
 
                                 <td>
                                     @if ($row->status === 'active')
-                                        <span class="badge bg-success badge-status d-inline-flex align-items-center gap-1">
+                                        <span class="badge bg-success badge-status d-inline-flex align-products-center gap-1">
                                             <i class="mdi mdi-check-circle-outline"></i>{{ __('pos.status_active') ?? 'نشط' }}
                                         </span>
                                     @else
-                                        <span class="badge bg-secondary badge-status d-inline-flex align-items-center gap-1">
+                                        <span class="badge bg-secondary badge-status d-inline-flex align-products-center gap-1">
                                             <i class="mdi mdi-close-circle-outline"></i>{{ __('pos.status_inactive') ?? 'غير نشط' }}
                                         </span>
                                     @endif
@@ -221,7 +221,7 @@
                 </table>
             </div>
 
-            <div class="p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="p-3 d-flex align-products-center justify-content-between flex-wrap gap-2">
                 <div class="small text-muted">
                     {{ __('pos.showing') ?? 'عرض' }} {{ $lists->firstItem() }}–{{ $lists->lastItem() }}
                     {{ __('pos.of') ?? 'من' }} {{ $lists->total() }}

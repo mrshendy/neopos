@@ -15,7 +15,7 @@
                     <!-- start page title -->
                     <div class="row">
                         <div class="col-12">
-                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <div class="page-title-box d-sm-flex align-products-center justify-content-between">
                                 <h4 class="mb-sm-0">{{ trans('dashbord_trans.dashboard') }}</h4>
 
                                 <div class="page-title-right">
@@ -37,7 +37,7 @@
                                     <div class="col-lg-3 col-md-6">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-products-center">
                                                     <div class="avatar-sm flex-shrink-0">
                                                         <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
                                                             <i class="mdi mdi-account-injury align-middle"></i>
@@ -60,7 +60,7 @@
                                     <div class="col-lg-3 col-md-6">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-products-center">
                                                     <div class="avatar-sm flex-shrink-0">
                                                         <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
                                                             <i class="mdi mdi-human-male align-middle"></i>
@@ -82,7 +82,7 @@
                                     <div class="col-lg-3 col-md-6">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-products-center">
                                                     <div class="avatar-sm flex-shrink-0">
                                                         <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
                                                             <i class="mdi mdi-human-female align-middle"></i>
@@ -104,7 +104,7 @@
                                     <div class="col-lg-3 col-md-6">
                                         <div class="card">
                                             <div class="card-body">
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-products-center">
                                                     <div class="avatar-sm flex-shrink-0">
                                                         <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
                                                             <i class="mdi mdi-human-capacity-decrease align-middle"></i>
@@ -132,7 +132,7 @@
                             <!-- card -->
                             <div class="card card-animate">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex align-products-center">
                                         <div class="flex-grow-1 overflow-hidden">
                                             <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{{ trans('dashbord_trans.total_visits_today') }}</p>
                                         </div>
@@ -142,7 +142,7 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                    <div class="d-flex align-products-end justify-content-between mt-4">
                                         <div>
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="20">0</span> </h4>
                                         </div>
@@ -160,7 +160,7 @@
                             <!-- card -->
                             <div class="card card-animate">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex align-products-center">
                                         <div class="flex-grow-1 overflow-hidden">
                                             <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{{ trans('dashbord_trans.total_examination_today') }}</p>
                                         </div>
@@ -170,7 +170,7 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                    <div class="d-flex align-products-end justify-content-between mt-4">
                                         <div>
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="15">0</span></h4>
                                         </div>
@@ -188,7 +188,7 @@
                             <!-- card -->
                             <div class="card card-animate">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex align-products-center">
                                         <div class="flex-grow-1 overflow-hidden">
                                             <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{{ trans('dashbord_trans.total_follow_up_today') }}</p>
                                         </div>
@@ -198,7 +198,7 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                    <div class="d-flex align-products-end justify-content-between mt-4">
                                         <div>
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value" data-target="5">0</span> </h4>
                                         </div>
@@ -216,7 +216,7 @@
                             <!-- card -->
                             <div class="card card-animate">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex align-products-center">
                                         <div class="flex-grow-1 overflow-hidden">
                                             <p class="text-uppercase fw-medium text-muted text-truncate mb-0"> {{ trans('dashbord_trans.total_cash_today') }}</p>
                                         </div>
@@ -226,7 +226,7 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                    <div class="d-flex align-products-end justify-content-between mt-4">
                                         <div>
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">$<span class="counter-value" data-target="1">0</span>k </h4>
                                         </div>
@@ -243,7 +243,7 @@
                     <div class="row">
                         <div class="col-xl-6">
                             <div class="card">
-                                <div class="card-header border-0 align-items-center d-flex">
+                                <div class="card-header border-0 align-products-center d-flex">
                                     <h4 class="card-title mb-0 flex-grow-1"> {{ trans('dashbord_trans.financial_analysis') }}</h4>
                                     <div>
                                         <button type="button" class="btn btn-soft-secondary btn-sm shadow-none">
@@ -297,7 +297,7 @@
                         </div><!-- end col -->
                         <div class="col-xl-3">
                             <div class="card card-height-100">
-                                <div class="card-header align-items-center d-flex">
+                                <div class="card-header align-products-center d-flex">
                                     <h4 class="card-title mb-0 flex-grow-1">{{ trans('dashbord_trans.patients_by_region') }}</h4>
                                    
                                 </div><!-- end card header -->
@@ -309,7 +309,7 @@
                         </div> <!-- .col-->
                          <div class="col-xxl-3">
                             <div class="card card-height-100">
-                                <div class="card-header border-0 align-items-center d-flex">
+                                <div class="card-header border-0 align-products-center d-flex">
                                     <h4 class="card-title mb-0 flex-grow-1">{{ trans('dashbord_trans.top_diseases') }}</h4>
                                     <div>
                                         <div class="dropdown">

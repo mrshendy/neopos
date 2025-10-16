@@ -22,7 +22,7 @@ class price_list extends Model
     ];
     public $translatable = ['name'];
 
-    public function items(){ return $this->hasMany(price_item::class); }
+    public function products(){ return $this->hasMany(price_item::class); }
     public function channel(){ return $this->belongsTo(\App\models\product\sales_channel::class,'sales_channel_id'); }
     public function group()  { return $this->belongsTo(\App\models\product\customer_group::class,'customer_group_id'); }
 }

@@ -15,8 +15,8 @@
     </style>
 
     {{-- هيدر الصفحة + زر إنشاء --}}
-    <div class="d-flex flex-wrap align-items-center justify-content-between k-header mb-3">
-        <div class="d-flex align-items-center gap-2">
+    <div class="d-flex flex-wrap align-products-center justify-content-between k-header mb-3">
+        <div class="d-flex align-products-center gap-2">
             <h4 class="mb-0">
                 <i class="mdi mdi-truck-outline me-1 text-primary"></i>
                 {{ __('pos.supplier_list') }}
@@ -41,7 +41,7 @@
     {{-- شريط الفلاتر --}}
     <div class="card border-0 shadow-sm rounded-4 mb-3 k-card">
         <div class="card-body py-3">
-            <div class="row g-2 align-items-end">
+            <div class="row g-2 align-products-end">
                 <div class="col-lg-3 col-md-6">
                     <label class="form-label small mb-1">
                         <i class="mdi mdi-magnify text-primary me-1"></i>{{ __('pos.search_supplier') }}
@@ -181,7 +181,7 @@
                 </table>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center p-3">
+            <div class="d-flex justify-content-between align-products-center p-3">
                 <small class="text-muted">
                     {{ $suppliers->firstItem() }}–{{ $suppliers->lastItem() }} / {{ $suppliers->total() }}
                 </small>

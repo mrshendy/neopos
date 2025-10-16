@@ -15,8 +15,7 @@ class Create extends Component
     public $valid_to   = null;
     public $status     = 'active';
 
-    public $items = [];   // ['product_id','price','min_qty','max_qty','valid_from','valid_to']
-    public $products = [];
+    public $products = [];   // ['product_id','price','min_qty','max_qty','valid_from','valid_to']
 
     protected $rules = [
         'name.ar'    => 'required|string|max:255',
@@ -25,20 +24,20 @@ class Create extends Component
         'valid_to'   => 'nullable|date|after_or_equal:valid_from',
         'status'     => 'required|in:active,inactive',
 
-        'items'                    => 'array|min:1',
-        'items.*.product_id'       => 'required|exists:products,id',
-        'items.*.price'            => 'required|numeric|min:0',
-        'items.*.min_qty'          => 'required|integer|min:1',
-        'items.*.max_qty'          => 'nullable|integer',
-        'items.*.valid_from'       => 'nullable|date',
-        'items.*.valid_to'         => 'nullable|date',
+        'products'                    => 'array|min:1',
+        'products.*.product_id'       => 'required|exists:products,id',
+        'products.*.price'            => 'required|numeric|min:0',
+        'products.*.min_qty'          => 'required|integer|min:1',
+        'products.*.max_qty'          => 'nullable|integer',
+        'products.*.valid_from'       => 'nullable|date',
+        'products.*.valid_to'         => 'nullable|date',
     ];
 
     protected $messages = [
         'name.ar.required'        => 'اسم القائمة بالعربية مطلوب.',
         'name.en.required'        => 'اسم القائمة بالإنجليزية مطلوب.',
         'valid_to.after_or_equal' => 'تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البداية.',
-        'items.min'               => 'أضف بندًا واحدًا على الأقل.',
+        'products.min'               => 'أضف بندًا واحدًا على الأقل.',
     ];
 
     private function norm($v) {
@@ -49,20 +48,20 @@ class Create extends Component
     public function mount(): void
     {
         $this->products = product::orderBy('id', 'desc')->get();
-        $this->items = [
+        $this->products = [
             ['product_id'=>null, 'price'=>null, 'min_qty'=>1, 'max_qty'=>null, 'valid_from'=>null, 'valid_to'=>null],
         ];
     }
 
     public function addItem(): void
     {
-        $this->items[] = ['product_id'=>null, 'price'=>null, 'min_qty'=>1, 'max_qty'=>null, 'valid_from'=>null, 'valid_to'=>null];
+        $this->products[] = ['product_id'=>null, 'price'=>null, 'min_qty'=>1, 'max_qty'=>null, 'valid_from'=>null, 'valid_to'=>null];
     }
 
     public function removeItem(int $index): void
     {
-        unset($this->items[$index]);
-        $this->items = array_values($this->items);
+        unset($this->products[$index]);
+        $this->products = array_values($this->products);
     }
 
     public function save()
@@ -70,22 +69,22 @@ class Create extends Component
         $this->validate();
 
         // تحقق منطقي ومنع التكرار داخل الطلب
-        foreach ($this->items as $i => $it) {
+        foreach ($this->products as $i => $it) {
             $min = (int)($it['min_qty'] ?? 1);
             $max = $it['max_qty'] !== null && $it['max_qty'] !== '' ? (int)$it['max_qty'] : null;
             if (!is_null($max) && $max < $min) {
-                $this->addError("items.$i.max_qty", 'أقصى كمية يجب أن تكون أكبر أو تساوي الحد الأدنى.');
+                $this->addError("products.$i.max_qty", 'أقصى كمية يجب أن تكون أكبر أو تساوي الحد الأدنى.');
                 return;
             }
             $vf = $it['valid_from'] ?: null;
             $vt = $it['valid_to']   ?: null;
             if ($vf && $vt && $vt < $vf) {
-                $this->addError("items.$i.valid_to", 'نهاية صلاحية البند يجب أن تكون بعد أو تساوي البداية.');
+                $this->addError("products.$i.valid_to", 'نهاية صلاحية البند يجب أن تكون بعد أو تساوي البداية.');
                 return;
             }
         }
         $seen = [];
-        foreach ($this->items as $i => $it) {
+        foreach ($this->products as $i => $it) {
             $key = implode('|', [
                 $this->norm($it['product_id']),
                 (string)(int)($it['min_qty'] ?? 1),
@@ -94,7 +93,7 @@ class Create extends Component
                 $this->norm($it['valid_to']),
             ]);
             if (isset($seen[$key])) {
-                $this->addError("items.$i.product_id", 'لا يمكن تكرار نفس النطاق لنفس المنتج (نفس الكميات ونفس الفترة).');
+                $this->addError("products.$i.product_id", 'لا يمكن تكرار نفس النطاق لنفس المنتج (نفس الكميات ونفس الفترة).');
                 return;
             }
             $seen[$key] = true;
@@ -109,7 +108,7 @@ class Create extends Component
                 'status'     => $this->status,
             ]);
 
-            foreach ($this->items as $it) {
+            foreach ($this->products as $it) {
                 $min = (int)($it['min_qty'] ?? 1);
                 $max = $it['max_qty'] !== null && $it['max_qty'] !== '' ? (int)$it['max_qty'] : null;
                 $vf  = $it['valid_from'] ?: null;

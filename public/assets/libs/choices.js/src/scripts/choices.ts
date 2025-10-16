@@ -10,7 +10,7 @@ import {
   Result,
 } from './actions/choices';
 import { addGroup } from './actions/groups';
-import { addItem, highlightItem, removeItem } from './actions/items';
+import { addItem, highlightItem, removeItem } from './actions/products';
 import { clearAll, resetTo, setIsLoading } from './actions/misc';
 import {
   Container,
@@ -141,7 +141,7 @@ class Choices implements Choices {
 
   _presetChoices: Partial<Choice>[];
 
-  _presetItems: Item[] | string[];
+  _presetproducts: Item[] | string[];
 
   constructor(
     element:
@@ -265,14 +265,14 @@ class Choices implements Choices {
 
     // Assign preset choices from passed object
     this._presetChoices = this.config.choices;
-    // Assign preset items from passed object first
-    this._presetItems = this.config.items;
+    // Assign preset products from passed object first
+    this._presetproducts = this.config.products;
     // Add any values passed from attribute
     if (this.passedElement.value && this._isTextElement) {
       const splitValues: string[] = this.passedElement.value.split(
         this.config.delimiter,
       );
-      this._presetItems = (this._presetItems as string[]).concat(splitValues);
+      this._presetproducts = (this._presetproducts as string[]).concat(splitValues);
     }
     // Create array of choices from option elements
     if ((this.passedElement as WrappedSelect).options) {
@@ -339,7 +339,7 @@ class Choices implements Choices {
     this._addEventListeners();
 
     const shouldDisable =
-      !this.config.addItems ||
+      !this.config.addproducts ||
       this.passedElement.element.hasAttribute('disabled');
 
     if (shouldDisable) {
@@ -444,35 +444,35 @@ class Choices implements Choices {
   }
 
   highlightAll(): this {
-    this._store.items.forEach((item) => this.highlightItem(item));
+    this._store.products.forEach((item) => this.highlightItem(item));
 
     return this;
   }
 
   unhighlightAll(): this {
-    this._store.items.forEach((item) => this.unhighlightItem(item));
+    this._store.products.forEach((item) => this.unhighlightItem(item));
 
     return this;
   }
 
-  removeActiveItemsByValue(value: string): this {
-    this._store.activeItems
+  removeActiveproductsByValue(value: string): this {
+    this._store.activeproducts
       .filter((item) => item.value === value)
       .forEach((item) => this._removeItem(item));
 
     return this;
   }
 
-  removeActiveItems(excludedId: number): this {
-    this._store.activeItems
+  removeActiveproducts(excludedId: number): this {
+    this._store.activeproducts
       .filter(({ id }) => id !== excludedId)
       .forEach((item) => this._removeItem(item));
 
     return this;
   }
 
-  removeHighlightedItems(runEvent = false): this {
-    this._store.highlightedActiveItems.forEach((item) => {
+  removeHighlightedproducts(runEvent = false): this {
+    this._store.highlightedActiveproducts.forEach((item) => {
       this._removeItem(item);
       // If this action was performed by the user
       // trigger the event
@@ -524,12 +524,12 @@ class Choices implements Choices {
   }
 
   getValue(valueOnly = false): string[] | Item[] | Item | string {
-    const values = this._store.activeItems.reduce<any[]>(
-      (selectedItems, item) => {
+    const values = this._store.activeproducts.reduce<any[]>(
+      (selectedproducts, item) => {
         const itemValue = valueOnly ? item.value : item;
-        selectedItems.push(itemValue);
+        selectedproducts.push(itemValue);
 
-        return selectedItems;
+        return selectedproducts;
       },
       [],
     );
@@ -537,12 +537,12 @@ class Choices implements Choices {
     return this._isSelectOneElement ? values[0] : values;
   }
 
-  setValue(items: string[] | Item[]): this {
+  setValue(products: string[] | Item[]): this {
     if (!this.initialised) {
       return this;
     }
 
-    items.forEach((value) => this._setChoiceOrItem(value));
+    products.forEach((value) => this._setChoiceOrItem(value));
 
     return this;
   }
@@ -564,7 +564,7 @@ class Choices implements Choices {
   /**
    * Set choices of select input via an array of objects (or function that returns array of object or promise of it),
    * a value field name and a label field name.
-   * This behaves the same as passing items via the choices option but can be called after initialising Choices.
+   * This behaves the same as passing products via the choices option but can be called after initialising Choices.
    * This can also be used to add groups of choices (see example 2); Optionally pass a true `replaceChoices` value to remove any existing choices.
    * Optionally pass a `customProperties` object to add additional data to your choices (useful when searching/filtering etc).
    *
@@ -587,8 +587,8 @@ class Choices implements Choices {
    *
    * example.setChoices(async () => {
    *   try {
-   *      const items = await fetch('/items');
-   *      return items.json()
+   *      const products = await fetch('/products');
+   *      return products.json()
    *   } catch(err) {
    *      console.error(err)
    *   }
@@ -761,10 +761,10 @@ class Choices implements Choices {
     const stateChanged =
       this._currentState.choices !== this._prevState.choices ||
       this._currentState.groups !== this._prevState.groups ||
-      this._currentState.items !== this._prevState.items;
+      this._currentState.products !== this._prevState.products;
     const shouldRenderChoices = this._isSelectElement;
-    const shouldRenderItems =
-      this._currentState.items !== this._prevState.items;
+    const shouldRenderproducts =
+      this._currentState.products !== this._prevState.products;
 
     if (!stateChanged) {
       return;
@@ -774,8 +774,8 @@ class Choices implements Choices {
       this._renderChoices();
     }
 
-    if (shouldRenderItems) {
-      this._renderItems();
+    if (shouldRenderproducts) {
+      this._renderproducts();
     }
 
     this._prevState = this._currentState;
@@ -821,8 +821,8 @@ class Choices implements Choices {
       choiceListFragment.childNodes &&
       choiceListFragment.childNodes.length > 0
     ) {
-      const { activeItems } = this._store;
-      const canAddItem = this._canAddItem(activeItems, this.input.value);
+      const { activeproducts } = this._store;
+      const canAddItem = this._canAddItem(activeproducts, this.input.value);
 
       // ...and we can select them
       if (canAddItem.response) {
@@ -858,15 +858,15 @@ class Choices implements Choices {
     }
   }
 
-  _renderItems(): void {
-    const activeItems = this._store.activeItems || [];
+  _renderproducts(): void {
+    const activeproducts = this._store.activeproducts || [];
     this.itemList.clear();
 
-    // Create a fragment to store our list items
+    // Create a fragment to store our list products
     // (so we don't have to update the DOM for each item)
-    const itemListFragment = this._createItemsFragment(activeItems);
+    const itemListFragment = this._createproductsFragment(activeproducts);
 
-    // If we have items to add, append them
+    // If we have products to add, append them
     if (itemListFragment.childNodes) {
       this.itemList.append(itemListFragment);
     }
@@ -911,7 +911,7 @@ class Choices implements Choices {
     fragment: DocumentFragment = document.createDocumentFragment(),
     withinGroup = false,
   ): DocumentFragment {
-    // Create a fragment to store our list items (so we don't have to update the DOM for each item)
+    // Create a fragment to store our list products (so we don't have to update the DOM for each item)
     const { renderSelectedChoices, searchResultLimit, renderChoiceLimit } =
       this.config;
     const filter = this._isSearching ? sortByScore : this.config.sorter;
@@ -925,7 +925,7 @@ class Choices implements Choices {
         const dropdownItem = this._getTemplate(
           'choice',
           choice,
-          this.config.itemSelectText,
+          this.config.productselectText,
         );
 
         fragment.appendChild(dropdownItem);
@@ -983,26 +983,26 @@ class Choices implements Choices {
     return fragment;
   }
 
-  _createItemsFragment(
-    items: Item[],
+  _createproductsFragment(
+    products: Item[],
     fragment: DocumentFragment = document.createDocumentFragment(),
   ): DocumentFragment {
     // Create fragment to add elements to
-    const { shouldSortItems, sorter, removeItemButton } = this.config;
+    const { shouldSortproducts, sorter, removeItemButton } = this.config;
 
-    // If sorting is enabled, filter items
-    if (shouldSortItems && !this._isSelectOneElement) {
-      items.sort(sorter);
+    // If sorting is enabled, filter products
+    if (shouldSortproducts && !this._isSelectOneElement) {
+      products.sort(sorter);
     }
 
     if (this._isTextElement) {
       // Update the value of the hidden input
-      this.passedElement.value = items
+      this.passedElement.value = products
         .map(({ value }) => value)
         .join(this.config.delimiter);
     } else {
       // Update the options of the hidden input
-      (this.passedElement as WrappedSelect).options = items;
+      (this.passedElement as WrappedSelect).options = products;
     }
 
     const addItemToFragment = (item: Item): void => {
@@ -1013,7 +1013,7 @@ class Choices implements Choices {
     };
 
     // Add each list item to list
-    items.forEach(addItemToFragment);
+    products.forEach(addItemToFragment);
 
     return fragment;
   }
@@ -1040,11 +1040,11 @@ class Choices implements Choices {
     this._triggerChange(placeholderChoice.value);
   }
 
-  _handleButtonAction(activeItems?: Item[], element?: HTMLElement): void {
+  _handleButtonAction(activeproducts?: Item[], element?: HTMLElement): void {
     if (
-      !activeItems ||
+      !activeproducts ||
       !element ||
-      !this.config.removeItems ||
+      !this.config.removeproducts ||
       !this.config.removeItemButton
     ) {
       return;
@@ -1053,7 +1053,7 @@ class Choices implements Choices {
     const itemId =
       element.parentNode && (element.parentNode as HTMLElement).dataset.id;
     const itemToRemove =
-      itemId && activeItems.find((item) => item.id === parseInt(itemId, 10));
+      itemId && activeproducts.find((item) => item.id === parseInt(itemId, 10));
 
     if (!itemToRemove) {
       return;
@@ -1069,14 +1069,14 @@ class Choices implements Choices {
   }
 
   _handleItemAction(
-    activeItems?: Item[],
+    activeproducts?: Item[],
     element?: HTMLElement,
     hasShiftKey = false,
   ): void {
     if (
-      !activeItems ||
+      !activeproducts ||
       !element ||
-      !this.config.removeItems ||
+      !this.config.removeproducts ||
       this._isSelectOneElement
     ) {
       return;
@@ -1085,9 +1085,9 @@ class Choices implements Choices {
     const passedId = element.dataset.id;
 
     // We only want to select one item with a click
-    // so we deselect any items that aren't the target
+    // so we deselect any products that aren't the target
     // unless shift is being pressed
-    activeItems.forEach((item) => {
+    activeproducts.forEach((item) => {
       if (item.id === parseInt(`${passedId}`, 10) && !item.highlighted) {
         this.highlightItem(item);
       } else if (!hasShiftKey && item.highlighted) {
@@ -1100,8 +1100,8 @@ class Choices implements Choices {
     this.input.focus();
   }
 
-  _handleChoiceAction(activeItems?: Item[], element?: HTMLElement): void {
-    if (!activeItems || !element) {
+  _handleChoiceAction(activeproducts?: Item[], element?: HTMLElement): void {
+    if (!activeproducts || !element) {
       return;
     }
 
@@ -1113,8 +1113,8 @@ class Choices implements Choices {
     }
 
     const passedKeyCode =
-      activeItems[0] && activeItems[0].keyCode
-        ? activeItems[0].keyCode
+      activeproducts[0] && activeproducts[0].keyCode
+        ? activeproducts[0].keyCode
         : undefined;
     const hasActiveDropdown = this.dropdown.isActive;
 
@@ -1126,7 +1126,7 @@ class Choices implements Choices {
     });
 
     if (!choice.selected && !choice.disabled) {
-      const canAddItem = this._canAddItem(activeItems, choice.value);
+      const canAddItem = this._canAddItem(activeproducts, choice.value);
 
       if (canAddItem.response) {
         this._addItem({
@@ -1152,27 +1152,27 @@ class Choices implements Choices {
     }
   }
 
-  _handleBackspace(activeItems?: Item[]): void {
-    if (!this.config.removeItems || !activeItems) {
+  _handleBackspace(activeproducts?: Item[]): void {
+    if (!this.config.removeproducts || !activeproducts) {
       return;
     }
 
-    const lastItem = activeItems[activeItems.length - 1];
-    const hasHighlightedItems = activeItems.some((item) => item.highlighted);
+    const lastItem = activeproducts[activeproducts.length - 1];
+    const hasHighlightedproducts = activeproducts.some((item) => item.highlighted);
 
-    // If editing the last item is allowed and there are not other selected items,
-    // we can edit the item value. Otherwise if we can remove items, remove all selected items
-    if (this.config.editItems && !hasHighlightedItems && lastItem) {
+    // If editing the last item is allowed and there are not other selected products,
+    // we can edit the item value. Otherwise if we can remove products, remove all selected products
+    if (this.config.editproducts && !hasHighlightedproducts && lastItem) {
       this.input.value = lastItem.value;
       this.input.setWidth();
       this._removeItem(lastItem);
       this._triggerChange(lastItem.value);
     } else {
-      if (!hasHighlightedItems) {
+      if (!hasHighlightedproducts) {
         // Highlight last item if none already highlighted
         this.highlightItem(lastItem, false);
       }
-      this.removeHighlightedItems(true);
+      this.removeHighlightedproducts(true);
     }
   }
 
@@ -1247,7 +1247,7 @@ class Choices implements Choices {
     }
   }
 
-  _canAddItem(activeItems: Item[], value: string): Notice {
+  _canAddItem(activeproducts: Item[], value: string): Notice {
     let canAddItem = true;
     let notice =
       typeof this.config.addItemText === 'function'
@@ -1255,11 +1255,11 @@ class Choices implements Choices {
         : this.config.addItemText;
 
     if (!this._isSelectOneElement) {
-      const isDuplicateValue = existsInArray(activeItems, value);
+      const isDuplicateValue = existsInArray(activeproducts, value);
 
       if (
         this.config.maxItemCount > 0 &&
-        this.config.maxItemCount <= activeItems.length
+        this.config.maxItemCount <= activeproducts.length
       ) {
         // If there is a max entry limit and we have reached that limit
         // don't update
@@ -1271,7 +1271,7 @@ class Choices implements Choices {
       }
 
       if (
-        !this.config.duplicateItemsAllowed &&
+        !this.config.duplicateproductsAllowed &&
         isDuplicateValue &&
         canAddItem
       ) {
@@ -1284,7 +1284,7 @@ class Choices implements Choices {
 
       if (
         this._isTextElement &&
-        this.config.addItems &&
+        this.config.addproducts &&
         canAddItem &&
         typeof this.config.addItemFilter === 'function' &&
         !this.config.addItemFilter(value)
@@ -1424,10 +1424,10 @@ class Choices implements Choices {
 
   _onKeyDown(event: KeyboardEvent): void {
     const { keyCode } = event;
-    const { activeItems } = this._store;
+    const { activeproducts } = this._store;
     const hasFocusedInput = this.input.isFocussed;
     const hasActiveDropdown = this.dropdown.isActive;
-    const hasItems = this.itemList.hasChildren();
+    const hasproducts = this.itemList.hasChildren();
     const keyString = String.fromCharCode(keyCode);
     const wasAlphaNumericChar = /[a-zA-Z0-9-_ ]/.test(keyString);
 
@@ -1458,9 +1458,9 @@ class Choices implements Choices {
 
     switch (keyCode) {
       case A_KEY:
-        return this._onSelectKey(event, hasItems);
+        return this._onSelectKey(event, hasproducts);
       case ENTER_KEY:
-        return this._onEnterKey(event, activeItems, hasActiveDropdown);
+        return this._onEnterKey(event, activeproducts, hasActiveDropdown);
       case ESC_KEY:
         return this._onEscapeKey(hasActiveDropdown);
       case UP_KEY:
@@ -1470,7 +1470,7 @@ class Choices implements Choices {
         return this._onDirectionKey(event, hasActiveDropdown);
       case DELETE_KEY:
       case BACK_KEY:
-        return this._onDeleteKey(event, activeItems, hasFocusedInput);
+        return this._onDeleteKey(event, activeproducts, hasFocusedInput);
       default:
     }
   }
@@ -1480,8 +1480,8 @@ class Choices implements Choices {
     keyCode,
   }: Pick<KeyboardEvent, 'target' | 'keyCode'>): void {
     const { value } = this.input;
-    const { activeItems } = this._store;
-    const canAddItem = this._canAddItem(activeItems, value);
+    const { activeproducts } = this._store;
+    const canAddItem = this._canAddItem(activeproducts, value);
     const { BACK_KEY: backKey, DELETE_KEY: deleteKey } = KEY_CODES;
 
     // We are typing into a text input and have a value, we want to show a dropdown
@@ -1514,16 +1514,16 @@ class Choices implements Choices {
     this._canSearch = this.config.searchEnabled;
   }
 
-  _onSelectKey(event: KeyboardEvent, hasItems: boolean): void {
+  _onSelectKey(event: KeyboardEvent, hasproducts: boolean): void {
     const { ctrlKey, metaKey } = event;
     const hasCtrlDownKeyPressed = ctrlKey || metaKey;
 
-    // If CTRL + A or CMD + A have been pressed and there are items to select
-    if (hasCtrlDownKeyPressed && hasItems) {
+    // If CTRL + A or CMD + A have been pressed and there are products to select
+    if (hasCtrlDownKeyPressed && hasproducts) {
       this._canSearch = false;
 
       const shouldHightlightAll =
-        this.config.removeItems &&
+        this.config.removeproducts &&
         !this.input.value &&
         this.input.element === document.activeElement;
 
@@ -1535,7 +1535,7 @@ class Choices implements Choices {
 
   _onEnterKey(
     event: KeyboardEvent,
-    activeItems: Item[],
+    activeproducts: Item[],
     hasActiveDropdown: boolean,
   ): void {
     const { target } = event;
@@ -1545,7 +1545,7 @@ class Choices implements Choices {
 
     if (this._isTextElement && target && (target as HTMLInputElement).value) {
       const { value } = this.input;
-      const canAddItem = this._canAddItem(activeItems, value);
+      const canAddItem = this._canAddItem(activeproducts, value);
 
       if (canAddItem.response) {
         this.hideDropdown(true);
@@ -1556,7 +1556,7 @@ class Choices implements Choices {
     }
 
     if (targetWasButton) {
-      this._handleButtonAction(activeItems, target as HTMLElement);
+      this._handleButtonAction(activeproducts, target as HTMLElement);
       event.preventDefault();
     }
 
@@ -1567,10 +1567,10 @@ class Choices implements Choices {
 
       if (highlightedChoice) {
         // add enter keyCode value
-        if (activeItems[0]) {
-          activeItems[0].keyCode = enterKey; // eslint-disable-line no-param-reassign
+        if (activeproducts[0]) {
+          activeproducts[0].keyCode = enterKey; // eslint-disable-line no-param-reassign
         }
-        this._handleChoiceAction(activeItems, highlightedChoice);
+        this._handleChoiceAction(activeproducts, highlightedChoice);
       }
 
       event.preventDefault();
@@ -1653,7 +1653,7 @@ class Choices implements Choices {
 
   _onDeleteKey(
     event: KeyboardEvent,
-    activeItems: Item[],
+    activeproducts: Item[],
     hasFocusedInput: boolean,
   ): void {
     const { target } = event;
@@ -1663,7 +1663,7 @@ class Choices implements Choices {
       !(target as HTMLInputElement).value &&
       hasFocusedInput
     ) {
-      this._handleBackspace(activeItems);
+      this._handleBackspace(activeproducts);
       event.preventDefault();
     }
   }
@@ -1728,15 +1728,15 @@ class Choices implements Choices {
     const item = target.closest('[data-button],[data-item],[data-choice]');
     if (item instanceof HTMLElement) {
       const hasShiftKey = event.shiftKey;
-      const { activeItems } = this._store;
+      const { activeproducts } = this._store;
       const { dataset } = item;
 
       if ('button' in dataset) {
-        this._handleButtonAction(activeItems, item);
+        this._handleButtonAction(activeproducts, item);
       } else if ('item' in dataset) {
-        this._handleItemAction(activeItems, item, hasShiftKey);
+        this._handleItemAction(activeproducts, item, hasShiftKey);
       } else if ('choice' in dataset) {
-        this._handleChoiceAction(activeItems, item);
+        this._handleChoiceAction(activeproducts, item);
       }
     }
 
@@ -1776,9 +1776,9 @@ class Choices implements Choices {
         this.hideDropdown();
       }
     } else {
-      const hasHighlightedItems = this._store.highlightedActiveItems.length > 0;
+      const hasHighlightedproducts = this._store.highlightedActiveproducts.length > 0;
 
-      if (hasHighlightedItems) {
+      if (hasHighlightedproducts) {
         this.unhighlightAll();
       }
 
@@ -1825,13 +1825,13 @@ class Choices implements Choices {
       target && this.containerOuter.element.contains(target as Node);
 
     if (blurWasWithinContainer && !this._isScrollingOnIe) {
-      const { activeItems } = this._store;
-      const hasHighlightedItems = activeItems.some((item) => item.highlighted);
+      const { activeproducts } = this._store;
+      const hasHighlightedproducts = activeproducts.some((item) => item.highlighted);
       const blurActions = {
         [TEXT_TYPE]: (): void => {
           if (target === this.input.element) {
             this.containerOuter.removeFocusState();
-            if (hasHighlightedItems) {
+            if (hasHighlightedproducts) {
               this.unhighlightAll();
             }
             this.hideDropdown(true);
@@ -1850,7 +1850,7 @@ class Choices implements Choices {
           if (target === this.input.element) {
             this.containerOuter.removeFocusState();
             this.hideDropdown(true);
-            if (hasHighlightedItems) {
+            if (hasHighlightedproducts) {
               this.unhighlightAll();
             }
           }
@@ -1941,11 +1941,11 @@ class Choices implements Choices {
   }): void {
     let passedValue = typeof value === 'string' ? value.trim() : value;
 
-    const { items } = this._store;
+    const { products } = this._store;
     const passedLabel = label || passedValue;
     const passedOptionId = choiceId || -1;
     const group = groupId >= 0 ? this._store.getGroupById(groupId) : null;
-    const id = items ? items.length + 1 : 1;
+    const id = products ? products.length + 1 : 1;
 
     // If a prepended value has been passed, prepend it
     if (this.config.prependValue) {
@@ -1971,7 +1971,7 @@ class Choices implements Choices {
     );
 
     if (this._isSelectOneElement) {
-      this.removeActiveItems(id);
+      this.removeActiveproducts(id);
     }
 
     // Trigger change event
@@ -2215,7 +2215,7 @@ class Choices implements Choices {
     }
 
     if (this._isTextElement) {
-      this._addPredefinedItems(this._presetItems);
+      this._addPredefinedproducts(this._presetproducts);
     }
   }
 
@@ -2306,8 +2306,8 @@ class Choices implements Choices {
     });
   }
 
-  _addPredefinedItems(items: Item[] | string[]): void {
-    items.forEach((item) => {
+  _addPredefinedproducts(products: Item[] | string[]): void {
+    products.forEach((item) => {
       if (typeof item === 'object' && item.value) {
         this._addItem({
           value: item.value,
@@ -2335,7 +2335,7 @@ class Choices implements Choices {
         }
 
         // If we are dealing with a select input, we need to create an option first
-        // that is then selected. For text inputs we can just add items normally.
+        // that is then selected. For text inputs we can just add products normally.
         if (!this._isTextElement) {
           this._addChoice({
             value: item.value,

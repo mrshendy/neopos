@@ -11,7 +11,7 @@
     @endforeach
 
     {{-- 🔹 Header --}}
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <div>
             <h3 class="mb-1 fw-bold">
                 <i class="mdi mdi-scale-balance me-2"></i> {{ __('inventory.units_management_title') ?? 'إدارة الوحدات' }}
@@ -28,7 +28,7 @@
     {{-- 🔍 Filters --}}
     <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body">
-            <div class="row g-3 align-items-end">
+            <div class="row g-3 align-products-end">
                 <div class="col-lg-4">
                     <label class="form-label mb-1">
                         <i class="mdi mdi-magnify"></i> {{ __('inventory.search') ?? 'بحث' }}
@@ -54,7 +54,7 @@
             <div class="card-body">
 
                 {{-- Major Header --}}
-                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                <div class="d-flex justify-content-between align-products-center border-bottom pb-2 mb-3">
                     <div>
                         <div class="fw-bold fs-6">
                             <span class="text-primary">{{ $major->code }}</span>

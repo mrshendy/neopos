@@ -40,15 +40,15 @@ class Animator {
   _update(date = Date.now()) {
     let remaining = 0;
     this._charts.forEach((anims, chart) => {
-      if (!anims.running || !anims.items.length) {
+      if (!anims.running || !anims.products.length) {
         return;
       }
-      const items = anims.items;
-      let i = items.length - 1;
+      const products = anims.products;
+      let i = products.length - 1;
       let draw = false;
       let item;
       for (; i >= 0; --i) {
-        item = items[i];
+        item = products[i];
         if (item._active) {
           if (item._total > anims.duration) {
             anims.duration = item._total;
@@ -56,20 +56,20 @@ class Animator {
           item.tick(date);
           draw = true;
         } else {
-          items[i] = items[items.length - 1];
-          items.pop();
+          products[i] = products[products.length - 1];
+          products.pop();
         }
       }
       if (draw) {
         chart.draw();
         this._notify(chart, anims, date, 'progress');
       }
-      if (!items.length) {
+      if (!products.length) {
         anims.running = false;
         this._notify(chart, anims, date, 'complete');
         anims.initial = false;
       }
-      remaining += items.length;
+      remaining += products.length;
     });
     this._lastDate = date;
     if (remaining === 0) {
@@ -83,7 +83,7 @@ class Animator {
       anims = {
         running: false,
         initial: true,
-        items: [],
+        products: [],
         listeners: {
           complete: [],
           progress: []
@@ -96,14 +96,14 @@ class Animator {
   listen(chart, event, cb) {
     this._getAnims(chart).listeners[event].push(cb);
   }
-  add(chart, items) {
-    if (!items || !items.length) {
+  add(chart, products) {
+    if (!products || !products.length) {
       return;
     }
-    this._getAnims(chart).items.push(...items);
+    this._getAnims(chart).products.push(...products);
   }
   has(chart) {
-    return this._getAnims(chart).items.length > 0;
+    return this._getAnims(chart).products.length > 0;
   }
   start(chart) {
     const anims = this._charts.get(chart);
@@ -112,7 +112,7 @@ class Animator {
     }
     anims.running = true;
     anims.start = Date.now();
-    anims.duration = anims.items.reduce((acc, cur) => Math.max(acc, cur._duration), 0);
+    anims.duration = anims.products.reduce((acc, cur) => Math.max(acc, cur._duration), 0);
     this._refresh();
   }
   running(chart) {
@@ -120,22 +120,22 @@ class Animator {
       return false;
     }
     const anims = this._charts.get(chart);
-    if (!anims || !anims.running || !anims.items.length) {
+    if (!anims || !anims.running || !anims.products.length) {
       return false;
     }
     return true;
   }
   stop(chart) {
     const anims = this._charts.get(chart);
-    if (!anims || !anims.items.length) {
+    if (!anims || !anims.products.length) {
       return;
     }
-    const items = anims.items;
-    let i = items.length - 1;
+    const products = anims.products;
+    let i = products.length - 1;
     for (; i >= 0; --i) {
-      items[i].cancel();
+      products[i].cancel();
     }
-    anims.items = [];
+    anims.products = [];
     this._notify(chart, anims, Date.now(), 'complete');
   }
   remove(chart) {
@@ -545,8 +545,8 @@ function updateStacks(controller, parsed) {
   for (let i = 0; i < ilen; ++i) {
     const item = parsed[i];
     const {[iAxis]: index, [vAxis]: value} = item;
-    const itemStacks = item._stacks || (item._stacks = {});
-    stack = itemStacks[vAxis] = getOrCreateStack(stacks, key, index);
+    const productstacks = item._stacks || (item._stacks = {});
+    stack = productstacks[vAxis] = getOrCreateStack(stacks, key, index);
     stack[datasetIndex] = value;
     stack._top = getLastIndexInStack(stack, vScale, true, meta.type);
     stack._bottom = getLastIndexInStack(stack, vScale, false, meta.type);
@@ -580,14 +580,14 @@ function createDataContext(parent, index, element) {
     type: 'data'
   });
 }
-function clearStacks(meta, items) {
+function clearStacks(meta, products) {
   const datasetIndex = meta.controller.index;
   const axis = meta.vScale && meta.vScale.axis;
   if (!axis) {
     return;
   }
-  items = items || meta._parsed;
-  for (const parsed of items) {
+  products = products || meta._parsed;
+  for (const parsed of products) {
     const stacks = parsed._stacks;
     if (!stacks || stacks[axis] === undefined || stacks[axis][datasetIndex] === undefined) {
       return;
@@ -2650,9 +2650,9 @@ function getEvenSpacing(arr) {
 
 const reverseAlign = (align) => align === 'left' ? 'right' : align === 'right' ? 'left' : align;
 const offsetFromEdge = (scale, edge, offset) => edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
-function sample(arr, numItems) {
+function sample(arr, numproducts) {
   const result = [];
-  const increment = arr.length / numItems;
+  const increment = arr.length / numproducts;
   const len = arr.length;
   let i = 0;
   for (; i < len; i += increment) {
@@ -2794,8 +2794,8 @@ class Scale extends Element {
     this.max = undefined;
     this._range = undefined;
     this.ticks = [];
-    this._gridLineItems = null;
-    this._labelItems = null;
+    this._gridLineproducts = null;
+    this._labelproducts = null;
     this._labelSizes = null;
     this._length = 0;
     this._maxLength = 0;
@@ -2896,8 +2896,8 @@ class Scale extends Element {
     }, margins);
     this.ticks = null;
     this._labelSizes = null;
-    this._gridLineItems = null;
-    this._labelItems = null;
+    this._gridLineproducts = null;
+    this._labelproducts = null;
     this.beforeSetDimensions();
     this.setDimensions();
     this.afterSetDimensions();
@@ -3282,7 +3282,7 @@ class Scale extends Element {
     }
     return this.getMatchingVisibleMetas().length > 0;
   }
-  _computeGridLineItems(chartArea) {
+  _computeGridLineproducts(chartArea) {
     const axis = this.axis;
     const chart = this.chart;
     const options = this.options;
@@ -3292,7 +3292,7 @@ class Scale extends Element {
     const ticks = this.ticks;
     const ticksLength = ticks.length + (offset ? 1 : 0);
     const tl = getTickMarkLength(grid);
-    const items = [];
+    const products = [];
     const borderOpts = grid.setContext(this.getContext());
     const axisWidth = borderOpts.drawBorder ? borderOpts.borderWidth : 0;
     const axisHalfWidth = axisWidth / 2;
@@ -3372,7 +3372,7 @@ class Scale extends Element {
       } else {
         ty1 = ty2 = y1 = y2 = alignedLineValue;
       }
-      items.push({
+      products.push({
         tx1,
         ty1,
         tx2,
@@ -3393,9 +3393,9 @@ class Scale extends Element {
     }
     this._ticksLength = ticksLength;
     this._borderValue = borderValue;
-    return items;
+    return products;
   }
-  _computeLabelItems(chartArea) {
+  _computeLabelproducts(chartArea) {
     const axis = this.axis;
     const options = this.options;
     const {position, ticks: optionTicks} = options;
@@ -3406,7 +3406,7 @@ class Scale extends Element {
     const tickAndPadding = tl + padding;
     const hTickAndPadding = mirror ? -padding : tickAndPadding;
     const rotation = -toRadians(this.labelRotation);
-    const items = [];
+    const products = [];
     let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
     let textBaseline = 'middle';
     if (position === 'top') {
@@ -3529,7 +3529,7 @@ class Scale extends Element {
           color: optsAtIndex.backdropColor,
         };
       }
-      items.push({
+      products.push({
         rotation,
         label,
         font,
@@ -3543,7 +3543,7 @@ class Scale extends Element {
         backdrop,
       });
     }
-    return items;
+    return products;
   }
   _getXAxisLabelAlignment() {
     const {position, ticks} = this.options;
@@ -3658,7 +3658,7 @@ class Scale extends Element {
   drawGrid(chartArea) {
     const grid = this.options.grid;
     const ctx = this.ctx;
-    const items = this._gridLineItems || (this._gridLineItems = this._computeGridLineItems(chartArea));
+    const products = this._gridLineproducts || (this._gridLineproducts = this._computeGridLineproducts(chartArea));
     let i, ilen;
     const drawLine = (p1, p2, style) => {
       if (!style.width || !style.color) {
@@ -3676,8 +3676,8 @@ class Scale extends Element {
       ctx.restore();
     };
     if (grid.display) {
-      for (i = 0, ilen = items.length; i < ilen; ++i) {
-        const item = items[i];
+      for (i = 0, ilen = products.length; i < ilen; ++i) {
+        const item = products[i];
         if (grid.drawOnChartArea) {
           drawLine(
             {x: item.x1, y: item.y1},
@@ -3738,10 +3738,10 @@ class Scale extends Element {
     if (area) {
       clipArea(ctx, area);
     }
-    const items = this._labelItems || (this._labelItems = this._computeLabelItems(chartArea));
+    const products = this._labelproducts || (this._labelproducts = this._computeLabelproducts(chartArea));
     let i, ilen;
-    for (i = 0, ilen = items.length; i < ilen; ++i) {
-      const item = items[i];
+    for (i = 0, ilen = products.length; i < ilen; ++i) {
+      const item = products[i];
       const tickFont = item.font;
       const label = item.label;
       if (item.backdrop) {
@@ -3851,7 +3851,7 @@ class TypedRegistry {
     this.type = type;
     this.scope = scope;
     this.override = override;
-    this.items = Object.create(null);
+    this.products = Object.create(null);
   }
   isForType(type) {
     return Object.prototype.isPrototypeOf.call(this.type.prototype, type.prototype);
@@ -3862,16 +3862,16 @@ class TypedRegistry {
     if (isIChartComponent(proto)) {
       parentScope = this.register(proto);
     }
-    const items = this.items;
+    const products = this.products;
     const id = item.id;
     const scope = this.scope + '.' + id;
     if (!id) {
       throw new Error('class does not have id: ' + item);
     }
-    if (id in items) {
+    if (id in products) {
       return scope;
     }
-    items[id] = item;
+    products[id] = item;
     registerDefaults(item, scope, parentScope);
     if (this.override) {
       defaults.override(item.id, item.overrides);
@@ -3879,14 +3879,14 @@ class TypedRegistry {
     return scope;
   }
   get(id) {
-    return this.items[id];
+    return this.products[id];
   }
   unregister(item) {
-    const items = this.items;
+    const products = this.products;
     const id = item.id;
     const scope = this.scope;
-    if (id in items) {
-      delete items[id];
+    if (id in products) {
+      delete products[id];
     }
     if (scope && id in defaults[scope]) {
       delete defaults[scope][id];
@@ -4203,7 +4203,7 @@ function binarySearch(metaset, axis, value, intersect) {
   }
   return {lo: 0, hi: data.length - 1};
 }
-function evaluateInteractionItems(chart, axis, position, handler, intersect) {
+function evaluateInteractionproducts(chart, axis, position, handler, intersect) {
   const metasets = chart.getSortedVisibleDatasetMetas();
   const value = position[axis];
   for (let i = 0, ilen = metasets.length; i < ilen; ++i) {
@@ -4226,36 +4226,36 @@ function getDistanceMetricForAxis(axis) {
     return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
   };
 }
-function getIntersectItems(chart, position, axis, useFinalPosition, includeInvisible) {
-  const items = [];
+function getIntersectproducts(chart, position, axis, useFinalPosition, includeInvisible) {
+  const products = [];
   if (!includeInvisible && !chart.isPointInArea(position)) {
-    return items;
+    return products;
   }
   const evaluationFunc = function(element, datasetIndex, index) {
     if (!includeInvisible && !_isPointInArea(element, chart.chartArea, 0)) {
       return;
     }
     if (element.inRange(position.x, position.y, useFinalPosition)) {
-      items.push({element, datasetIndex, index});
+      products.push({element, datasetIndex, index});
     }
   };
-  evaluateInteractionItems(chart, axis, position, evaluationFunc, true);
-  return items;
+  evaluateInteractionproducts(chart, axis, position, evaluationFunc, true);
+  return products;
 }
-function getNearestRadialItems(chart, position, axis, useFinalPosition) {
-  let items = [];
+function getNearestRadialproducts(chart, position, axis, useFinalPosition) {
+  let products = [];
   function evaluationFunc(element, datasetIndex, index) {
     const {startAngle, endAngle} = element.getProps(['startAngle', 'endAngle'], useFinalPosition);
     const {angle} = getAngleFromPoint(element, {x: position.x, y: position.y});
     if (_angleBetween(angle, startAngle, endAngle)) {
-      items.push({element, datasetIndex, index});
+      products.push({element, datasetIndex, index});
     }
   }
-  evaluateInteractionItems(chart, axis, position, evaluationFunc);
-  return items;
+  evaluateInteractionproducts(chart, axis, position, evaluationFunc);
+  return products;
 }
-function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosition, includeInvisible) {
-  let items = [];
+function getNearestCartesianproducts(chart, position, axis, intersect, useFinalPosition, includeInvisible) {
+  let products = [];
   const distanceMetric = getDistanceMetricForAxis(axis);
   let minDistance = Number.POSITIVE_INFINITY;
   function evaluationFunc(element, datasetIndex, index) {
@@ -4270,54 +4270,54 @@ function getNearestCartesianItems(chart, position, axis, intersect, useFinalPosi
     }
     const distance = distanceMetric(position, center);
     if (distance < minDistance) {
-      items = [{element, datasetIndex, index}];
+      products = [{element, datasetIndex, index}];
       minDistance = distance;
     } else if (distance === minDistance) {
-      items.push({element, datasetIndex, index});
+      products.push({element, datasetIndex, index});
     }
   }
-  evaluateInteractionItems(chart, axis, position, evaluationFunc);
-  return items;
+  evaluateInteractionproducts(chart, axis, position, evaluationFunc);
+  return products;
 }
-function getNearestItems(chart, position, axis, intersect, useFinalPosition, includeInvisible) {
+function getNearestproducts(chart, position, axis, intersect, useFinalPosition, includeInvisible) {
   if (!includeInvisible && !chart.isPointInArea(position)) {
     return [];
   }
   return axis === 'r' && !intersect
-    ? getNearestRadialItems(chart, position, axis, useFinalPosition)
-    : getNearestCartesianItems(chart, position, axis, intersect, useFinalPosition, includeInvisible);
+    ? getNearestRadialproducts(chart, position, axis, useFinalPosition)
+    : getNearestCartesianproducts(chart, position, axis, intersect, useFinalPosition, includeInvisible);
 }
-function getAxisItems(chart, position, axis, intersect, useFinalPosition) {
-  const items = [];
+function getAxisproducts(chart, position, axis, intersect, useFinalPosition) {
+  const products = [];
   const rangeMethod = axis === 'x' ? 'inXRange' : 'inYRange';
   let intersectsItem = false;
-  evaluateInteractionItems(chart, axis, position, (element, datasetIndex, index) => {
+  evaluateInteractionproducts(chart, axis, position, (element, datasetIndex, index) => {
     if (element[rangeMethod](position[axis], useFinalPosition)) {
-      items.push({element, datasetIndex, index});
+      products.push({element, datasetIndex, index});
       intersectsItem = intersectsItem || element.inRange(position.x, position.y, useFinalPosition);
     }
   });
   if (intersect && !intersectsItem) {
     return [];
   }
-  return items;
+  return products;
 }
 var Interaction = {
-  evaluateInteractionItems,
+  evaluateInteractionproducts,
   modes: {
     index(chart, e, options, useFinalPosition) {
       const position = getRelativePosition(e, chart);
       const axis = options.axis || 'x';
       const includeInvisible = options.includeInvisible || false;
-      const items = options.intersect
-        ? getIntersectItems(chart, position, axis, useFinalPosition, includeInvisible)
-        : getNearestItems(chart, position, axis, false, useFinalPosition, includeInvisible);
+      const products = options.intersect
+        ? getIntersectproducts(chart, position, axis, useFinalPosition, includeInvisible)
+        : getNearestproducts(chart, position, axis, false, useFinalPosition, includeInvisible);
       const elements = [];
-      if (!items.length) {
+      if (!products.length) {
         return [];
       }
       chart.getSortedVisibleDatasetMetas().forEach((meta) => {
-        const index = items[0].index;
+        const index = products[0].index;
         const element = meta.data[index];
         if (element && !element.skip) {
           elements.push({element, datasetIndex: meta.index, index});
@@ -4329,38 +4329,38 @@ var Interaction = {
       const position = getRelativePosition(e, chart);
       const axis = options.axis || 'xy';
       const includeInvisible = options.includeInvisible || false;
-      let items = options.intersect
-        ? getIntersectItems(chart, position, axis, useFinalPosition, includeInvisible) :
-        getNearestItems(chart, position, axis, false, useFinalPosition, includeInvisible);
-      if (items.length > 0) {
-        const datasetIndex = items[0].datasetIndex;
+      let products = options.intersect
+        ? getIntersectproducts(chart, position, axis, useFinalPosition, includeInvisible) :
+        getNearestproducts(chart, position, axis, false, useFinalPosition, includeInvisible);
+      if (products.length > 0) {
+        const datasetIndex = products[0].datasetIndex;
         const data = chart.getDatasetMeta(datasetIndex).data;
-        items = [];
+        products = [];
         for (let i = 0; i < data.length; ++i) {
-          items.push({element: data[i], datasetIndex, index: i});
+          products.push({element: data[i], datasetIndex, index: i});
         }
       }
-      return items;
+      return products;
     },
     point(chart, e, options, useFinalPosition) {
       const position = getRelativePosition(e, chart);
       const axis = options.axis || 'xy';
       const includeInvisible = options.includeInvisible || false;
-      return getIntersectItems(chart, position, axis, useFinalPosition, includeInvisible);
+      return getIntersectproducts(chart, position, axis, useFinalPosition, includeInvisible);
     },
     nearest(chart, e, options, useFinalPosition) {
       const position = getRelativePosition(e, chart);
       const axis = options.axis || 'xy';
       const includeInvisible = options.includeInvisible || false;
-      return getNearestItems(chart, position, axis, options.intersect, useFinalPosition, includeInvisible);
+      return getNearestproducts(chart, position, axis, options.intersect, useFinalPosition, includeInvisible);
     },
     x(chart, e, options, useFinalPosition) {
       const position = getRelativePosition(e, chart);
-      return getAxisItems(chart, position, 'x', options.intersect, useFinalPosition);
+      return getAxisproducts(chart, position, 'x', options.intersect, useFinalPosition);
     },
     y(chart, e, options, useFinalPosition) {
       const position = getRelativePosition(e, chart);
-      return getAxisItems(chart, position, 'y', options.intersect, useFinalPosition);
+      return getAxisproducts(chart, position, 'y', options.intersect, useFinalPosition);
     }
   }
 };
@@ -5022,7 +5022,7 @@ class PluginService {
 function allPlugins(config) {
   const localIds = {};
   const plugins = [];
-  const keys = Object.keys(registry.plugins.items);
+  const keys = Object.keys(registry.plugins.products);
   for (let i = 0; i < keys.length; i++) {
     plugins.push(registry.getPlugin(keys[i]));
   }
@@ -5560,9 +5560,9 @@ class Chart {
       obj[id] = false;
       return obj;
     }, {});
-    let items = [];
+    let products = [];
     if (scaleOpts) {
-      items = items.concat(
+      products = products.concat(
         Object.keys(scaleOpts).map((id) => {
           const scaleOptions = scaleOpts[id];
           const axis = determineAxis(id, scaleOptions);
@@ -5576,7 +5576,7 @@ class Chart {
         })
       );
     }
-    each(items, (item) => {
+    each(products, (item) => {
       const scaleOptions = item.options;
       const id = scaleOptions.id;
       const axis = determineAxis(id, scaleOptions);
@@ -6082,15 +6082,15 @@ class Chart {
     });
     this._responsiveListeners = undefined;
   }
-  updateHoverStyle(items, mode, enabled) {
+  updateHoverStyle(products, mode, enabled) {
     const prefix = enabled ? 'set' : 'remove';
     let meta, item, i, ilen;
     if (mode === 'dataset') {
-      meta = this.getDatasetMeta(items[0].datasetIndex);
+      meta = this.getDatasetMeta(products[0].datasetIndex);
       meta.controller['_' + prefix + 'DatasetHoverStyle']();
     }
-    for (i = 0, ilen = items.length; i < ilen; ++i) {
-      item = items[i];
+    for (i = 0, ilen = products.length; i < ilen; ++i) {
+      item = products[i];
       const controller = item && this.getDatasetMeta(item.datasetIndex).controller;
       if (controller) {
         controller[prefix + 'HoverStyle'](item.element, item.datasetIndex, item.index);
@@ -6215,15 +6215,15 @@ Object.defineProperties(Chart, {
   },
   register: {
     enumerable,
-    value: (...items) => {
-      registry.add(...items);
+    value: (...products) => {
+      registry.add(...products);
       invalidatePlugins();
     }
   },
   unregister: {
     enumerable,
-    value: (...items) => {
-      registry.remove(...items);
+    value: (...products) => {
+      registry.remove(...products);
       invalidatePlugins();
     }
   }
@@ -7728,7 +7728,7 @@ const getBoxSize = (labelOpts, fontSize) => {
     itemHeight: Math.max(fontSize, boxHeight)
   };
 };
-const itemsEqual = (a, b) => a !== null && b !== null && a.datasetIndex === b.datasetIndex && a.index === b.index;
+const productsEqual = (a, b) => a !== null && b !== null && a.datasetIndex === b.datasetIndex && a.index === b.index;
 class Legend extends Element {
   constructor(config) {
     super();
@@ -7739,7 +7739,7 @@ class Legend extends Element {
     this.chart = config.chart;
     this.options = config.options;
     this.ctx = config.ctx;
-    this.legendItems = undefined;
+    this.legendproducts = undefined;
     this.columnSizes = undefined;
     this.lineWidths = undefined;
     this.maxHeight = undefined;
@@ -7776,17 +7776,17 @@ class Legend extends Element {
   }
   buildLabels() {
     const labelOpts = this.options.labels || {};
-    let legendItems = callback(labelOpts.generateLabels, [this.chart], this) || [];
+    let legendproducts = callback(labelOpts.generateLabels, [this.chart], this) || [];
     if (labelOpts.filter) {
-      legendItems = legendItems.filter((item) => labelOpts.filter(item, this.chart.data));
+      legendproducts = legendproducts.filter((item) => labelOpts.filter(item, this.chart.data));
     }
     if (labelOpts.sort) {
-      legendItems = legendItems.sort((a, b) => labelOpts.sort(a, b, this.chart.data));
+      legendproducts = legendproducts.sort((a, b) => labelOpts.sort(a, b, this.chart.data));
     }
     if (this.options.reverse) {
-      legendItems.reverse();
+      legendproducts.reverse();
     }
-    this.legendItems = legendItems;
+    this.legendproducts = legendproducts;
   }
   fit() {
     const {options, ctx} = this;
@@ -7821,7 +7821,7 @@ class Legend extends Element {
     ctx.textBaseline = 'middle';
     let row = -1;
     let top = -lineHeight;
-    this.legendItems.forEach((legendItem, i) => {
+    this.legendproducts.forEach((legendItem, i) => {
       const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
       if (i === 0 || lineWidths[lineWidths.length - 1] + itemWidth + 2 * padding > maxWidth) {
         totalHeight += lineHeight;
@@ -7844,7 +7844,7 @@ class Legend extends Element {
     let currentColHeight = 0;
     let left = 0;
     let col = 0;
-    this.legendItems.forEach((legendItem, i) => {
+    this.legendproducts.forEach((legendItem, i) => {
       const itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
       if (i > 0 && currentColHeight + itemHeight + 2 * padding > heightLimit) {
         totalWidth += currentColWidth + padding;
@@ -7991,7 +7991,7 @@ class Legend extends Element {
     }
     overrideTextDirection(this.ctx, opts.textDirection);
     const lineHeight = itemHeight + padding;
-    this.legendItems.forEach((legendItem, i) => {
+    this.legendproducts.forEach((legendItem, i) => {
       ctx.strokeStyle = legendItem.fontColor || fontColor;
       ctx.fillStyle = legendItem.fontColor || fontColor;
       const textWidth = ctx.measureText(legendItem.text).width;
@@ -8070,7 +8070,7 @@ class Legend extends Element {
         hitBox = lh[i];
         if (_isBetween(x, hitBox.left, hitBox.left + hitBox.width)
           && _isBetween(y, hitBox.top, hitBox.top + hitBox.height)) {
-          return this.legendItems[i];
+          return this.legendproducts[i];
         }
       }
     }
@@ -8084,7 +8084,7 @@ class Legend extends Element {
     const hoveredItem = this._getLegendItemAt(e.x, e.y);
     if (e.type === 'mousemove' || e.type === 'mouseout') {
       const previous = this._hoveredItem;
-      const sameItem = itemsEqual(previous, hoveredItem);
+      const sameItem = productsEqual(previous, hoveredItem);
       if (previous && !sameItem) {
         callback(opts.onLeave, [e, previous, this], this);
       }
@@ -8372,16 +8372,16 @@ var plugin_subtitle = {
 };
 
 const positioners = {
-  average(items) {
-    if (!items.length) {
+  average(products) {
+    if (!products.length) {
       return false;
     }
     let i, len;
     let x = 0;
     let y = 0;
     let count = 0;
-    for (i = 0, len = items.length; i < len; ++i) {
-      const el = items[i].element;
+    for (i = 0, len = products.length; i < len; ++i) {
+      const el = products[i].element;
       if (el && el.hasValue()) {
         const pos = el.tooltipPosition();
         x += pos.x;
@@ -8394,16 +8394,16 @@ const positioners = {
       y: y / count
     };
   },
-  nearest(items, eventPosition) {
-    if (!items.length) {
+  nearest(products, eventPosition) {
+    if (!products.length) {
       return false;
     }
     let x = eventPosition.x;
     let y = eventPosition.y;
     let minDistance = Number.POSITIVE_INFINITY;
     let i, len, nearestElement;
-    for (i = 0, len = items.length; i < len; ++i) {
-      const el = items[i].element;
+    for (i = 0, len = products.length; i < len; ++i) {
+      const el = products[i].element;
       if (el && el.hasValue()) {
         const center = el.getCenterPoint();
         const d = distanceBetweenPoints(eventPosition, center);
@@ -8605,10 +8605,10 @@ function getAlignedX(tooltip, align, options) {
 function getBeforeAfterBodyLines(callback) {
   return pushOrConcat([], splitNewlines(callback));
 }
-function createTooltipContext(parent, tooltip, tooltipItems) {
+function createTooltipContext(parent, tooltip, tooltipproducts) {
   return createContext(parent, {
     tooltip,
-    tooltipItems,
+    tooltipproducts,
     type: 'tooltip'
   });
 }
@@ -8624,7 +8624,7 @@ class Tooltip extends Element {
     this._eventPosition = undefined;
     this._size = undefined;
     this._cachedAnimations = undefined;
-    this._tooltipItems = [];
+    this._tooltipproducts = [];
     this.$animations = undefined;
     this.$context = undefined;
     this.chart = config.chart || config._chart;
@@ -8669,7 +8669,7 @@ class Tooltip extends Element {
   }
   getContext() {
     return this.$context ||
-			(this.$context = createTooltipContext(this.chart.getContext(), this, this._tooltipItems));
+			(this.$context = createTooltipContext(this.chart.getContext(), this, this._tooltipproducts));
   }
   getTitle(context, options) {
     const {callbacks} = options;
@@ -8682,13 +8682,13 @@ class Tooltip extends Element {
     lines = pushOrConcat(lines, splitNewlines(afterTitle));
     return lines;
   }
-  getBeforeBody(tooltipItems, options) {
-    return getBeforeAfterBodyLines(options.callbacks.beforeBody.apply(this, [tooltipItems]));
+  getBeforeBody(tooltipproducts, options) {
+    return getBeforeAfterBodyLines(options.callbacks.beforeBody.apply(this, [tooltipproducts]));
   }
-  getBody(tooltipItems, options) {
+  getBody(tooltipproducts, options) {
     const {callbacks} = options;
-    const bodyItems = [];
-    each(tooltipItems, (context) => {
+    const bodyproducts = [];
+    each(tooltipproducts, (context) => {
       const bodyItem = {
         before: [],
         lines: [],
@@ -8698,42 +8698,42 @@ class Tooltip extends Element {
       pushOrConcat(bodyItem.before, splitNewlines(scoped.beforeLabel.call(this, context)));
       pushOrConcat(bodyItem.lines, scoped.label.call(this, context));
       pushOrConcat(bodyItem.after, splitNewlines(scoped.afterLabel.call(this, context)));
-      bodyItems.push(bodyItem);
+      bodyproducts.push(bodyItem);
     });
-    return bodyItems;
+    return bodyproducts;
   }
-  getAfterBody(tooltipItems, options) {
-    return getBeforeAfterBodyLines(options.callbacks.afterBody.apply(this, [tooltipItems]));
+  getAfterBody(tooltipproducts, options) {
+    return getBeforeAfterBodyLines(options.callbacks.afterBody.apply(this, [tooltipproducts]));
   }
-  getFooter(tooltipItems, options) {
+  getFooter(tooltipproducts, options) {
     const {callbacks} = options;
-    const beforeFooter = callbacks.beforeFooter.apply(this, [tooltipItems]);
-    const footer = callbacks.footer.apply(this, [tooltipItems]);
-    const afterFooter = callbacks.afterFooter.apply(this, [tooltipItems]);
+    const beforeFooter = callbacks.beforeFooter.apply(this, [tooltipproducts]);
+    const footer = callbacks.footer.apply(this, [tooltipproducts]);
+    const afterFooter = callbacks.afterFooter.apply(this, [tooltipproducts]);
     let lines = [];
     lines = pushOrConcat(lines, splitNewlines(beforeFooter));
     lines = pushOrConcat(lines, splitNewlines(footer));
     lines = pushOrConcat(lines, splitNewlines(afterFooter));
     return lines;
   }
-  _createItems(options) {
+  _createproducts(options) {
     const active = this._active;
     const data = this.chart.data;
     const labelColors = [];
     const labelPointStyles = [];
     const labelTextColors = [];
-    let tooltipItems = [];
+    let tooltipproducts = [];
     let i, len;
     for (i = 0, len = active.length; i < len; ++i) {
-      tooltipItems.push(createTooltipItem(this.chart, active[i]));
+      tooltipproducts.push(createTooltipItem(this.chart, active[i]));
     }
     if (options.filter) {
-      tooltipItems = tooltipItems.filter((element, index, array) => options.filter(element, index, array, data));
+      tooltipproducts = tooltipproducts.filter((element, index, array) => options.filter(element, index, array, data));
     }
-    if (options.itemSort) {
-      tooltipItems = tooltipItems.sort((a, b) => options.itemSort(a, b, data));
+    if (options.productsort) {
+      tooltipproducts = tooltipproducts.sort((a, b) => options.productsort(a, b, data));
     }
-    each(tooltipItems, (context) => {
+    each(tooltipproducts, (context) => {
       const scoped = overrideCallbacks(options.callbacks, context);
       labelColors.push(scoped.labelColor.call(this, context));
       labelPointStyles.push(scoped.labelPointStyle.call(this, context));
@@ -8742,14 +8742,14 @@ class Tooltip extends Element {
     this.labelColors = labelColors;
     this.labelPointStyles = labelPointStyles;
     this.labelTextColors = labelTextColors;
-    this.dataPoints = tooltipItems;
-    return tooltipItems;
+    this.dataPoints = tooltipproducts;
+    return tooltipproducts;
   }
   update(changed, replay) {
     const options = this.options.setContext(this.getContext());
     const active = this._active;
     let properties;
-    let tooltipItems = [];
+    let tooltipproducts = [];
     if (!active.length) {
       if (this.opacity !== 0) {
         properties = {
@@ -8758,12 +8758,12 @@ class Tooltip extends Element {
       }
     } else {
       const position = positioners[options.position].call(this, active, this._eventPosition);
-      tooltipItems = this._createItems(options);
-      this.title = this.getTitle(tooltipItems, options);
-      this.beforeBody = this.getBeforeBody(tooltipItems, options);
-      this.body = this.getBody(tooltipItems, options);
-      this.afterBody = this.getAfterBody(tooltipItems, options);
-      this.footer = this.getFooter(tooltipItems, options);
+      tooltipproducts = this._createproducts(options);
+      this.title = this.getTitle(tooltipproducts, options);
+      this.beforeBody = this.getBeforeBody(tooltipproducts, options);
+      this.body = this.getBody(tooltipproducts, options);
+      this.afterBody = this.getAfterBody(tooltipproducts, options);
+      this.footer = this.getFooter(tooltipproducts, options);
       const size = this._size = getTooltipSize(this, options);
       const positionAndSize = Object.assign({}, position, size);
       const alignment = determineAlignment(this.chart, options, positionAndSize);
@@ -8780,7 +8780,7 @@ class Tooltip extends Element {
         caretY: position.y
       };
     }
-    this._tooltipItems = tooltipItems;
+    this._tooltipproducts = tooltipproducts;
     this.$context = undefined;
     if (properties) {
       this._resolveAnimations().update(this, properties);
@@ -9241,9 +9241,9 @@ var plugin_tooltip = {
     },
     callbacks: {
       beforeTitle: noop,
-      title(tooltipItems) {
-        if (tooltipItems.length > 0) {
-          const item = tooltipItems[0];
+      title(tooltipproducts) {
+        if (tooltipproducts.length > 0) {
+          const item = tooltipproducts[0];
           const labels = item.chart.data.labels;
           const labelCount = labels ? labels.length : 0;
           if (this && this.options && this.options.mode === 'dataset') {
@@ -9309,7 +9309,7 @@ var plugin_tooltip = {
     titleFont: 'font'
   },
   descriptors: {
-    _scriptable: (name) => name !== 'filter' && name !== 'itemSort' && name !== 'external',
+    _scriptable: (name) => name !== 'filter' && name !== 'productsort' && name !== 'external',
     _indexable: false,
     callbacks: {
       _scriptable: false,
@@ -9889,7 +9889,7 @@ function fitWithPointLabels(scale) {
     orig.t - limits.t,
     limits.b - orig.b
   );
-  scale._pointLabelItems = buildPointLabelItems(scale, labelSizes, padding);
+  scale._pointLabelproducts = buildPointLabelproducts(scale, labelSizes, padding);
 }
 function updateLimits(limits, orig, angle, hLimits, vLimits) {
   const sin = Math.abs(Math.sin(angle));
@@ -9911,8 +9911,8 @@ function updateLimits(limits, orig, angle, hLimits, vLimits) {
     limits.b = Math.max(limits.b, orig.b + y);
   }
 }
-function buildPointLabelItems(scale, labelSizes, padding) {
-  const items = [];
+function buildPointLabelproducts(scale, labelSizes, padding) {
+  const products = [];
   const valueCount = scale._pointLabels.length;
   const opts = scale.options;
   const extra = getTickBackdropHeight(opts) / 2;
@@ -9925,7 +9925,7 @@ function buildPointLabelItems(scale, labelSizes, padding) {
     const y = yForAngle(pointLabelPosition.y, size.h, angle);
     const textAlign = getTextAlignForAngle(angle);
     const left = leftForTextAlign(pointLabelPosition.x, size.w, textAlign);
-    items.push({
+    products.push({
       x: pointLabelPosition.x,
       y,
       textAlign,
@@ -9935,7 +9935,7 @@ function buildPointLabelItems(scale, labelSizes, padding) {
       bottom: y + size.h
     });
   }
-  return items;
+  return products;
 }
 function getTextAlignForAngle(angle) {
   if (angle === 0 || angle === 180) {
@@ -9966,7 +9966,7 @@ function drawPointLabels(scale, labelCount) {
   for (let i = labelCount - 1; i >= 0; i--) {
     const optsAtIndex = pointLabels.setContext(scale.getPointLabelContext(i));
     const plFont = toFont(optsAtIndex.font);
-    const {x, y, textAlign, left, top, right, bottom} = scale._pointLabelItems[i];
+    const {x, y, textAlign, left, top, right, bottom} = scale._pointLabelproducts[i];
     const {backdropColor} = optsAtIndex;
     if (!isNullOrUndef(backdropColor)) {
       const borderRadius = toTRBLCorners(optsAtIndex.borderRadius);
@@ -10049,7 +10049,7 @@ class RadialLinearScale extends LinearScaleBase {
     this.yCenter = undefined;
     this.drawingArea = undefined;
     this._pointLabels = [];
-    this._pointLabelItems = [];
+    this._pointLabelproducts = [];
   }
   setDimensions() {
     const padding = this._padding = toPadding(getTickBackdropHeight(this.options) / 2);
@@ -10134,7 +10134,7 @@ class RadialLinearScale extends LinearScaleBase {
     return this.getPointPositionForValue(index || 0, this.getBaseValue());
   }
   getPointLabelPosition(index) {
-    const {left, top, right, bottom} = this._pointLabelItems[index];
+    const {left, top, right, bottom} = this._pointLabelproducts[index];
     return {
       left,
       top,
@@ -10689,25 +10689,25 @@ class TimeSeriesScale extends TimeScale {
   }
   buildLookupTable(timestamps) {
     const {min, max} = this;
-    const items = [];
+    const products = [];
     const table = [];
     let i, ilen, prev, curr, next;
     for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
       curr = timestamps[i];
       if (curr >= min && curr <= max) {
-        items.push(curr);
+        products.push(curr);
       }
     }
-    if (items.length < 2) {
+    if (products.length < 2) {
       return [
         {time: min, pos: 0},
         {time: max, pos: 1}
       ];
     }
-    for (i = 0, ilen = items.length; i < ilen; ++i) {
-      next = items[i + 1];
-      prev = items[i - 1];
-      curr = items[i];
+    for (i = 0, ilen = products.length; i < ilen; ++i) {
+      next = products[i + 1];
+      prev = products[i - 1];
+      curr = products[i];
       if (Math.round((next + prev) / 2) !== curr) {
         table.push({time: curr, pos: i / (ilen - 1)});
       }

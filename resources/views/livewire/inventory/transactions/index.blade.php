@@ -1,64 +1,66 @@
-<div>
-    {{-- Care about people's approval and you will be their prisoner. --}}
-</div>
-<div>
+<div class="page-wrap">
+
+    {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
-    @if (session()->has('error'))
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
-            <i class="mdi mdi-alert-circle-outline me-2"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+    {{-- Header --}}
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h3 class="mb-1 fw-bold">
+                <i class="mdi mdi-swap-horizontal me-2"></i> {{ __('pos.inventory_transactions_title') ?? 'حركات المخازن' }}
+            </h3>
+            <div class="text-muted small">{{ __('pos.inventory_transactions_sub') ?? 'إدارة وفلترة الحركات' }}</div>
         </div>
-    @endif
+        <div class="d-flex gap-2">
+            <a href="{{ route('inventory.transactions.create') }}" class="btn btn-success rounded-pill px-4 shadow-sm">
+                <i class="mdi mdi-plus-circle-outline"></i> {{ __('pos.btn_new') ?? 'جديد' }}
+            </a>
+        </div>
+    </div>
 
     {{-- Filters --}}
     <div class="card shadow-sm rounded-4 mb-3">
         <div class="card-body">
             <div class="row g-3 align-items-end">
-                <div class="col-lg-2">
-                    <label class="form-label mb-1"><i class="mdi mdi-magnify"></i> {{ __('pos.search') }}</label>
-                    <input type="text" class="form-control" wire:model.debounce.400ms="search" placeholder="{{ __('pos.ph_search_trx_no') }}">
+                <div class="col-lg-3">
+                    <label class="form-label mb-1"><i class="mdi mdi-magnify"></i> بحث</label>
+                    <input type="text" class="form-control" wire:model.debounce.400ms="search" placeholder="رقم الحركة/ملاحظات">
                 </div>
                 <div class="col-lg-2">
-                    <label class="form-label mb-1">{{ __('pos.type') }}</label>
+                    <label class="form-label mb-1">النوع</label>
                     <select class="form-select" wire:model="type">
-                        <option value="">{{ __('pos.all') }}</option>
-                        <option value="sales_issue">{{ __('pos.trx_sales_issue') }}</option>
-                        <option value="sales_return">{{ __('pos.trx_sales_return') }}</option>
-                        <option value="adjustment">{{ __('pos.trx_adjustment') }}</option>
-                        <option value="transfer">{{ __('pos.trx_transfer') }}</option>
-                        <option value="purchase_receive">{{ __('pos.trx_purchase_receive') }}</option>
+                        <option value="">الكل</option>
+                        @foreach($types as $key=>$txt)
+                            <option value="{{ $key }}">{{ $txt }}</option>
+                        @endforeach
                     </select>
                 </div>
-                <div class="col-lg-2">
-                    <label class="form-label mb-1">{{ __('pos.status') }}</label>
-                    <select class="form-select" wire:model="status">
-                        <option value="">{{ __('pos.all') }}</option>
-                        <option value="draft">{{ __('pos.draft') }}</option>
-                        <option value="posted">{{ __('pos.posted') }}</option>
-                        <option value="cancelled">{{ __('pos.cancelled') }}</option>
-                    </select>
-                </div>
-                <div class="col-lg-2">
-                    <label class="form-label mb-1">{{ __('pos.warehouse') }}</label>
+                <div class="col-lg-3">
+                    <label class="form-label mb-1">المخزن</label>
                     <select class="form-select" wire:model="warehouse_id">
-                        <option value="">{{ __('pos.all') }}</option>
-                        @foreach($warehouses as $w)
-                            <option value="{{ $w->id }}">{{ app()->getLocale()=='ar'?($w->name['ar']??''):($w->name['en']??'') }}</option>
+                        <option value="">الكل</option>
+                        @foreach($warehouses as $wh)
+                            <option value="{{ $wh->id }}">{{ $wh->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-lg-2">
-                    <label class="form-label mb-1">{{ __('pos.date_from') }}</label>
+                    <label class="form-label mb-1">من تاريخ</label>
                     <input type="date" class="form-control" wire:model="date_from">
                 </div>
                 <div class="col-lg-2">
-                    <label class="form-label mb-1">{{ __('pos.date_to') }}</label>
+                    <label class="form-label mb-1">إلى تاريخ</label>
                     <input type="date" class="form-control" wire:model="date_to">
+                </div>
+                <div class="col-12 d-flex gap-2">
+                    <button class="btn btn-outline-secondary rounded-pill px-3 shadow-sm" wire:click="clearFilters">
+                        <i class="mdi mdi-broom"></i> إعادة تعيين
+                    </button>
                 </div>
             </div>
         </div>
@@ -66,77 +68,63 @@
 
     {{-- Table --}}
     <div class="card shadow-sm rounded-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead class="table-light">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>رقم الحركة</th>
+                        <th>التاريخ</th>
+                        <th>النوع</th>
+                        <th>من/إلى</th>
+                        <th>الملاحظات</th>
+                        <th>الحالة</th>
+                        <th class="text-end">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($rows as $i=>$row)
                         <tr>
-                            <th>#</th>
-                            <th>{{ __('pos.trx_no') }}</th>
-                            <th>{{ __('pos.type') }}</th>
-                            <th>{{ __('pos.trx_date') }}</th>
-                            <th>{{ __('pos.from') }}</th>
-                            <th>{{ __('pos.to') }}</th>
-                            <th>{{ __('pos.status') }}</th>
-                            <th class="text-end">{{ __('pos.actions') }}</th>
+                            <td>{{ $rows->firstItem() + $i }}</td>
+                            <td class="fw-bold">{{ $row->trx_no }}</td>
+                            <td>{{ \Carbon\Carbon::parse($row->trx_date)->format('Y-m-d H:i') }}</td>
+                            <td>
+                                @php
+                                    $labels = [
+                                        'sales_issue'=>'صرف مبيعات','sales_return'=>'مرتجع مبيعات',
+                                        'purchase_receive'=>'استلام مشتريات','transfer'=>'تحويل','adjustment'=>'تسوية'
+                                    ];
+                                @endphp
+                                <span class="badge bg-light text-dark border">{{ $labels[$row->type] ?? $row->type }}</span>
+                            </td>
+                            <td>
+                                <div class="small text-muted">
+                                    من: {{ optional($row->warehouseFrom)->name ?? '-' }} /
+                                    إلى: {{ optional($row->warehouseTo)->name ?? '-' }}
+                                </div>
+                            </td>
+                            <td class="text-truncate" style="max-width:220px">{{ $row->notes }}</td>
+                            <td>
+                                <span class="badge {{ $row->status === 'draft' ? 'bg-warning' : 'bg-success' }}">
+                                    {{ $row->status }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ route('inventory.transactions.edit', $row->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm">
+                                    <i class="mdi mdi-pencil-outline"></i> تعديل
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($trxs as $t)
-                            <tr>
-                                <td>{{ $t->id }}</td>
-                                <td>{{ $t->trx_no }}</td>
-                                <td>{{ __('pos.trx_'.$t->type) }}</td>
-                                <td>{{ \Carbon\Carbon::parse($t->trx_date)->format('Y-m-d H:i') }}</td>
-                                <td>{{ $t->from? (app()->getLocale()=='ar'?($t->from->name['ar']??''):($t->from->name['en']??'')) : '-' }}</td>
-                                <td>{{ $t->to? (app()->getLocale()=='ar'?($t->to->name['ar']??''):($t->to->name['en']??'')) : '-' }}</td>
-                                <td>
-                                    <span class="badge bg-{{ $t->status=='posted'?'success':($t->status=='draft'?'secondary':'warning') }}">
-                                        {{ __('pos.'.$t->status) }}
-                                    </span>
-                                </td>
-                                <td class="text-end">
-                                    <button class="btn btn-sm btn-success rounded-pill shadow-sm" wire:click="post({{ $t->id }})" title="{{ __('pos.posted_success') }}">
-                                        <i class="mdi mdi-check-all"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning rounded-pill shadow-sm" wire:click="cancel({{ $t->id }})" title="{{ __('pos.cancelled_success') }}">
-                                        <i class="mdi mdi-cancel"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger rounded-pill shadow-sm" wire:click="confirmDelete({{ $t->id }})">
-                                        <i class="mdi mdi-delete-outline"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="8" class="text-center text-muted">{{ __('pos.no_data') }}</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            {{ $trxs->onEachSide(1)->links() }}
+                    @empty
+                        <tr><td colspan="8" class="text-center text-muted py-4">لا توجد بيانات</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer d-flex align-items-center justify-content-between">
+            <div class="small text-muted">عرض {{ $rows->firstItem() }}–{{ $rows->lastItem() }} من {{ $rows->total() }}</div>
+            {{ $rows->links() }}
         </div>
     </div>
-{{-- ✅ SweetAlert2 --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'تحذير',
-                text: '⚠️ هل أنت متأكد أنك تريد حذف هذا الإجراء لا يمكن التراجع عنه!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#0d6efd',
-                confirmButtonText: 'نعم، احذفها',
-                cancelButtonText: 'إلغاء'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Livewire.emit('deleteConfirmed', id);
-                    Swal.fire('تم الحذف!', '✅ تم الحذف  بنجاح.', 'success');
-                }
-            })
-        }
-    </script>
-
-
 </div>

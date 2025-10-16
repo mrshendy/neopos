@@ -1,133 +1,155 @@
-<div>
+<div class="page-wrap">
+
+    {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
-    @if (session()->has('error'))
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
-            <i class="mdi mdi-alert-circle-outline me-2"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+    {{-- Header --}}
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h3 class="mb-1 fw-bold">
+                <i class="mdi mdi-plus-box-multiple-outline me-2"></i> إنشاء حركة مخزنية
+            </h3>
+            <div class="text-muted small">إدخال تفاصيل الحركة وخطوطها</div>
         </div>
-    @endif
-
-    <div class="card border-0 shadow-lg rounded-4 stylish-card mb-4">
-        <div class="card-header bg-light fw-bold">
-            <i class="mdi mdi-swap-horizontal-bold me-2"></i> {{ __('pos.add_new_transaction') }}
-        </div>
-        <div class="card-body p-4">
-            <form wire:submit.prevent="save" class="row g-3">
-
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">{{ __('pos.type') }}</label>
-                    <select class="form-select" wire:model="type">
-                        <option value="adjustment">{{ __('pos.trx_adjustment') }}</option>
-                        <option value="transfer">{{ __('pos.trx_transfer') }}</option>
-                        <option value="sales_issue">{{ __('pos.trx_sales_issue') }}</option>
-                        <option value="sales_return">{{ __('pos.trx_sales_return') }}</option>
-                        <option value="purchase_receive">{{ __('pos.trx_purchase_receive') }}</option>
-                    </select>
-                    <small class="text-muted d-block">{{ __('pos.hint_trx_type') }}</small>
-                    <div class="mt-1 text-primary"><i class="mdi mdi-eye-outline"></i> {{ __('pos.trx_'.$type) }}</div>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">{{ __('pos.trx_date') }}</label>
-                    <input type="datetime-local" class="form-control" wire:model="trx_date">
-                    <small class="text-muted d-block">{{ __('pos.hint_trx_date') }}</small>
-                    <div class="mt-1 text-primary"><i class="mdi mdi-eye-outline"></i> {{ $trx_date }}</div>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">{{ __('pos.from_warehouse') }}</label>
-                    <select class="form-select" wire:model="warehouse_from_id">
-                        <option value="">{{ __('pos.none') }}</option>
-                        @foreach($warehouses as $w)
-                            <option value="{{ $w->id }}">{{ app()->getLocale()=='ar'?($w->name['ar']??''):($w->name['en']??'') }}</option>
-                        @endforeach
-                    </select>
-                    <small class="text-muted d-block">{{ __('pos.hint_from_wh') }}</small>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label fw-bold">{{ __('pos.to_warehouse') }}</label>
-                    <select class="form-select" wire:model="warehouse_to_id">
-                        <option value="">{{ __('pos.none') }}</option>
-                        @foreach($warehouses as $w)
-                            <option value="{{ $w->id }}">{{ app()->getLocale()=='ar'?($w->name['ar']??''):($w->name['en']??'') }}</option>
-                        @endforeach
-                    </select>
-                    <small class="text-muted d-block">{{ __('pos.hint_to_wh') }}</small>
-                </div>
-
-                <div class="col-12"><hr class="divider"></div>
-
-                {{-- Lines --}}
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0"><i class="mdi mdi-format-list-bulleted"></i> {{ __('pos.lines') }}</h6>
-                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3 shadow-sm" wire:click="addLine">
-                            <i class="mdi mdi-plus"></i> {{ __('pos.add_line') }}
-                        </button>
-                    </div>
-
-                    @foreach($lines as $idx => $ln)
-                        <div class="row g-2 align-items-end mb-2">
-                            <div class="col-md-4">
-                                <label class="form-label mb-1">{{ __('pos.item') }}</label>
-                                <select class="form-select" wire:model="lines.{{ $idx }}.item_id">
-                                    <option value="">{{ __('pos.choose') }}</option>
-                                    @foreach($items as $it)
-                                        <option value="{{ $it->id }}">
-                                            {{ app()->getLocale()=='ar'?($it->name['ar']??''):($it->name['en']??'') }} ({{ $it->sku }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <small class="text-muted d-block">{{ __('pos.hint_item') }}</small>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label class="form-label mb-1">{{ __('pos.qty') }}</label>
-                                <input type="number" step="0.000001" class="form-control" wire:model="lines.{{ $idx }}.qty">
-                                <small class="text-muted d-block">{{ __('pos.hint_qty') }}</small>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label class="form-label mb-1">{{ __('pos.uom') }}</label>
-                                <input type="text" class="form-control" wire:model="lines.{{ $idx }}.uom">
-                            </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label mb-1">{{ __('pos.reason') }}</label>
-                                <input type="text" class="form-control" wire:model="lines.{{ $idx }}.reason" placeholder="">
-                            </div>
-
-                            <div class="col-md-1 text-end">
-                                <button type="button" class="btn btn-sm btn-danger rounded-pill shadow-sm" wire:click="removeLine({{ $idx }})">
-                                    <i class="mdi mdi-delete-outline"></i>
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="col-12">
-                    <label class="form-label fw-bold">{{ __('pos.notes') }}</label>
-                    <textarea class="form-control" rows="2" wire:model.defer="notes" placeholder="{{ __('pos.hint_notes') }}"></textarea>
-                    <div class="mt-1 text-primary"><i class="mdi mdi-eye-outline"></i> {{ $notes }}</div>
-                </div>
-
-                <div class="col-12 text-end">
-                    <button class="btn btn-success rounded-pill px-4 shadow-sm">
-                        <i class="mdi mdi-content-save"></i> {{ __('pos.btn_save') }}
-                    </button>
-                    <a href="{{ route('inventory.transactions.index') }}" class="btn btn-light rounded-pill px-4 shadow-sm">
-                        <i class="mdi mdi-close"></i> {{ __('pos.btn_cancel') }}
-                    </a>
-                </div>
-
-            </form>
+        <div class="d-flex gap-2">
+            <a href="{{ route('inventory.transactions.index') }}" class="btn btn-outline-secondary rounded-pill px-3 shadow-sm">
+                <i class="mdi mdi-arrow-left"></i> رجوع
+            </a>
         </div>
     </div>
+
+    <form wire:submit.prevent="save" class="card shadow-sm rounded-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-lg-3">
+                    <label class="form-label fw-bold">نوع الحركة</label>
+                    <select class="form-select" wire:model="type">
+                        @foreach($types as $k=>$txt)
+                            <option value="{{ $k }}">{{ $txt }}</option>
+                        @endforeach
+                    </select>
+                    @error('type') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="col-lg-3">
+                    <label class="form-label fw-bold">تاريخ الحركة</label>
+                    <input type="datetime-local" class="form-control" wire:model="trx_date">
+                    @error('trx_date') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                @if(in_array($type, ['sales_issue','transfer','adjustment']))
+                    <div class="col-lg-3">
+                        <label class="form-label fw-bold">من مخزن</label>
+                        <select class="form-select" wire:model="warehouse_from_id">
+                            <option value="">— اختر —</option>
+                            @foreach($warehouses as $wh)
+                                <option value="{{ $wh->id }}">{{ $wh->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('warehouse_from_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                @endif
+
+                @if(in_array($type, ['purchase_receive','transfer']))
+                    <div class="col-lg-3">
+                        <label class="form-label fw-bold">إلى مخزن</label>
+                        <select class="form-select" wire:model="warehouse_to_id">
+                            <option value="">— اختر —</option>
+                            @foreach($warehouses as $wh)
+                                <option value="{{ $wh->id }}">{{ $wh->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('warehouse_to_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+                @endif
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">ملاحظات</label>
+                    <textarea class="form-control" rows="2" wire:model.defer="notes" placeholder="اختياري"></textarea>
+                    @error('notes') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            {{-- Lines --}}
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h5 class="mb-0"><i class="mdi mdi-format-list-bulleted-type me-2"></i> بنود الحركة</h5>
+                <button type="button" class="btn btn-outline-primary rounded-pill px-3 shadow-sm" wire:click="addLine">
+                    <i class="mdi mdi-plus"></i> إضافة بند
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:28%">الصنف</th>
+                            <th style="width:12%">الباتش</th>
+                            <th style="width:12%">السيريال</th>
+                            <th style="width:12%">الكمية</th>
+                            <th style="width:12%">الوحدة</th>
+                            <th>السبب/الوصف</th>
+                            <th class="text-end">—</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($lines as $i => $ln)
+                            <tr>
+                                <td>
+                                    <select class="form-select" wire:model="lines.{{ $i }}.product_id">
+                                        <option value="">— اختر الصنف —</option>
+                                        @foreach($products as $p)
+                                            <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('lines.'.$i.'.product_id') <small class="text-danger">{{ $message }}</small> @enderror
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" wire:model.defer="lines.{{ $i }}.batch_id">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" wire:model.defer="lines.{{ $i }}.serial_id">
+                                </td>
+                                <td>
+                                    <input type="number" step="0.000001" class="form-control" wire:model.defer="lines.{{ $i }}.qty">
+                                    @error('lines.'.$i.'.qty') <small class="text-danger">{{ $message }}</small> @enderror
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" wire:model.defer="lines.{{ $i }}.uom">
+                                    @error('lines.'.$i.'.uom') <small class="text-danger">{{ $message }}</small> @enderror
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" wire:model.defer="lines.{{ $i }}.reason" placeholder="اختياري">
+                                </td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm"
+                                            wire:click="removeLine({{ $i }})">
+                                        <i class="mdi mdi-delete-outline"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                        @if(empty($lines))
+                            <tr><td colspan="7" class="text-center text-muted">لا توجد بنود</td></tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <a href="{{ route('inventory.transactions.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                إلغاء
+            </a>
+            <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
+                <i class="mdi mdi-content-save-outline"></i> حفظ
+            </button>
+        </div>
+    </form>
 </div>

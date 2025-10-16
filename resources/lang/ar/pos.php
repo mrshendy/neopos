@@ -654,7 +654,7 @@ return [
     'hint_status' => 'حالة تفعيل/تعطيل القائمة.',
 
     // بنود الأسعار
-    'price_items' => 'بنود الأسعار',
+    'price_products' => 'بنود الأسعار',
     'add_row' => 'إضافة بند',
     'product' => 'المنتج',
     'price' => 'السعر',
@@ -675,7 +675,7 @@ return [
     'ph_search' => 'ابحث بالاسم...',
     'all' => 'الكل',
     'per_page' => 'عدد الصفوف',
-    'items_count' => 'عدد البنود',
+    'products_count' => 'عدد البنود',
 
     // رسائل نظام
     'no_data' => 'لا توجد بيانات',
@@ -731,8 +731,8 @@ return [
     'posted' => 'مرحّلة',
     'cancelled' => 'ملغاة',
 
-    // ===== Items =====
-    'inventory_items_title' => 'إدارة الأصناف',
+    // ===== products =====
+    'inventory_products_title' => 'إدارة الأصناف',
     'btn_new_item' => 'إضافة صنف',
     'add_new_item' => 'إضافة صنف جديد',
 
@@ -758,7 +758,7 @@ return [
     'inventory_deleted_success' => 'تم حذف الصنف بنجاح',
     'inventory_item_status_changed' => 'تم تغيير حالة الصنف بنجاح',
 
-    // Validations (Items)
+    // Validations (products)
     'val_item_name_ar_required' => 'الاسم بالعربية مطلوب',
     'val_item_name_en_required' => 'الاسم بالإنجليزية مطلوب',
     'val_item_sku_required' => 'كود الصنف (SKU) مطلوب',
@@ -891,7 +891,7 @@ return [
     'from_warehouse_filter' => 'من المخزن',
     'to_warehouse_filter' => 'إلى المخزن',
     // العناوين العامة
-    'inventory_items_title' => 'الأصناف',
+    'inventory_products_title' => 'الأصناف',
     'inventory_warehouses_title' => 'المخازن',
     'inventory_transactions_title' => 'الحركات',
     'inventory_counts_title' => 'الجردات',
@@ -937,7 +937,7 @@ return [
     // البحث والفلاتر
     'search' => 'بحث',
     'ph_search_sku_name' => 'ابحث بالاسم أو الكود...',
-    'hint_search_items' => 'يمكنك البحث بالاسم العربي أو الإنجليزي أو كود الصنف.',
+    'hint_search_products' => 'يمكنك البحث بالاسم العربي أو الإنجليزي أو كود الصنف.',
 
     // الفلاتر الخاصة بالحركات
     'filter_warehouse' => 'المخزن',
@@ -985,4 +985,40 @@ return [
 'Go_to_settings_now' => 'اذهب إلى الإعدادات الآن',
  'view_image' => 'عرض الصورة',
     'close'      => 'إغلاق',
+     // ===== Inventory Count (Stocktaking) =====
+    'start_new_count'  => 'بدء جرد جديد',
+    'warehouse'        => 'المخزن',
+    'choose'           => 'اختر',
+    'policy'           => 'نوع الجرد',
+    'count_periodic'   => 'جرد دوري',
+    'count_spot'       => 'جرد مفاجئ',
+    'notes'            => 'ملاحظات',
+    'hint_notes'       => 'ملاحظات اختيارية…',
+    'btn_start'        => 'بدء',
+    'previous_counts'  => 'عمليات الجرد السابقة',
+    'status'           => 'الحالة',
+    'started_at'       => 'تاريخ ووقت البدء',
+    'no_data'          => 'لا توجد بيانات',
+
+    // statuses (تُستخدم مع __('pos.' . $c->status))
+    'open'             => 'مفتوح',
+    'closed'           => 'مغلق',
+       // ===== Inventory Alerts =====
+    'inventory_alerts_title' => 'تنبيهات المخزون',
+    'alert_type'             => 'نوع التنبيه',
+    'alert_reorder'          => 'إعادة الطلب',
+    'alert_expiry'           => 'قرب انتهاء الصلاحية',
+    'alert_expired'          => 'انتهت الصلاحية',
+
+    'item'                   => 'الصنف',
+    'warehouse'              => 'المخزن',
+    'qty'                    => 'الكمية',
+    'alert_message'          => 'رسالة التنبيه',
+    'created_at'             => 'تاريخ الإنشاء',
+    'no_alerts'              => 'لا توجد تنبيهات',
+
+    // الرسائل الديناميكية
+    'reorder_alert_msg'      => 'الكمية المتاحة من :item أقل من حد إعادة الطلب.',
+    'expiry_alert_msg'       => ':item يقترب من انتهاء الصلاحية — يُرجى التصريف أولاً.',
+    'expired_alert_msg'      => ':item انتهت صلاحيته — أوقف البيع واتخذ الإجراء المناسب.',
 ];

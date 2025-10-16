@@ -5064,7 +5064,7 @@
    * }
    * ```
    *
-   * The layer names can contain HTML, which allows you to add additional styling to the items:
+   * The layer names can contain HTML, which allows you to add additional styling to the products:
    *
    * ```js
    * {"<img src='my-layer-icon' /> <span class='my-layer-item'>My Layer</span>": myLayer}

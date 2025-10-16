@@ -17,7 +17,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->unique(['item_id', 'warehouse_id']);
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreign('item_id')->references('id')->on('products');
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
         });
     }

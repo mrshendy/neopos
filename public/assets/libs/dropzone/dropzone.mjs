@@ -988,29 +988,29 @@ class $3ed269f2f0fb224b$export$2e2bcd8739ae039 extends $4040acfd8584338d$export$
         for(let i = 0; i < e.dataTransfer.files.length; i++)files[i] = e.dataTransfer.files[i];
         // Even if it's a folder, files.length will contain the folders.
         if (files.length) {
-            let { items: items  } = e.dataTransfer;
-            if (items && items.length && items[0].webkitGetAsEntry != null) // The browser supports dropping of folders, so handle items instead of files
-            this._addFilesFromItems(items);
+            let { products: products  } = e.dataTransfer;
+            if (products && products.length && products[0].webkitGetAsEntry != null) // The browser supports dropping of folders, so handle products instead of files
+            this._addFilesFromproducts(products);
             else this.handleFiles(files);
         }
         this.emit("addedfiles", files);
     }
     paste(e) {
-        if ($3ed269f2f0fb224b$var$__guard__(e != null ? e.clipboardData : undefined, (x)=>x.items
+        if ($3ed269f2f0fb224b$var$__guard__(e != null ? e.clipboardData : undefined, (x)=>x.products
         ) == null) return;
         this.emit("paste", e);
-        let { items: items  } = e.clipboardData;
-        if (items.length) return this._addFilesFromItems(items);
+        let { products: products  } = e.clipboardData;
+        if (products.length) return this._addFilesFromproducts(products);
     }
     handleFiles(files) {
         for (let file of files)this.addFile(file);
     }
-    // When a folder is dropped (or files are pasted), items must be handled
+    // When a folder is dropped (or files are pasted), products must be handled
     // instead of files.
-    _addFilesFromItems(items) {
+    _addFilesFromproducts(products) {
         return (()=>{
             let result = [];
-            for (let item of items){
+            for (let item of products){
                 var entry;
                 if (item.webkitGetAsEntry != null && (entry = item.webkitGetAsEntry())) {
                     if (entry.isFile) result.push(this.addFile(item.getAsFile()));

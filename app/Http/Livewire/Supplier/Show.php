@@ -18,7 +18,7 @@ class Show extends Component
             'addresses.country','addresses.governorate','addresses.city','addresses.area',
             'contacts',
             'qualityDocs.type',
-            'contracts.paymentTerm','contracts.items',
+            'contracts.paymentTerm','contracts.products',
             'discounts',
             'blacklists',
             'evaluations.scores.criterion',

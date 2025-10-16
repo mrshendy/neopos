@@ -1,5 +1,5 @@
 <?php
-// database/migrations/2025_10_13_000009_create_supplier_contract_items_table.php
+// database/migrations/2025_10_13_000009_create_supplier_contract_products_table.php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('supplier_contract_items', function (Blueprint $t) {
+        Schema::create('supplier_contract_products', function (Blueprint $t) {
             $t->id();
             $t->foreignId('supplier_contract_id')->constrained('supplier_contracts')->cascadeOnDelete();
 
@@ -24,5 +24,5 @@ return new class extends Migration {
             $t->index(['supplier_contract_id','product_sku']);
         });
     }
-    public function down(): void { Schema::dropIfExists('supplier_contract_items'); }
+    public function down(): void { Schema::dropIfExists('supplier_contract_products'); }
 };

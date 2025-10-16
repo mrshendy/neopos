@@ -1,17 +1,17 @@
 <div class="page-wrap">
     {{-- ====== Header ====== --}}
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
-        <div class="d-flex align-items-center gap-3">
-            <h4 class="mb-0 d-flex align-items-center gap-2">
+    <div class="d-flex flex-wrap align-products-center justify-content-between gap-2 mb-3">
+        <div class="d-flex align-products-center gap-3">
+            <h4 class="mb-0 d-flex align-products-center gap-2">
                 <i class="mdi mdi-eye-outline"></i>
                 {{ __('pos.price_lists_title') ?? 'قوائم الأسعار' }} — {{ __('pos.show') ?? 'عرض' }} #{{ $row->id }}
             </h4>
             @if ($row->status === 'active')
-                <span class="badge bg-success d-inline-flex align-items-center gap-1">
+                <span class="badge bg-success d-inline-flex align-products-center gap-1">
                     <i class="mdi mdi-check-circle-outline"></i>{{ __('pos.status_active') ?? 'نشط' }}
                 </span>
             @else
-                <span class="badge bg-secondary d-inline-flex align-items-center gap-1">
+                <span class="badge bg-secondary d-inline-flex align-products-center gap-1">
                     <i class="mdi mdi-close-circle-outline"></i>{{ __('pos.status_inactive') ?? 'غير نشط' }}
                 </span>
             @endif
@@ -27,7 +27,7 @@
             <button type="button" class="btn btn-light rounded-pill px-4" onclick="window.print()">
                 <i class="mdi mdi-printer"></i> طباعة
             </button>
-            <button type="button" class="btn btn-success rounded-pill px-4" onclick="exportItemsCsv()">
+            <button type="button" class="btn btn-success rounded-pill px-4" onclick="exportproductsCsv()">
                 <i class="mdi mdi-file-delimited-outline"></i> تصدير CSV
             </button>
         </div>
@@ -38,31 +38,31 @@
         .card-modern{border:1px solid rgba(0,0,0,.06);border-radius:1rem}
         .table td, .table th{vertical-align:middle}
         .thead-sticky thead th{position:sticky;top:0;background:#f8f9fa;z-index:5}
-        .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;border-radius:999px;border:1px solid rgba(0,0,0,.08);background:#fff;font-size:.8rem;color:#6c757d}
+        .chip{display:inline-flex;align-products:center;gap:.35rem;padding:.25rem .6rem;border-radius:999px;border:1px solid rgba(0,0,0,.08);background:#fff;font-size:.8rem;color:#6c757d}
         .stat-card{background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:1rem;padding:1rem}
         .stat-card .label{font-size:.8rem;color:#6c757d}
         .stat-card .value{font-weight:700;font-size:1.05rem}
-        .timeline{display:flex;align-items:center;gap:.5rem}
+        .timeline{display:flex;align-products:center;gap:.5rem}
         .timeline .dot{width:10px;height:10px;border-radius:999px;background:#0d6efd}
         .timeline .line{height:2px;background:#e9ecef;flex:1}
         .soft-muted{color:#6c757d}
-        .items-toolbar{padding:.75rem}
-        .items-toolbar .form-control{max-width:320px}
+        .products-toolbar{padding:.75rem}
+        .products-toolbar .form-control{max-width:320px}
         @media print{
-            .btn,.items-toolbar,.page-actions{display:none!important}
+            .btn,.products-toolbar,.page-actions{display:none!important}
             .card-modern{box-shadow:none!important}
         }
     </style>
 
     {{-- ====== Basic Info ====== --}}
     <div class="card card-modern mb-3">
-        <div class="card-header bg-light fw-bold d-flex align-items-center justify-content-between">
+        <div class="card-header bg-light fw-bold d-flex align-products-center justify-content-between">
             <span><i class="mdi mdi-information-outline me-1"></i> {{ __('pos.basic_info') ?? 'البيانات الأساسية' }}</span>
             @php
                 $from = $row->valid_from ? \Illuminate\Support\Carbon::parse($row->valid_from)->format('Y-m-d') : '—';
                 $to   = $row->valid_to   ? \Illuminate\Support\Carbon::parse($row->valid_to)->format('Y-m-d')   : '—';
             @endphp
-            <div class="d-none d-md-flex align-items-center gap-2">
+            <div class="d-none d-md-flex align-products-center gap-2">
                 <span class="chip"><i class="mdi mdi-calendar-start"></i> {{ $from }}</span>
                 <span class="chip"><i class="mdi mdi-calendar-end"></i> {{ $to }}</span>
             </div>
@@ -110,27 +110,27 @@
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card">
-                        <div class="label">{{ __('pos.items_count') ?? 'عدد البنود' }}</div>
-                        <div class="value">{{ $items->count() }}</div>
+                        <div class="label">{{ __('pos.products_count') ?? 'عدد البنود' }}</div>
+                        <div class="value">{{ $products->count() }}</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- ====== Items ====== --}}
+    {{-- ====== products ====== --}}
     <div class="card card-modern">
-        <div class="card-header bg-light fw-bold d-flex align-items-center justify-content-between">
-            <span><i class="mdi mdi-cash me-1"></i> {{ __('pos.price_items') ?? 'بنود الأسعار' }}</span>
-            <div class="d-flex align-items-center gap-2 items-toolbar">
-                <input type="text" id="itemsSearch" class="form-control form-control-sm" placeholder="بحث داخل البنود..." oninput="filterItemsTable()">
-                <span class="chip d-none d-md-inline-flex"><i class="mdi mdi-counter"></i> {{ $items->count() }}</span>
+        <div class="card-header bg-light fw-bold d-flex align-products-center justify-content-between">
+            <span><i class="mdi mdi-cash me-1"></i> {{ __('pos.price_products') ?? 'بنود الأسعار' }}</span>
+            <div class="d-flex align-products-center gap-2 products-toolbar">
+                <input type="text" id="productsSearch" class="form-control form-control-sm" placeholder="بحث داخل البنود..." oninput="filterproductsTable()">
+                <span class="chip d-none d-md-inline-flex"><i class="mdi mdi-counter"></i> {{ $products->count() }}</span>
             </div>
         </div>
 
         <div class="card-body p-0">
             <div class="table-responsive thead-sticky" style="max-height:65vh">
-                <table class="table table-hover align-middle mb-0" id="itemsTable">
+                <table class="table table-hover align-middle mb-0" id="productsTable">
                     <thead>
                         <tr>
                             <th style="width:34%">{{ __('pos.product') ?? 'المنتج' }}</th>
@@ -142,7 +142,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($items as $it)
+                        @forelse ($products as $it)
                             @php
                                 $p = $it->product;
                                 $pname = null;
@@ -195,18 +195,18 @@
 
     {{-- ====== Helpers (CSV + Search) ====== --}}
     <script>
-        function filterItemsTable(){
-            const q = (document.getElementById('itemsSearch').value || '').toLowerCase().trim();
-            const rows = document.querySelectorAll('#itemsTable tbody tr');
+        function filterproductsTable(){
+            const q = (document.getElementById('productsSearch').value || '').toLowerCase().trim();
+            const rows = document.querySelectorAll('#productsTable tbody tr');
             rows.forEach(r => {
                 const text = r.innerText.toLowerCase();
                 r.style.display = text.includes(q) ? '' : 'none';
             });
         }
 
-        function exportItemsCsv(){
+        function exportproductsCsv(){
             // جمع البيانات من الجدول
-            const rows = Array.from(document.querySelectorAll('#itemsTable tr'));
+            const rows = Array.from(document.querySelectorAll('#productsTable tr'));
             const data = rows.map(row => Array.from(row.querySelectorAll('th,td')).map(cell => {
                 let v = cell.innerText.replace(/\s+/g,' ').trim();
                 // هروب فاصلة CSV
@@ -218,7 +218,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `price_list_{{ $row->id }}_items.csv`;
+            a.download = `price_list_{{ $row->id }}_products.csv`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

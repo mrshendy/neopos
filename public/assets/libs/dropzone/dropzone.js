@@ -1371,9 +1371,9 @@ var $a601ff30f483e917$export$2e2bcd8739ae039 = /*#__PURE__*/ function(Emitter) {
                 for(var i = 0; i < e.dataTransfer.files.length; i++)files[i] = e.dataTransfer.files[i];
                 // Even if it's a folder, files.length will contain the folders.
                 if (files.length) {
-                    var _dataTransfer = e.dataTransfer, items = _dataTransfer.items;
-                    if (items && items.length && items[0].webkitGetAsEntry != null) // The browser supports dropping of folders, so handle items instead of files
-                    this._addFilesFromItems(items);
+                    var _dataTransfer = e.dataTransfer, products = _dataTransfer.products;
+                    if (products && products.length && products[0].webkitGetAsEntry != null) // The browser supports dropping of folders, so handle products instead of files
+                    this._addFilesFromproducts(products);
                     else this.handleFiles(files);
                 }
                 this.emit("addedfiles", files);
@@ -1383,11 +1383,11 @@ var $a601ff30f483e917$export$2e2bcd8739ae039 = /*#__PURE__*/ function(Emitter) {
             key: "paste",
             value: function paste(e) {
                 if ($a601ff30f483e917$var$__guard__(e != null ? e.clipboardData : undefined, function(x) {
-                    return x.items;
+                    return x.products;
                 }) == null) return;
                 this.emit("paste", e);
-                var _clipboardData = e.clipboardData, items = _clipboardData.items;
-                if (items.length) return this._addFilesFromItems(items);
+                var _clipboardData = e.clipboardData, products = _clipboardData.products;
+                if (products.length) return this._addFilesFromproducts(products);
             }
         },
         {
@@ -1416,16 +1416,16 @@ var $a601ff30f483e917$export$2e2bcd8739ae039 = /*#__PURE__*/ function(Emitter) {
             }
         },
         {
-            // When a folder is dropped (or files are pasted), items must be handled
+            // When a folder is dropped (or files are pasted), products must be handled
             // instead of files.
-            key: "_addFilesFromItems",
-            value: function _addFilesFromItems(items) {
+            key: "_addFilesFromproducts",
+            value: function _addFilesFromproducts(products) {
                 var _this = this;
                 return (function() {
                     var result = [];
                     var _iteratorNormalCompletion = true, _didIteratorError = false, _iteratorError = undefined;
                     try {
-                        for(var _iterator = items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true){
+                        for(var _iterator = products[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true){
                             var item = _step.value;
                             var entry;
                             if (item.webkitGetAsEntry != null && (entry = item.webkitGetAsEntry())) {

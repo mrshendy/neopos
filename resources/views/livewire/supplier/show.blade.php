@@ -186,14 +186,14 @@
                             </div>
                         </div>
 
-                        @if(($c->items ?? collect())->count())
+                        @if(($c->products ?? collect())->count())
                             <div class="table-responsive mt-2">
                                 <table class="table table-sm">
                                     <thead>
                                         <tr><th>SKU</th><th>المنتج</th><th>السعر</th><th>min</th><th>max</th></tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($c->items as $it)
+                                        @foreach($c->products as $it)
                                             <tr>
                                                 <td>{{ $it->product_sku ?? '-' }}</td>
                                                 <td>{{ $it->getTranslation('product_name', $loc) ?? '-' }}</td>

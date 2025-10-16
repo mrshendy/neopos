@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import items from './items';
+import products from './products';
 import groups from './groups';
 import choices from './choices';
 import loading from './loading';
@@ -7,13 +7,13 @@ import { cloneObject } from '../lib/utils';
 
 export const defaultState = {
   groups: [],
-  items: [],
+  products: [],
   choices: [],
   loading: false,
 };
 
 const appReducer = combineReducers({
-  items,
+  products,
   groups,
   choices,
   loading,
@@ -21,7 +21,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (passedState, action): object => {
   let state = passedState;
-  // If we are clearing all items, groups and options we reassign
+  // If we are clearing all products, groups and options we reassign
   // state and then pass that state to our proper reducer. This isn't
   // mutating our actual state
   // See: http://stackoverflow.com/a/35641992

@@ -10,7 +10,7 @@ class price_item extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'price_items';
+    protected $table = 'price_products';
 
     protected $fillable = [
         'price_list_id', 'product_id', 'price', 'min_qty', 'max_qty', 'valid_from', 'valid_to',

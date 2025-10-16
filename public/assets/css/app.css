@@ -320,7 +320,7 @@ File: Main Css File
           justify-content: space-between;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   margin: 0 auto;
   height: 70px;
   padding: 0 calc(1.5rem / 2) 0 1.5rem;
@@ -412,7 +412,7 @@ File: Main Css File
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 
 .header-profile-user {
@@ -760,7 +760,7 @@ File: Main Css File
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   padding: 0.625rem 1.5rem;
   color: var(--vz-vertical-menu-item-color);
   font-size: 0.925rem;
@@ -2080,7 +2080,7 @@ File: Main Css File
           justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 [data-layout=twocolumn] .twocolumn-iconview .nav-icon .icon-dual {
   width: 18px;
@@ -2622,7 +2622,7 @@ File: Main Css File
 .avatar-title {
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   background-color: #4b38b3;
   color: #fff;
   display: -webkit-box;
@@ -3361,7 +3361,7 @@ File: Main Css File
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   color: #878a99;
 }
 
@@ -3647,7 +3647,7 @@ code {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -3673,11 +3673,11 @@ code {
   color: #fff;
 }
 
-.button-items {
+.button-products {
   margin-right: -8px;
   margin-bottom: -12px;
 }
-.button-items .btn {
+.button-products .btn {
   margin-bottom: 12px;
   margin-right: 8px;
 }
@@ -3861,7 +3861,7 @@ code {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -3886,7 +3886,7 @@ code {
           justify-content: center;
   -webkit-box-align: end;
       -ms-flex-align: end;
-          align-items: flex-end;
+          align-products: flex-end;
 }
 .ribbon-box.ribbon-fill.ribbon-sm .ribbon {
   padding: 2px 12px;
@@ -4620,7 +4620,7 @@ strong {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -5291,7 +5291,7 @@ a {
           justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   height: calc(1rem + 1.5em + 2px);
   width: calc(1rem + 1.5em + 2px);
   padding: 0;
@@ -5537,7 +5537,7 @@ a {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -7164,7 +7164,7 @@ a {
   display: flex;
   -webkit-box-align: end;
       -ms-flex-align: end;
-          align-items: flex-end;
+          align-products: flex-end;
   min-height: calc(100% - 1.75rem);
 }
 @media (min-width: 576px) {
@@ -7179,7 +7179,7 @@ a {
   display: flex;
   -webkit-box-align: end;
       -ms-flex-align: end;
-          align-items: flex-end;
+          align-products: flex-end;
   min-height: calc(100% - 1.75rem);
   margin-left: 1.75rem;
 }
@@ -8148,7 +8148,7 @@ a {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 .form-icon.right .form-control-icon {
   padding-left: 2.7rem;
@@ -8240,7 +8240,7 @@ a {
       align-content: flex-start;
   -webkit-box-align: start;
       -ms-flex-align: start;
-          align-items: flex-start;
+          align-products: flex-start;
 }
 
 .simplebar-wrapper {
@@ -9168,7 +9168,7 @@ div.code-toolbar > .toolbar button:hover {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -9378,7 +9378,7 @@ div.code-toolbar > .toolbar button:hover {
           justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   font-size: 16px;
   border-radius: 50%;
   color: #878a99;
@@ -9663,7 +9663,7 @@ div.code-toolbar > .toolbar button:hover {
 .ck.ck-toolbar {
   border: 1px solid var(--vz-input-border) !important;
 }
-.ck.ck-toolbar.ck-toolbar_grouping > .ck-toolbar__items {
+.ck.ck-toolbar.ck-toolbar_grouping > .ck-toolbar__products {
   -ms-flex-wrap: wrap !important;
       flex-wrap: wrap !important;
 }
@@ -9805,7 +9805,7 @@ a.ck.ck-button.ck-on:not(.ck-disabled):active {
   border-top-left-radius: 0 !important;
 }
 
-[dir=rtl] .ck.ck-toolbar > .ck-toolbar__items {
+[dir=rtl] .ck.ck-toolbar > .ck-toolbar__products {
   -webkit-box-orient: horizontal;
   -webkit-box-direction: reverse;
       -ms-flex-direction: row-reverse;
@@ -10148,7 +10148,7 @@ button.gridjs-sort-asc, button.gridjs-sort-desc {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 .pagination-wrap a {
   text-decoration: none;
@@ -10555,7 +10555,7 @@ button.gridjs-sort-asc, button.gridjs-sort-desc {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -10716,7 +10716,7 @@ button.gridjs-sort-asc, button.gridjs-sort-desc {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -12161,7 +12161,7 @@ div.dtr-modal div.dtr-modal-close:hover {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   height: 36px;
   border-bottom: 1px solid var(--vz-border-color);
 }
@@ -12202,7 +12202,7 @@ span.flatpickr-weekday {
   display: flex;
   -webkit-box-align: start;
       -ms-flex-align: start;
-          align-items: flex-start;
+          align-products: flex-start;
   width: 307.875px;
 }
 .flatpickr-days:focus {
@@ -12869,7 +12869,7 @@ span.flatpickr-weekday {
   height: 60px;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -12987,7 +12987,7 @@ span.flatpickr-weekday {
   text-transform: uppercase;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -13016,7 +13016,7 @@ span.flatpickr-weekday {
   right: 45px;
   -webkit-box-align: left;
       -ms-flex-align: left;
-          align-items: left;
+          align-products: left;
   background: #45CB85;
   border: 3px solid var(--vz-card-bg-custom);
   border-radius: 50px;
@@ -13139,7 +13139,7 @@ span.flatpickr-weekday {
           justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   position: relative;
   background-color: var(--vz-card-bg-custom);
 }
@@ -13310,7 +13310,7 @@ span.flatpickr-weekday {
   width: 100%;
   -webkit-box-align: end;
       -ms-flex-align: end;
-          align-items: flex-end;
+          align-products: flex-end;
   padding: 16px;
 }
 .gallery-box .gallery-container .gallery-overlay .overlay-caption {
@@ -13674,7 +13674,7 @@ span.flatpickr-weekday {
           justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 .sitemap-horizontal ul a span {
   display: -webkit-box;
@@ -14079,7 +14079,7 @@ span.flatpickr-weekday {
 .team-list.grid-view-filter .team-box .team-row {
   -webkit-box-align: start;
       -ms-flex-align: start;
-          align-items: start;
+          align-products: start;
 }
 .team-list.grid-view-filter .team-box .team-row .col {
   width: 100%;
@@ -14109,7 +14109,7 @@ span.flatpickr-weekday {
           flex-direction: column;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   margin-bottom: 25px;
   margin-top: 36px;
 }
@@ -14161,7 +14161,7 @@ span.flatpickr-weekday {
 .team-list.list-view-filter .team-box .team-row {
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -14172,7 +14172,7 @@ span.flatpickr-weekday {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 .team-list.list-view-filter .team-box .team-profile-img .avatar-lg {
   height: 4rem;
@@ -14779,7 +14779,7 @@ span.flatpickr-weekday {
   position: relative;
   -webkit-box-align: end;
       -ms-flex-align: end;
-          align-items: flex-end;
+          align-products: flex-end;
   max-width: 80%;
 }
 @media (max-width: 575.98px) {
@@ -14822,7 +14822,7 @@ span.flatpickr-weekday {
       flex-wrap: wrap;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   gap: 8px;
 }
 .chat-conversation .conversation-list .dropdown .dropdown-toggle {
@@ -15137,7 +15137,7 @@ span.flatpickr-weekday {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   color: #878a99;
   padding: 5px 0;
   font-weight: 500;
@@ -15351,7 +15351,7 @@ span.flatpickr-weekday {
           justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   position: absolute;
   right: 0;
   top: 0;
@@ -15461,7 +15461,7 @@ span.flatpickr-weekday {
   overflow-x: auto;
   -webkit-box-align: stretch;
       -ms-flex-align: stretch;
-          align-items: stretch;
+          align-products: stretch;
 }
 .tasks-board .tasks-list {
   min-width: 300px;
@@ -15959,7 +15959,7 @@ span.flatpickr-weekday {
           justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 
 .to-do-menu li .nav-link {

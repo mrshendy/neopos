@@ -11,7 +11,7 @@ export interface ClassNames {
   /** @default 'choices__list' */
   list: string;
   /** @default 'choices__list--multiple' */
-  listItems: string;
+  listproducts: string;
   /** @default 'choices__list--single' */
   listSingle: string;
   /** @default 'choices__list--dropdown' */
@@ -19,7 +19,7 @@ export interface ClassNames {
   /** @default 'choices__item' */
   item: string;
   /** @default 'choices__item--selectable' */
-  itemSelectable: string;
+  productselectable: string;
   /** @default 'choices__item--disabled' */
   itemDisabled: string;
   /** @default 'choices__item--choice' */

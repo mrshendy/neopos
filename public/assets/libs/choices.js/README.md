@@ -100,16 +100,16 @@ Or include Choices directly:
   // Passing options (with default options)
   const choices = new Choices(element, {
     silent: false,
-    items: [],
+    products: [],
     choices: [],
     renderChoiceLimit: -1,
     maxItemCount: -1,
-    addItems: true,
+    addproducts: true,
     addItemFilter: null,
-    removeItems: true,
+    removeproducts: true,
     removeItemButton: false,
-    editItems: false,
-    duplicateItemsAllowed: true,
+    editproducts: false,
+    duplicateproductsAllowed: true,
     delimiter: ',',
     paste: true,
     searchEnabled: true,
@@ -120,7 +120,7 @@ Or include Choices directly:
     position: 'auto',
     resetScrollPosition: true,
     shouldSort: true,
-    shouldSortItems: false,
+    shouldSortproducts: false,
     sorter: () => {...},
     placeholder: true,
     placeholderValue: null,
@@ -131,7 +131,7 @@ Or include Choices directly:
     loadingText: 'Loading...',
     noResultsText: 'No results found',
     noChoicesText: 'No choices to choose from',
-    itemSelectText: 'Press to select',
+    productselectText: 'Press to select',
     addItemText: (value) => {
       return `Press Enter to add <b>"${value}"</b>`;
     },
@@ -147,11 +147,11 @@ Or include Choices directly:
       input: 'choices__input',
       inputCloned: 'choices__input--cloned',
       list: 'choices__list',
-      listItems: 'choices__list--multiple',
+      listproducts: 'choices__list--multiple',
       listSingle: 'choices__list--single',
       listDropdown: 'choices__list--dropdown',
       item: 'choices__item',
-      itemSelectable: 'choices__item--selectable',
+      productselectable: 'choices__item--selectable',
       itemDisabled: 'choices__item--disabled',
       itemChoice: 'choices__item--choice',
       placeholder: 'choices__placeholder',
@@ -207,13 +207,13 @@ Choices works with the following input types, referenced in the documentation as
 
 **Usage:** Optionally suppress console errors and warnings.
 
-### items
+### products
 
 **Type:** `Array` **Default:** `[]`
 
 **Input types affected:** `text`
 
-**Usage:** Add pre-selected items (see terminology) to text input.
+**Usage:** Add pre-selected products (see terminology) to text input.
 
 Pass an array of strings:
 
@@ -280,23 +280,23 @@ Pass an array of objects:
 
 **Input types affected:** `text`, `select-multiple`
 
-**Usage:** The amount of items a user can input/select ("-1" indicates no limit).
+**Usage:** The amount of products a user can input/select ("-1" indicates no limit).
 
-### addItems
+### addproducts
 
 **Type:** `Boolean` **Default:** `true`
 
 **Input types affected:** `text`
 
-**Usage:** Whether a user can add items.
+**Usage:** Whether a user can add products.
 
-### removeItems
+### removeproducts
 
 **Type:** `Boolean` **Default:** `true`
 
 **Input types affected:** `text`, `select-multiple`
 
-**Usage:** Whether a user can remove items.
+**Usage:** Whether a user can remove products.
 
 ### removeItemButton
 
@@ -306,21 +306,21 @@ Pass an array of objects:
 
 **Usage:** Whether each item should have a remove button.
 
-### editItems
+### editproducts
 
 **Type:** `Boolean` **Default:** `false`
 
 **Input types affected:** `text`
 
-**Usage:** Whether a user can edit items. An item's value can be edited by pressing the backspace.
+**Usage:** Whether a user can edit products. An item's value can be edited by pressing the backspace.
 
-### duplicateItemsAllowed
+### duplicateproductsAllowed
 
 **Type:** `Boolean` **Default:** `true`
 
 **Input types affected:** `text`, `select-multiple`
 
-**Usage:** Whether duplicate inputted/chosen items are allowed
+**Usage:** Whether duplicate inputted/chosen products are allowed
 
 ### delimiter
 
@@ -405,14 +405,14 @@ Pass an array of objects:
 **Example:**
 
 ```js
-// Only adds items matching the text test
+// Only adds products matching the text test
 new Choices(element, {
   addItemFilter: (value) => {
     return ['orange', 'apple', 'banana'].includes(value);
   };
 });
 
-// only items ending to `-red`
+// only products ending to `-red`
 new Choices(element, {
   addItemFilter: '-red$';
 });
@@ -427,13 +427,13 @@ new Choices(element, {
 
 **Usage:** Whether choices and groups should be sorted. If false, choices/groups will appear in the order they were given.
 
-### shouldSortItems
+### shouldSortproducts
 
 **Type:** `Boolean` **Default:** `false`
 
 **Input types affected:** `text`, `select-multiple`
 
-**Usage:** Whether items should be sorted. If false, items will appear in the order they were selected.
+**Usage:** Whether products should be sorted. If false, products will appear in the order they were selected.
 
 ### sorter
 
@@ -441,7 +441,7 @@ new Choices(element, {
 
 **Input types affected:** `select-one`, `select-multiple`
 
-**Usage:** The function that will sort choices and items before they are displayed (unless a user is searching). By default choices and items are sorted by alphabetical order.
+**Usage:** The function that will sort choices and products before they are displayed (unless a user is searching). By default choices and products are sorted by alphabetical order.
 
 **Example:**
 
@@ -539,7 +539,7 @@ For backward compatibility, `<option placeholder>This is a placeholder</option>`
 
 **Usage:** The text that is shown when a user has selected all possible choices. Optionally pass a function returning a string.
 
-### itemSelectText
+### productselectText
 
 **Type:** `String` **Default:** `Press to select`
 
@@ -590,11 +590,11 @@ classNames: {
   input: 'choices__input',
   inputCloned: 'choices__input--cloned',
   list: 'choices__list',
-  listItems: 'choices__list--multiple',
+  listproducts: 'choices__list--multiple',
   listSingle: 'choices__list--single',
   listDropdown: 'choices__list--dropdown',
   item: 'choices__item',
-  itemSelectable: 'choices__item--selectable',
+  productselectable: 'choices__item--selectable',
   itemDisabled: 'choices__item--disabled',
   itemOption: 'choices__item--choice',
   group: 'choices__group',
@@ -661,7 +661,7 @@ const example = new Choices(element, {
           <div class="${classNames.item} ${
           data.highlighted
             ? classNames.highlightedState
-            : classNames.itemSelectable
+            : classNames.productselectable
         } ${
           data.placeholder ? classNames.placeholder : ''
         }" data-item data-id="${data.id}" data-value="${data.value}" ${
@@ -674,8 +674,8 @@ const example = new Choices(element, {
       choice: (classNames, data) => {
         return template(`
           <div class="${classNames.item} ${classNames.itemChoice} ${
-          data.disabled ? classNames.itemDisabled : classNames.itemSelectable
-        }" data-select-text="${this.config.itemSelectText}" data-choice ${
+          data.disabled ? classNames.itemDisabled : classNames.productselectable
+        }" data-select-text="${this.config.productselectText}" data-choice ${
           data.disabled
             ? 'data-choice-disabled aria-disabled="true"'
             : 'data-choice-selectable'
@@ -820,16 +820,16 @@ Methods can be called either directly or by chaining:
 ```js
 // Calling a method by chaining
 const choices = new Choices(element, {
-  addItems: false,
-  removeItems: false,
+  addproducts: false,
+  removeproducts: false,
 })
   .setValue(['Set value 1', 'Set value 2'])
   .disable();
 
 // Calling a method directly
 const choices = new Choices(element, {
-  addItems: false,
-  removeItems: false,
+  addproducts: false,
+  removeproducts: false,
 });
 
 choices.setValue(['Set value 1', 'Set value 2']);
@@ -854,7 +854,7 @@ choices.disable();
 
 **Input types affected:** `text`, `select-multiple`
 
-**Usage:** Highlight each chosen item (selected items can be removed).
+**Usage:** Highlight each chosen item (selected products can be removed).
 
 ### unhighlightAll();
 
@@ -862,19 +862,19 @@ choices.disable();
 
 **Usage:** Un-highlight each chosen item.
 
-### removeActiveItemsByValue(value);
+### removeActiveproductsByValue(value);
 
 **Input types affected:** `text`, `select-multiple`
 
 **Usage:** Remove each item by a given value.
 
-### removeActiveItems(excludedId);
+### removeActiveproducts(excludedId);
 
 **Input types affected:** `text`, `select-multiple`
 
 **Usage:** Remove each selectable item.
 
-### removeHighlightedItems();
+### removeHighlightedproducts();
 
 **Input types affected:** `text`, `select-multiple`
 
@@ -898,7 +898,7 @@ choices.disable();
 
 **Usage:** Set choices of select input via an array of objects (or function that returns array of object or promise of it), a value field name and a label field name.
 
-This behaves the similar as passing items via the `choices` option but can be called after initialising Choices. This can also be used to add groups of choices (see example 3); Optionally pass a true `replaceChoices` value to remove any existing choices. Optionally pass a `customProperties` object to add additional data to your choices (useful when searching/filtering etc). Passing an empty array as the first parameter, and a true `replaceChoices` is the same as calling `clearChoices` (see below).
+This behaves the similar as passing products via the `choices` option but can be called after initialising Choices. This can also be used to add groups of choices (see example 3); Optionally pass a true `replaceChoices` value to remove any existing choices. Optionally pass a `customProperties` object to add additional data to your choices (useful when searching/filtering etc). Passing an empty array as the first parameter, and a true `replaceChoices` is the same as calling `clearChoices` (see below).
 
 **Example 1:**
 
@@ -925,8 +925,8 @@ const example = new Choices(element);
 // Passing a function that returns Promise of choices
 example.setChoices(async () => {
   try {
-    const items = await fetch('/items');
-    return items.json();
+    const products = await fetch('/products');
+    return products.json();
   } catch (err) {
     console.error(err);
   }
@@ -984,7 +984,7 @@ example.setChoices(
 
 **Input types affected:** `text`, `select-one`, `select-multiple`
 
-**Usage:** Get value(s) of input (i.e. inputted items (text) or selected choices (select)). Optionally pass an argument of `true` to only return values rather than value objects.
+**Usage:** Get value(s) of input (i.e. inputted products (text) or selected choices (select)). Optionally pass an argument of `true` to only return values rather than value objects.
 
 **Example:**
 
@@ -994,11 +994,11 @@ const values = example.getValue(true); // returns ['value 1', 'value 2'];
 const valueArray = example.getValue(); // returns [{ active: true, choiceId: 1, highlighted: false, id: 1, label: 'Label 1', value: 'Value 1'},  { active: true, choiceId: 2, highlighted: false, id: 2, label: 'Label 2', value: 'Value 2'}];
 ```
 
-### setValue(items);
+### setValue(products);
 
 **Input types affected:** `text`
 
-**Usage:** Set value of input based on an array of objects or strings. This behaves exactly the same as passing items via the `items` option but can be called after initialising Choices.
+**Usage:** Set value of input based on an array of objects or strings. This behaves exactly the same as passing products via the `products` option but can be called after initialising Choices.
 
 **Example:**
 
@@ -1040,7 +1040,7 @@ example.setChoiceByValue('Two'); // Choice with value of 'Two' has now been sele
 
 **Input types affected:** `text`, `select-one`, `select-multiple`
 
-**Usage:** Removes all items, choices and groups. Use with caution.
+**Usage:** Removes all products, choices and groups. Use with caution.
 
 ### clearInput();
 

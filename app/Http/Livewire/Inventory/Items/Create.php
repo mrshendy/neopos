@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\inventory\items;
+namespace App\Http\Livewire\inventory\products;
 
 use Livewire\Component;
 use App\models\inventory\item;
@@ -17,7 +17,7 @@ class Create extends Component
     protected $rules = [
         'name.ar'      => 'required|string|max:255',
         'name.en'      => 'required|string|max:255',
-        'sku'          => 'required|string|max:100|unique:items,sku',
+        'sku'          => 'required|string|max:100|unique:products,sku',
         'uom'          => 'required|string|max:50',
         'track_batch'  => 'boolean',
         'track_serial' => 'boolean',
@@ -52,6 +52,6 @@ class Create extends Component
 
     public function render()
     {
-        return view('livewire.inventory.items.create');
+        return view('livewire.inventory.products.create');
     }
 }

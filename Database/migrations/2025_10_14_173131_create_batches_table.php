@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreign('item_id')->references('id')->on('products');
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
             $table->index(['item_id', 'warehouse_id', 'exp_date']);
         });

@@ -10,7 +10,7 @@
 
     {{-- 🔹 Filters --}}
     <div class="card shadow-sm rounded-4 mb-3">
-        <div class="card-body row g-3 align-items-end">
+        <div class="card-body row g-3 align-products-end">
             <div class="col-md-4">
                 <label class="form-label"><i class="mdi mdi-magnify"></i> {{ __('pos.search') }}</label>
                 <input type="text" class="form-control" wire:model.debounce.400ms="search"

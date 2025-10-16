@@ -8,13 +8,15 @@
 
     <div class="card border-0 shadow-lg rounded-4 stylish-card mb-4">
         <div class="card-header bg-light fw-bold">
-            <i class="mdi mdi-pencil-outline me-2"></i> {{ __('pos.inventory_warehouses_title') }}
+            <i class="mdi mdi-warehouse-edit me-2"></i> {{ __('pos.edit_warehouse') ?? 'تعديل مخزن' }}
         </div>
         <div class="card-body p-4">
             <form wire:submit.prevent="save" class="row g-3">
 
                 <div class="col-md-6">
-                    <label class="form-label fw-bold"><i class="mdi mdi-alphabetical"></i> {{ __('pos.item_name_ar') }}</label>
+                    <label class="form-label fw-bold">
+                        <i class="mdi mdi-alphabetical"></i> {{ __('pos.item_name_ar') }}
+                    </label>
                     <input type="text" class="form-control" wire:model.defer="name.ar" placeholder="{{ __('pos.item_name_ar') }}">
                     <small class="text-muted d-block">{{ __('pos.hint_item_name') }}</small>
                     <div class="mt-1 text-primary"><i class="mdi mdi-eye-outline"></i> {{ $name['ar'] }}</div>
@@ -22,7 +24,9 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label fw-bold"><i class="mdi mdi-alphabetical-variant"></i> {{ __('pos.item_name_en') }}</label>
+                    <label class="form-label fw-bold">
+                        <i class="mdi mdi-alphabetical-variant"></i> {{ __('pos.item_name_en') }}
+                    </label>
                     <input type="text" class="form-control" wire:model.defer="name.en" placeholder="{{ __('pos.item_name_en') }}">
                     <small class="text-muted d-block">{{ __('pos.hint_item_name') }}</small>
                     <div class="mt-1 text-primary"><i class="mdi mdi-eye-outline"></i> {{ $name['en'] }}</div>
@@ -40,6 +44,7 @@
                 <div class="col-md-4">
                     <label class="form-label fw-bold"><i class="mdi mdi-home-city-outline"></i> Branch ID</label>
                     <input type="number" class="form-control" wire:model.defer="branch_id" placeholder="e.g., 1">
+                    <small class="text-muted d-block">Optional branch reference</small>
                     <div class="mt-1 text-primary"><i class="mdi mdi-eye-outline"></i> {{ $branch_id }}</div>
                 </div>
 

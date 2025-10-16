@@ -2858,7 +2858,7 @@ textarea.form-control-lg {
       flex-wrap: wrap;
   -webkit-box-align: stretch;
       -ms-flex-align: stretch;
-          align-items: stretch;
+          align-products: stretch;
   width: 100%;
 }
 .input-group > .form-control,
@@ -2890,7 +2890,7 @@ textarea.form-control-lg {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   padding: 0.5rem 0.9rem;
   font-size: 0.8125rem;
   font-weight: 400;
@@ -3921,7 +3921,7 @@ textarea.form-control-lg {
           flex-direction: column;
   -webkit-box-align: start;
       -ms-flex-align: start;
-          align-items: flex-start;
+          align-products: flex-start;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -4105,7 +4105,7 @@ textarea.form-control-lg {
       flex-wrap: wrap;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -4125,7 +4125,7 @@ textarea.form-control-lg {
       flex-wrap: inherit;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -4188,7 +4188,7 @@ textarea.form-control-lg {
           flex-grow: 1;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
 }
 
 .navbar-toggler {
@@ -4856,7 +4856,7 @@ textarea.form-control-lg {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   width: 100%;
   padding: var(--vz-accordion-btn-padding-y) var(--vz-accordion-btn-padding-x);
   font-size: 0.8125rem;
@@ -5781,7 +5781,7 @@ textarea.form-control-lg {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   padding: var(--vz-toast-padding-y) var(--vz-toast-padding-x);
   color: var(--vz-toast-header-color);
   background-color: var(--vz-toast-header-bg);
@@ -5880,7 +5880,7 @@ textarea.form-control-lg {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   min-height: calc(100% - var(--vz-modal-margin) * 2);
 }
 
@@ -5930,7 +5930,7 @@ textarea.form-control-lg {
       flex-shrink: 0;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -5967,7 +5967,7 @@ textarea.form-control-lg {
       flex-wrap: wrap;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
@@ -6465,7 +6465,7 @@ textarea.form-control-lg {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -7314,7 +7314,7 @@ textarea.form-control-lg {
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -7636,7 +7636,7 @@ textarea.form-control-lg {
           flex-direction: row;
   -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;
+          align-products: center;
   -ms-flex-item-align: stretch;
       align-self: stretch;
 }
@@ -8209,34 +8209,34 @@ textarea.form-control-lg {
           justify-content: space-evenly !important;
 }
 
-.align-items-start {
+.align-products-start {
   -webkit-box-align: start !important;
       -ms-flex-align: start !important;
-          align-items: flex-start !important;
+          align-products: flex-start !important;
 }
 
-.align-items-end {
+.align-products-end {
   -webkit-box-align: end !important;
       -ms-flex-align: end !important;
-          align-items: flex-end !important;
+          align-products: flex-end !important;
 }
 
-.align-items-center {
+.align-products-center {
   -webkit-box-align: center !important;
       -ms-flex-align: center !important;
-          align-items: center !important;
+          align-products: center !important;
 }
 
-.align-items-baseline {
+.align-products-baseline {
   -webkit-box-align: baseline !important;
       -ms-flex-align: baseline !important;
-          align-items: baseline !important;
+          align-products: baseline !important;
 }
 
-.align-items-stretch {
+.align-products-stretch {
   -webkit-box-align: stretch !important;
       -ms-flex-align: stretch !important;
-          align-items: stretch !important;
+          align-products: stretch !important;
 }
 
 .align-content-start {
@@ -9429,30 +9429,30 @@ textarea.form-control-lg {
         -ms-flex-pack: space-evenly !important;
             justify-content: space-evenly !important;
   }
-  .align-items-sm-start {
+  .align-products-sm-start {
     -webkit-box-align: start !important;
         -ms-flex-align: start !important;
-            align-items: flex-start !important;
+            align-products: flex-start !important;
   }
-  .align-items-sm-end {
+  .align-products-sm-end {
     -webkit-box-align: end !important;
         -ms-flex-align: end !important;
-            align-items: flex-end !important;
+            align-products: flex-end !important;
   }
-  .align-items-sm-center {
+  .align-products-sm-center {
     -webkit-box-align: center !important;
         -ms-flex-align: center !important;
-            align-items: center !important;
+            align-products: center !important;
   }
-  .align-items-sm-baseline {
+  .align-products-sm-baseline {
     -webkit-box-align: baseline !important;
         -ms-flex-align: baseline !important;
-            align-items: baseline !important;
+            align-products: baseline !important;
   }
-  .align-items-sm-stretch {
+  .align-products-sm-stretch {
     -webkit-box-align: stretch !important;
         -ms-flex-align: stretch !important;
-            align-items: stretch !important;
+            align-products: stretch !important;
   }
   .align-content-sm-start {
     -ms-flex-line-pack: start !important;
@@ -10116,30 +10116,30 @@ textarea.form-control-lg {
         -ms-flex-pack: space-evenly !important;
             justify-content: space-evenly !important;
   }
-  .align-items-md-start {
+  .align-products-md-start {
     -webkit-box-align: start !important;
         -ms-flex-align: start !important;
-            align-items: flex-start !important;
+            align-products: flex-start !important;
   }
-  .align-items-md-end {
+  .align-products-md-end {
     -webkit-box-align: end !important;
         -ms-flex-align: end !important;
-            align-items: flex-end !important;
+            align-products: flex-end !important;
   }
-  .align-items-md-center {
+  .align-products-md-center {
     -webkit-box-align: center !important;
         -ms-flex-align: center !important;
-            align-items: center !important;
+            align-products: center !important;
   }
-  .align-items-md-baseline {
+  .align-products-md-baseline {
     -webkit-box-align: baseline !important;
         -ms-flex-align: baseline !important;
-            align-items: baseline !important;
+            align-products: baseline !important;
   }
-  .align-items-md-stretch {
+  .align-products-md-stretch {
     -webkit-box-align: stretch !important;
         -ms-flex-align: stretch !important;
-            align-items: stretch !important;
+            align-products: stretch !important;
   }
   .align-content-md-start {
     -ms-flex-line-pack: start !important;
@@ -10803,30 +10803,30 @@ textarea.form-control-lg {
         -ms-flex-pack: space-evenly !important;
             justify-content: space-evenly !important;
   }
-  .align-items-lg-start {
+  .align-products-lg-start {
     -webkit-box-align: start !important;
         -ms-flex-align: start !important;
-            align-items: flex-start !important;
+            align-products: flex-start !important;
   }
-  .align-items-lg-end {
+  .align-products-lg-end {
     -webkit-box-align: end !important;
         -ms-flex-align: end !important;
-            align-items: flex-end !important;
+            align-products: flex-end !important;
   }
-  .align-items-lg-center {
+  .align-products-lg-center {
     -webkit-box-align: center !important;
         -ms-flex-align: center !important;
-            align-items: center !important;
+            align-products: center !important;
   }
-  .align-items-lg-baseline {
+  .align-products-lg-baseline {
     -webkit-box-align: baseline !important;
         -ms-flex-align: baseline !important;
-            align-items: baseline !important;
+            align-products: baseline !important;
   }
-  .align-items-lg-stretch {
+  .align-products-lg-stretch {
     -webkit-box-align: stretch !important;
         -ms-flex-align: stretch !important;
-            align-items: stretch !important;
+            align-products: stretch !important;
   }
   .align-content-lg-start {
     -ms-flex-line-pack: start !important;
@@ -11490,30 +11490,30 @@ textarea.form-control-lg {
         -ms-flex-pack: space-evenly !important;
             justify-content: space-evenly !important;
   }
-  .align-items-xl-start {
+  .align-products-xl-start {
     -webkit-box-align: start !important;
         -ms-flex-align: start !important;
-            align-items: flex-start !important;
+            align-products: flex-start !important;
   }
-  .align-items-xl-end {
+  .align-products-xl-end {
     -webkit-box-align: end !important;
         -ms-flex-align: end !important;
-            align-items: flex-end !important;
+            align-products: flex-end !important;
   }
-  .align-items-xl-center {
+  .align-products-xl-center {
     -webkit-box-align: center !important;
         -ms-flex-align: center !important;
-            align-items: center !important;
+            align-products: center !important;
   }
-  .align-items-xl-baseline {
+  .align-products-xl-baseline {
     -webkit-box-align: baseline !important;
         -ms-flex-align: baseline !important;
-            align-items: baseline !important;
+            align-products: baseline !important;
   }
-  .align-items-xl-stretch {
+  .align-products-xl-stretch {
     -webkit-box-align: stretch !important;
         -ms-flex-align: stretch !important;
-            align-items: stretch !important;
+            align-products: stretch !important;
   }
   .align-content-xl-start {
     -ms-flex-line-pack: start !important;
@@ -12177,30 +12177,30 @@ textarea.form-control-lg {
         -ms-flex-pack: space-evenly !important;
             justify-content: space-evenly !important;
   }
-  .align-items-xxl-start {
+  .align-products-xxl-start {
     -webkit-box-align: start !important;
         -ms-flex-align: start !important;
-            align-items: flex-start !important;
+            align-products: flex-start !important;
   }
-  .align-items-xxl-end {
+  .align-products-xxl-end {
     -webkit-box-align: end !important;
         -ms-flex-align: end !important;
-            align-items: flex-end !important;
+            align-products: flex-end !important;
   }
-  .align-items-xxl-center {
+  .align-products-xxl-center {
     -webkit-box-align: center !important;
         -ms-flex-align: center !important;
-            align-items: center !important;
+            align-products: center !important;
   }
-  .align-items-xxl-baseline {
+  .align-products-xxl-baseline {
     -webkit-box-align: baseline !important;
         -ms-flex-align: baseline !important;
-            align-items: baseline !important;
+            align-products: baseline !important;
   }
-  .align-items-xxl-stretch {
+  .align-products-xxl-stretch {
     -webkit-box-align: stretch !important;
         -ms-flex-align: stretch !important;
-            align-items: stretch !important;
+            align-products: stretch !important;
   }
   .align-content-xxl-start {
     -ms-flex-line-pack: start !important;

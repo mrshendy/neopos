@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->json('name')->nullable();     // ['ar'=>'','en'=>'']
             $table->string('sku')->unique();
@@ -18,5 +18,5 @@ return new class extends Migration {
             $table->index(['status']);
         });
     }
-    public function down(): void { Schema::dropIfExists('items'); }
+    public function down(): void { Schema::dropIfExists('products'); }
 };

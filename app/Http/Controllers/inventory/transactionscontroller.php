@@ -16,5 +16,10 @@ class transactionscontroller extends Controller
         return view('inventory.transactions.create');
     }
 
+    public function edit($id)
+    {
+        return view('inventory.transactions.edit', compact('id'));
+    }
+
   
 }

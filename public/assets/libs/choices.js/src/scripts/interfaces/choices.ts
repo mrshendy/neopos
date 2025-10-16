@@ -78,7 +78,7 @@ export interface Choices {
 
   _presetChoices: Partial<Choice>[];
 
-  _presetItems: Item[] | string[];
+  _presetproducts: Item[] | string[];
 
   new (
     element: string | Element | HTMLInputElement | HTMLSelectElement,

@@ -448,7 +448,7 @@ class Swiper {
 
     const getWrapper = () => {
       if (el && el.shadowRoot && el.shadowRoot.querySelector) {
-        const res = $(el.shadowRoot.querySelector(getWrapperSelector())); // Children needs to return slot items
+        const res = $(el.shadowRoot.querySelector(getWrapperSelector())); // Children needs to return slot products
 
         res.children = options => $el.children(options);
 

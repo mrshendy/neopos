@@ -118,7 +118,7 @@
                 </form>
             </div>
 
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-products-center">
 
                 <div class="dropdown d-md-none topbar-head-dropdown header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -162,7 +162,7 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg p-0 dropdown-menu-end">
                         <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
-                            <div class="row align-items-center">
+                            <div class="row align-products-center">
                                 <div class="col">
                                     <h6 class="m-0 fw-semibold fs-15"> Web Apps </h6>
                                 </div>
@@ -240,7 +240,7 @@
 
                         <div class="dropdown-head bg-primary bg-pattern rounded-top">
                             <div class="p-3">
-                                <div class="row align-items-center">
+                                <div class="row align-products-center">
                                     <div class="col">
                                         <h6 class="m-0 fs-16 fw-semibold text-white"> Notifications </h6>
                                     </div>
@@ -251,7 +251,7 @@
                             </div>
 
                             <div class="px-2 pt-2">
-                                <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true" id="notificationItemsTab" role="tablist">
+                                <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true" id="notificationproductsTab" role="tablist">
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab" role="tab" aria-selected="true">
                                             All (4)
@@ -272,7 +272,7 @@
 
                         </div>
 
-                        <div class="tab-content position-relative" id="notificationItemsTabContent">
+                        <div class="tab-content position-relative" id="notificationproductsTabContent">
                             <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
                                 <div data-simplebar style="max-height: 300px;" class="pe-2">
                                     <div class="text-reset notification-item d-block dropdown-item position-relative">
@@ -497,7 +497,7 @@
 
                 <div class="dropdown ms-sm-3 header-item topbar-user">
                     <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="d-flex align-items-center">
+                        <span class="d-flex align-products-center">
                             <img class="rounded-circle header-profile-user" src="{{URL::asset('assets/images/users/avatar-1.jpg')}}" alt="Header Avatar">
                             <span class="text-start ms-xl-2">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Anna Adame</span>

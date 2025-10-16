@@ -72,7 +72,7 @@
 
     <!-- Theme Settings -->
     <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas">
-        <div class="d-flex align-items-center bg-primary bg-gradient p-3 offcanvas-header">
+        <div class="d-flex align-products-center bg-primary bg-gradient p-3 offcanvas-header">
             <h5 class="m-0 me-2 text-white">Theme Customizer</h5>
 
             <button type="button" class="btn-close btn-close-white ms-auto" id="customizerclose-btn" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -113,7 +113,7 @@
                                 <input id="customizer-layout02" name="data-layout" type="radio" value="horizontal" class="form-check-input">
                                 <label class="form-check-label p-0 avatar-md w-100 shadow-sm" for="customizer-layout02">
                                     <span class="d-flex h-100 flex-column gap-1">
-                                        <span class="bg-light d-flex p-1 gap-1 align-items-center">
+                                        <span class="bg-light d-flex p-1 gap-1 align-products-center">
                                             <span class="d-block p-1 bg-soft-primary rounded me-1"></span>
                                             <span class="d-block p-1 pb-0 px-2 bg-soft-primary ms-auto"></span>
                                             <span class="d-block p-1 pb-0 px-2 bg-soft-primary"></span>
@@ -553,7 +553,7 @@
                                     <input class="form-check-input" type="radio" name="data-layout-style" id="sidebar-view-detached" value="detached">
                                     <label class="form-check-label p-0 avatar-md w-100 shadow-sm" for="sidebar-view-detached">
                                         <span class="d-flex h-100 flex-column">
-                                            <span class="bg-light d-flex p-1 gap-1 align-items-center px-2">
+                                            <span class="bg-light d-flex p-1 gap-1 align-products-center px-2">
                                                 <span class="d-block p-1 bg-soft-primary rounded me-1"></span>
                                                 <span class="d-block p-1 pb-0 px-2 bg-soft-primary ms-auto"></span>
                                                 <span class="d-block p-1 pb-0 px-2 bg-soft-primary"></span>
@@ -691,7 +691,7 @@
                             <div class="form-check sidebar-setting card-radio">
                                 <input class="form-check-input" type="radio" name="data-sidebar-image" id="sidebarimg-none" value="none">
                                 <label class="form-check-label p-0 avatar-sm h-auto" for="sidebarimg-none">
-                                    <span class="avatar-md w-auto bg-light d-flex align-items-center justify-content-center">
+                                    <span class="avatar-md w-auto bg-light d-flex align-products-center justify-content-center">
                                         <i class="ri-close-fill fs-20"></i>
                                     </span>
                                 </label>
@@ -751,7 +751,7 @@
                                             </span>
                                         </span>
                                         <!-- <div id="preloader"> -->
-                                        <div id="status" class="d-flex align-items-center justify-content-center">
+                                        <div id="status" class="d-flex align-products-center justify-content-center">
                                             <div class="spinner-border text-primary avatar-xxs m-auto" role="status">
                                                 <span class="visually-hidden">Loading...</span>
                                             </div>

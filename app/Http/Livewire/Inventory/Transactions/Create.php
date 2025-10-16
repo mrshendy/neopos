@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\models\inventory\{
-    stock_transaction, stock_transaction_line, warehouse, item, setting
+    stock_transaction, stock_transaction_line, warehouse, product, setting
 };
 
 class Create extends Component
@@ -19,37 +19,68 @@ class Create extends Component
     public $notes = '';
 
     public $lines = [
-        ['item_id' => '', 'batch_id' => '', 'serial_id' => '', 'qty' => 1, 'uom' => 'unit', 'reason' => ''],
-    ];
-
-    protected $rules = [
-        'type'                 => 'required|in:sales_issue,sales_return,adjustment,transfer,purchase_receive',
-        'trx_date'             => 'required|date',
-        'warehouse_from_id'    => 'nullable|exists:warehouses,id',
-        'warehouse_to_id'      => 'nullable|exists:warehouses,id',
-        'lines.*.item_id'      => 'required|exists:items,id',
-        'lines.*.qty'          => 'required|numeric|min:0.000001',
-        'lines.*.uom'          => 'required|string|max:50',
-        'lines.*.reason'       => 'nullable|string|max:255',
-        'notes'                => 'nullable|string|max:2000',
+        ['product_id' => '', 'batch_id' => '', 'serial_id' => '', 'qty' => 1, 'uom' => 'unit', 'reason' => ''],
     ];
 
     protected $messages = [
-        'type.required'              => 'نوع الحركة مطلوب',
-        'trx_date.required'          => 'تاريخ الحركة مطلوب',
-        'lines.*.item_id.required'   => 'اختر الصنف',
-        'lines.*.qty.min'            => 'الكمية يجب أن تكون أكبر من صفر',
-        'lines.*.uom.required'       => 'وحدة القياس مطلوبة للبند',
+        'type.required'                   => 'نوع الحركة مطلوب',
+        'type.in'                         => 'نوع الحركة غير صحيح',
+        'trx_date.required'               => 'تاريخ الحركة مطلوب',
+        'warehouse_from_id.required'      => 'مخزن الصرف مطلوب',
+        'warehouse_to_id.required'        => 'مخزن الاستلام مطلوب',
+        'lines.*.product_id.required'     => 'اختر الصنف',
+        'lines.*.product_id.exists'       => 'الصنف غير موجود',
+        'lines.*.qty.required'            => 'الكمية مطلوبة',
+        'lines.*.qty.numeric'             => 'الكمية يجب أن تكون رقمية',
+        'lines.*.qty.min'                 => 'الكمية يجب أن تكون أكبر من صفر',
+        'lines.*.uom.required'            => 'وحدة القياس مطلوبة للبند',
+        'notes.max'                       => 'عدد أحرف الملاحظات تجاوز الحد',
     ];
+
+    public function rules()
+    {
+        return [
+            'type'                 => 'required|in:sales_issue,sales_return,adjustment,transfer,purchase_receive',
+            'trx_date'             => 'required|date',
+            'warehouse_from_id'    => $this->requiresFrom() ? 'required|exists:warehouses,id' : 'nullable|exists:warehouses,id',
+            'warehouse_to_id'      => $this->requiresTo()   ? 'required|exists:warehouses,id' : 'nullable|exists:warehouses,id',
+            'lines.*.product_id'   => 'required|exists:products,id',
+            'lines.*.qty'          => 'required|numeric|min:0.000001',
+            'lines.*.uom'          => 'required|string|max:50',
+            'lines.*.reason'       => 'nullable|string|max:255',
+            'notes'                => 'nullable|string|max:2000',
+        ];
+    }
 
     public function mount()
     {
         $this->trx_date = Carbon::now()->format('Y-m-d\TH:i');
     }
 
+    public function getTypesProperty()
+    {
+        return [
+            'sales_issue'      => 'صرف مبيعات',
+            'sales_return'     => 'مرتجع مبيعات',
+            'purchase_receive' => 'استلام مشتريات',
+            'transfer'         => 'تحويل بين مخازن',
+            'adjustment'       => 'تسوية مخزنية',
+        ];
+    }
+
+    public function requiresFrom(): bool
+    {
+        return in_array($this->type, ['sales_issue','transfer','adjustment']);
+    }
+
+    public function requiresTo(): bool
+    {
+        return in_array($this->type, ['purchase_receive','transfer']);
+    }
+
     public function addLine()
     {
-        $this->lines[] = ['item_id' => '', 'batch_id' => '', 'serial_id' => '', 'qty' => 1, 'uom' => 'unit', 'reason' => ''];
+        $this->lines[] = ['product_id' => '', 'batch_id' => '', 'serial_id' => '', 'qty' => 1, 'uom' => 'unit', 'reason' => ''];
     }
 
     public function removeLine($index)
@@ -75,7 +106,7 @@ class Create extends Component
     {
         $this->validate();
 
-        // مثال بسيط لسياسة السالب (للتوسع لاحقًا)
+        // سياسة السالب (قابلة للتوسّع لاحقاً)
         $negativePolicy = optional(setting::where('key', 'negative_stock_policy')->first())->value['policy'] ?? 'block';
 
         DB::transaction(function () {
@@ -95,12 +126,12 @@ class Create extends Component
             foreach ($this->lines as $ln) {
                 stock_transaction_line::create([
                     'stock_transaction_id' => $trx->id,
-                    'item_id'   => $ln['item_id'],
-                    'batch_id'  => $ln['batch_id'] ?: null,
-                    'serial_id' => $ln['serial_id'] ?: null,
-                    'qty'       => $ln['qty'],
-                    'uom'       => $ln['uom'],
-                    'reason'    => $ln['reason'] ?: null,
+                    'product_id' => $ln['product_id'],
+                    'batch_id'   => $ln['batch_id'] ?: null,
+                    'serial_id'  => $ln['serial_id'] ?: null,
+                    'qty'        => $ln['qty'],
+                    'uom'        => $ln['uom'],
+                    'reason'     => $ln['reason'] ?: null,
                 ]);
             }
         });
@@ -112,8 +143,9 @@ class Create extends Component
     public function render()
     {
         return view('livewire.inventory.transactions.create', [
-            'warehouses' => warehouse::orderByDesc('id')->get(),
-            'items'      => item::orderByDesc('id')->get(),
+            'warehouses' => warehouse::orderBy('name')->get(),
+            'products'   => product::orderBy('name')->get(),
+            'types'      => $this->types,
         ]);
     }
 }

@@ -7,7 +7,7 @@
     @endif
 
     <style>
-        .preview-chip{display:inline-flex;align-items:center;gap:.35rem;background:#f8f9fa;border:1px solid rgba(0,0,0,.06);border-radius:999px;padding:.25rem .6rem;font-size:.8rem;color:#6c757d}
+        .preview-chip{display:inline-flex;align-products:center;gap:.35rem;background:#f8f9fa;border:1px solid rgba(0,0,0,.06);border-radius:999px;padding:.25rem .6rem;font-size:.8rem;color:#6c757d}
         .field-block{position:relative}
         .field-block label{font-weight:600}
         .help{font-size:.8rem;color:#6c757d}
@@ -23,7 +23,7 @@
             {{-- صورة المنتج --}}
             <div class="col-12 field-block">
                 <label class="form-label"><i class="mdi mdi-image-multiple-outline"></i> {{ __('pos.product_image') ?? 'صورة المنتج' }}</label>
-                <div class="d-flex flex-wrap gap-3 align-items-start">
+                <div class="d-flex flex-wrap gap-3 align-products-start">
                     <div>
                         @php
                             $preview = null;
@@ -33,7 +33,7 @@
                         @if($preview)
                             <img src="{{ $preview }}" alt="preview" class="rounded-4 border" style="width:160px;height:160px;object-fit:cover;">
                         @else
-                            <div class="d-flex align-items-center justify-content-center rounded-4 border bg-light"
+                            <div class="d-flex align-products-center justify-content-center rounded-4 border bg-light"
                                  style="width:160px;height:160px;">
                                 <i class="mdi mdi-image-off-outline fs-1 text-muted"></i>
                             </div>

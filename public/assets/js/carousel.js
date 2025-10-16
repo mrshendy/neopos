@@ -14,13 +14,13 @@
 		dots: false,
 		responsive: {
 			0: {
-				items: 1
+				products: 1
 			},
 			600: {
-				items: 1
+				products: 1
 			},
 			1300: {
-				items: 3
+				products: 3
 			}
 		}
 	})
@@ -42,15 +42,15 @@
 		responsiveClass: true,
 		responsive: {
 			0: {
-				items: 1,
+				products: 1,
 				nav: true
 			},
 			600: {
-				items: 2,
+				products: 2,
 				nav: true
 			},
 			1300: {
-				items: 4,
+				products: 4,
 				nav: true
 			}
 		}
@@ -66,13 +66,13 @@
 		autoplay: true,
 		responsive: {
 			0: {
-				items: 1
+				products: 1
 			},
 			600: {
-				items: 2
+				products: 2
 			},
 			1000: {
-				items: 2
+				products: 2
 			}
 		}
 	})
@@ -87,13 +87,13 @@
 		autoplay: true,
 		responsive: {
 			0: {
-				items: 1
+				products: 1
 			},
 			600: {
-				items: 3
+				products: 3
 			},
 			1000: {
-				items: 6
+				products: 6
 			}
 		}
 	})
@@ -115,15 +115,15 @@
 		responsiveClass: true,
 		responsive: {
 			0: {
-				items: 1,
+				products: 1,
 				nav: true
 			},
 			600: {
-				items: 2,
+				products: 2,
 				nav: true
 			},
 			1300: {
-				items: 4,
+				products: 4,
 				nav: true
 			}
 		}
@@ -139,13 +139,13 @@
 		autoplay: true,
 		responsive: {
 			0: {
-				items: 1
+				products: 1
 			},
 			600: {
-				items: 2
+				products: 2
 			},
 			1000: {
-				items: 3
+				products: 3
 			}
 		}
 	})
@@ -167,15 +167,15 @@
 		responsiveClass: true,
 		responsive: {
 			0: {
-				items: 1,
+				products: 1,
 				nav: true
 			},
 			600: {
-				items: 2,
+				products: 2,
 				nav: true
 			},
 			1300: {
-				items: 4,
+				products: 4,
 				nav: true
 			}
 		}

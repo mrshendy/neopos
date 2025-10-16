@@ -4,95 +4,78 @@ namespace App\Http\Livewire\inventory\transactions;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\models\inventory\stock_transaction;
-use App\models\inventory\warehouse;
+use App\models\inventory\{stock_transaction, warehouse};
+use Carbon\Carbon;
 
 class Index extends Component
 {
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    protected $listeners = ['deleteConfirmed' => 'delete'];
 
-    public $search = '';     // trx_no
-    public $type = '';       // sales_issue, sales_return, adjustment, transfer, purchase_receive
-    public $status = '';     // draft, posted, cancelled
+    public $search = '';
+    public $type = '';
     public $warehouse_id = '';
     public $date_from = '';
     public $date_to = '';
+    public $perPage = 10;
 
-    protected $queryString = ['page','search','type','status','warehouse_id','date_from','date_to'];
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'type' => ['except' => ''],
+        'warehouse_id' => ['except' => ''],
+        'date_from' => ['except' => ''],
+        'date_to' => ['except' => ''],
+    ];
 
-    public function updating($prop)
+    public function updating($field)
     {
-        if (in_array($prop, ['search','type','status','warehouse_id','date_from','date_to'])) {
+        if (in_array($field, ['search','type','warehouse_id','date_from','date_to'])) {
             $this->resetPage();
         }
     }
 
+    public function getTypesProperty()
+    {
+        return [
+            'sales_issue'      => 'صرف مبيعات',
+            'sales_return'     => 'مرتجع مبيعات',
+            'purchase_receive' => 'استلام مشتريات',
+            'transfer'         => 'تحويل بين مخازن',
+            'adjustment'       => 'تسوية مخزنية',
+        ];
+    }
+
+    public function clearFilters()
+    {
+        $this->reset(['search','type','warehouse_id','date_from','date_to']);
+    }
+
     public function render()
     {
-        $q = stock_transaction::query();
+        $q = stock_transaction::with(['warehouseFrom','warehouseTo','user'])
+            ->when($this->search, function ($qq) {
+                $s = trim($this->search);
+                $qq->where(function ($w) use ($s) {
+                    $w->where('trx_no','like',"%{$s}%")
+                      ->orWhere('notes','like',"%{$s}%");
+                });
+            })
+            ->when($this->type, fn($qq) => $qq->where('type',$this->type))
+            ->when($this->warehouse_id, function ($qq) {
+                $qq->where(function ($w) {
+                    $w->where('warehouse_from_id',$this->warehouse_id)
+                      ->orWhere('warehouse_to_id',$this->warehouse_id);
+                });
+            })
+            ->when($this->date_from, fn($qq) => $qq->whereDate('trx_date','>=',$this->date_from))
+            ->when($this->date_to, fn($qq) => $qq->whereDate('trx_date','<=',$this->date_to))
+            ->orderByDesc('id');
 
-        if ($this->search)        $q->where('trx_no', 'like', "%{$this->search}%");
-        if ($this->type !== '')   $q->where('type', $this->type);
-        if ($this->status !== '') $q->where('status', $this->status);
-
-        if ($this->warehouse_id !== '') {
-            $q->where(function($qr){
-                $qr->where('warehouse_from_id', $this->warehouse_id)
-                   ->orWhere('warehouse_to_id', $this->warehouse_id);
-            });
-        }
-
-        if ($this->date_from) $q->whereDate('trx_date', '>=', $this->date_from);
-        if ($this->date_to)   $q->whereDate('trx_date', '<=', $this->date_to);
-
-        $trxs = $q->orderByDesc('trx_date')->paginate(12);
-        $warehouses = warehouse::orderByDesc('id')->get(['id','name']);
-
-        return view('livewire.inventory.transactions.index', compact('trxs','warehouses'));
-    }
-
-    public function post($id)
-    {
-        $t = stock_transaction::findOrFail($id);
-        if ($t->status !== 'draft') {
-            session()->flash('error', __('pos.cannot_post_non_draft'));
-            return;
-        }
-        $t->status = 'posted';
-        $t->save();
-
-        session()->flash('success', __('pos.posted_success'));
-    }
-
-    public function cancel($id)
-    {
-        $t = stock_transaction::findOrFail($id);
-        if ($t->status === 'posted') {
-            session()->flash('error', __('pos.cannot_cancel_posted'));
-            return;
-        }
-        $t->status = 'cancelled';
-        $t->save();
-
-        session()->flash('success', __('pos.cancelled_success'));
-    }
-
-    public function confirmDelete($id)
-    {
-        $this->dispatchBrowserEvent('confirm-delete', ['id' => $id]);
-    }
-
-    public function delete($id)
-    {
-        $t = stock_transaction::findOrFail($id);
-        if ($t->status === 'posted') {
-            session()->flash('error', __('pos.cannot_delete_posted'));
-            return;
-        }
-        $t->delete();
-        session()->flash('success', __('pos.deleted_success'));
+        return view('livewire.inventory.transactions.index', [
+            'rows' => $q->paginate($this->perPage),
+            'warehouses' => warehouse::orderBy('name')->get(),
+            'types' => $this->types,
+        ]);
     }
 }

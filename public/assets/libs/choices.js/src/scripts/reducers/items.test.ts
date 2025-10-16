@@ -1,13 +1,13 @@
 import { expect } from 'chai';
-import items, { defaultState } from './items';
-import { RemoveItemAction } from '../actions/items';
+import products, { defaultState } from './products';
+import { RemoveItemAction } from '../actions/products';
 
-describe('reducers/items', () => {
+describe('reducers/products', () => {
   it('should return same state when no action matches', () => {
-    expect(items(defaultState, {} as any)).to.equal(defaultState);
+    expect(products(defaultState, {} as any)).to.equal(defaultState);
   });
 
-  describe('when items do not exist', () => {
+  describe('when products do not exist', () => {
     describe('ADD_ITEM', () => {
       const value = 'Item one';
       const label = 'Item one';
@@ -24,7 +24,7 @@ describe('reducers/items', () => {
         let actualResponse;
 
         beforeEach(() => {
-          actualResponse = items(undefined, {
+          actualResponse = products(undefined, {
             type: 'ADD_ITEM',
             value,
             label,
@@ -56,7 +56,7 @@ describe('reducers/items', () => {
           expect(actualResponse).to.eql(expectedResponse);
         });
 
-        it('unhighlights all highlighted items', () => {
+        it('unhighlights all highlighted products', () => {
           actualResponse.forEach((item) => {
             expect(item.highlighted).to.equal(false);
           });
@@ -81,7 +81,7 @@ describe('reducers/items', () => {
               },
             ];
 
-            const actualResponse = items(undefined, {
+            const actualResponse = products(undefined, {
               type: 'ADD_ITEM',
               value,
               label,
@@ -100,7 +100,7 @@ describe('reducers/items', () => {
     });
   });
 
-  describe('when items exist', () => {
+  describe('when products exist', () => {
     let state;
 
     beforeEach(() => {
@@ -146,7 +146,7 @@ describe('reducers/items', () => {
           },
         ];
 
-        const actualResponse = items(clonedState, {
+        const actualResponse = products(clonedState, {
           type: 'REMOVE_ITEM',
           id,
         } as RemoveItemAction);
@@ -169,7 +169,7 @@ describe('reducers/items', () => {
           },
         ];
 
-        const actualResponse = items(clonedState, {
+        const actualResponse = products(clonedState, {
           type: 'HIGHLIGHT_ITEM',
           id,
           highlighted: true,

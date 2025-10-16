@@ -2,7 +2,7 @@
 
     {{-- ✅ بطاقة الحالة العامة --}}
     <div class="col-12">
-        <div class="alert {{ $this->readyToBuy ? 'alert-success' : 'alert-warning' }} rounded-3 shadow-sm d-flex align-items-center gap-2">
+        <div class="alert {{ $this->readyToBuy ? 'alert-success' : 'alert-warning' }} rounded-3 shadow-sm d-flex align-products-center gap-2">
             <i class="mdi {{ $this->readyToBuy ? 'mdi-check-decagram' : 'mdi-alert' }} fs-4"></i>
             <span class="fw-semibold">
                 {{ $this->readyToBuy ? 'Ready to Buy ✅' : 'غير جاهز للشراء — تأكد من العقد/الوثائق/الحظر' }}
@@ -87,7 +87,7 @@
             <div class="card-body">
                 @forelse($supplier->addresses as $addr)
                     <div class="border rounded-3 p-3 mb-2">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-products-center">
                             <strong>
                                 {{ $addr->getTranslation('label', app()->getLocale()) ?? '-' }}
                                 @if($addr->is_default)
@@ -123,7 +123,7 @@
             <div class="card-body">
                 @forelse($supplier->contacts as $c)
                     <div class="border rounded-3 p-3 mb-2">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-products-center">
                             <strong>{{ $c->getTranslation('name', app()->getLocale()) }}</strong>
                             @if($c->is_primary)<span class="badge bg-primary">Primary</span>@endif
                         </div>
@@ -187,7 +187,7 @@
             <div class="card-body">
                 @forelse($supplier->contracts as $c)
                     <div class="border rounded-3 p-3 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-products-center">
                             <div>
                                 <strong>
                                     {{ $c->start_date?->format('Y-m-d') ?? '—' }} → {{ $c->end_date?->format('Y-m-d') ?? '—' }}
@@ -200,7 +200,7 @@
                             </div>
                         </div>
 
-                        @if($c->items->count())
+                        @if($c->products->count())
                             <div class="table-responsive mt-2">
                                 <table class="table table-sm align-middle">
                                     <thead class="table-light">
@@ -213,7 +213,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($c->items as $it)
+                                        @foreach($c->products as $it)
                                             <tr>
                                                 <td>{{ $it->product_sku ?? '-' }}</td>
                                                 <td>{{ $it->getTranslation('product_name', app()->getLocale()) ?? '-' }}</td>
@@ -276,7 +276,7 @@
             <div class="card-body">
                 @forelse($supplier->evaluations as $e)
                     <div class="border rounded-3 p-3 mb-2">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-products-center">
                             <strong>{{ $e->period_start?->format('Y-m-d') ?? '—' }} → {{ $e->period_end?->format('Y-m-d') ?? '—' }}</strong>
                             <span class="badge bg-info">Total: {{ $e->total_score }}</span>
                         </div>

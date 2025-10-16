@@ -23,5 +23,5 @@ class suppliercontract extends Model
 
     public function supplier()    { return $this->belongsTo(supplier::class); }
     public function paymentTerm() { return $this->belongsTo(paymentterm::class,'payment_term_id'); }
-    public function items()       { return $this->hasMany(suppliercontractitem::class,'supplier_contract_id'); }
+    public function products()       { return $this->hasMany(suppliercontractitem::class,'supplier_contract_id'); }
 }

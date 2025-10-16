@@ -53,7 +53,7 @@ describe('reducers/store', () => {
 
   describe('state getter', () => {
     it('returns state', () => {
-      const state = { items: [] };
+      const state = { products: [] };
       getStateStub.returns(state);
 
       expect(instance.state).to.equal(state);
@@ -65,7 +65,7 @@ describe('reducers/store', () => {
 
     beforeEach(() => {
       state = {
-        items: [
+        products: [
           {
             id: 1,
             choiceId: 1,
@@ -152,26 +152,26 @@ describe('reducers/store', () => {
       getStateStub.returns(state);
     });
 
-    describe('items getter', () => {
-      it('returns items', () => {
-        const expectedResponse = state.items;
-        expect(instance.items).to.eql(expectedResponse);
+    describe('products getter', () => {
+      it('returns products', () => {
+        const expectedResponse = state.products;
+        expect(instance.products).to.eql(expectedResponse);
       });
     });
 
-    describe('activeItems getter', () => {
-      it('returns items that are active', () => {
-        const expectedResponse = state.items.filter((item) => item.active);
-        expect(instance.activeItems).to.eql(expectedResponse);
+    describe('activeproducts getter', () => {
+      it('returns products that are active', () => {
+        const expectedResponse = state.products.filter((item) => item.active);
+        expect(instance.activeproducts).to.eql(expectedResponse);
       });
     });
 
-    describe('highlightedActiveItems getter', () => {
-      it('returns items that are active and highlighted', () => {
-        const expectedResponse = state.items.filter(
+    describe('highlightedActiveproducts getter', () => {
+      it('returns products that are active and highlighted', () => {
+        const expectedResponse = state.products.filter(
           (item) => item.highlighted && item.active,
         );
-        expect(instance.highlightedActiveItems).to.eql(expectedResponse);
+        expect(instance.highlightedActiveproducts).to.eql(expectedResponse);
       });
     });
 

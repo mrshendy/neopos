@@ -97,4 +97,29 @@ return [
 
     // Shortcuts
     'shortcut_save'           => 'Shortcut: Ctrl + S to save',
+      // Inventory Settings page
+    'settings_title' => 'Inventory Settings',
+    'settings_sub'   => 'Configure negative policy, expiry alerts, and transaction numbering',
+
+    // Negative stock policy
+    'negative_stock_policy' => 'Negative Stock Policy',
+    'policy_block'          => 'Block negatives',
+    'policy_warn'           => 'Warn only',
+    'help_negative_stock_policy_short' => 'Choose how the system behaves when an issue would make stock negative.',
+
+    // Expiry alert
+    'expiry_alert_days'      => 'Expiry Alert (days)',
+    'help_expiry_alert_days' => 'Show an alert when an item will expire within this number of days or less.',
+
+    // Numbering pattern
+    'transaction_pattern'      => 'Transaction Number Pattern',
+    'help_transaction_pattern' => 'Use tokens: {YYYY} year, {YY} two-digit year, {MM} month, {DD} day, {####} 4-digit sequence.',
+    'example'                  => 'Example',
+
+    // Buttons / common
+    'btn_save_settings' => 'Save Settings',
+    'saved_success'     => 'Settings saved successfully',
+    'enabled'           => 'Enabled',
+    'disabled'          => 'Disabled',
+    'none'              => 'None',
 ];

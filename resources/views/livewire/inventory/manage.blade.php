@@ -15,7 +15,7 @@
     @endif
 
     {{-- Header --}}
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-products-center justify-content-between mb-3">
         <div>
             <h3 class="mb-1 fw-bold">
                 <i class="mdi mdi-view-grid-outline me-2"></i> {{ __('inventory.manage_title') }}
@@ -63,7 +63,7 @@
 {{-- Styles (Modern cards) --}}
 <style>
 .inventory-manage .inv-card{
-    display:flex; align-items:center; gap:14px;
+    display:flex; align-products:center; gap:14px;
     width:100%; padding:16px 18px; border-radius:18px;
     background: linear-gradient(180deg,#ffffff 0%,#f9fbff 100%);
     border:1px solid rgba(13,110,253,.08);
@@ -76,7 +76,7 @@
 }
 .inventory-manage .inv-card__icon{
     width:54px; height:54px; border-radius:14px;
-    display:flex; align-items:center; justify-content:center;
+    display:flex; align-products:center; justify-content:center;
     background: radial-gradient(120% 120% at 0% 0%, #e8f1ff 0%, #f3f7ff 100%);
     border:1px solid rgba(13,110,253,.10);
     flex: 0 0 54px;
