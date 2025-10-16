@@ -47,7 +47,7 @@ class Create extends Component
         ]);
 
         session()->flash('success', trans('pos.saved_success'));
-        return redirect()->route('inventory.items.index');
+        return redirect()->route('inventory.manage');
     }
 
     public function render()

@@ -2,25 +2,17 @@
 
 namespace App\models\inventory;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class batch extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'batches';
+    protected $guarded = [];
+    protected $casts = ['expires_at'=>'date'];
 
-    protected $fillable = ['item_id', 'warehouse_id', 'batch_no', 'mfg_date', 'exp_date', 'qty_on_hand'];
-
-    public function product()
-    {
-        return $this->belongsTo(\App\models\product\product::class, 'product_id');
-    }
-
-    public function warehouse()
-    {
-        return $this->belongsTo(warehouse::class, 'warehouse_id');
-    }
+    public function product(){ return $this->belongsTo(\App\models\product\product::class); }
+    public function warehouse(){ return $this->belongsTo(warehouse::class); }
 }

@@ -21,23 +21,18 @@ class Index extends Component
     public $category_id = '';
     public $unit_id = '';
 
-    // اختيار الطباعة
-    public $selected = []; // IDs
-    public $qty = [];      // [id => int]
+    // اختيار للطباعة
+    public $selected = []; // IDs مختارة
+    public $qty = [];      // [product_id => quantity]
 
     protected $queryString = ['page','search','status','category_id','unit_id'];
 
     public function updating($field)
     {
+        // رجوع للصفحة الأولى عند تغيير أي فلتر
         if (in_array($field, ['search','status','category_id','unit_id'])) {
             $this->resetPage();
         }
-    }
-
-    public function clearFilters()
-    {
-        $this->reset(['search','status','category_id','unit_id']);
-        $this->resetPage();
     }
 
     public function delete($id)
@@ -53,6 +48,42 @@ class Index extends Component
         $row->status = $row->status === 'active' ? 'inactive' : 'active';
         $row->save();
         session()->flash('success', __('pos.status_changed') ?? 'تم تغيير الحالة');
+    }
+
+    public function printSelected()
+    {
+        // IDs المختارة
+        $ids = array_map('intval', array_filter($this->selected));
+        if (!$ids) {
+            session()->flash('success', __('pos.no_data') ?? 'لا توجد بيانات');
+            return;
+        }
+
+        // تجهيز قائمة الطباعة: (barcode/label/sku/qty)
+        $items = product::whereIn('id', $ids)
+            ->get(['id','sku','barcode','name'])
+            ->map(function($p){
+                $q = (int)($this->qty[$p->id] ?? 1);
+                if ($q < 1) $q = 1;
+                return [
+                    'id'      => (int)$p->id,
+                    'sku'     => (string)$p->sku,
+                    'barcode' => (string)$p->barcode,
+                    'label'   => (string)$p->getTranslation('name', app()->getLocale()),
+                    'qty'     => $q,
+                ];
+            })
+            ->filter(fn($x) => !empty($x['barcode']))
+            ->values()
+            ->toArray();
+
+        if (!$items) {
+            session()->flash('success', __('pos.no_data') ?? 'لا توجد بيانات');
+            return;
+        }
+
+        // إرسال للواجهة (الـ Blade عنده مستمع print-barcodes)
+        $this->dispatchBrowserEvent('print-barcodes', ['items' => $items]);
     }
 
     protected function baseQuery()
@@ -77,7 +108,7 @@ class Index extends Component
     {
         $rows = $this->baseQuery()->paginate(10);
 
-        // كمية افتراضية = 1
+        // ضبط كمية افتراضية = 1 للسجلات الظاهرة
         foreach ($rows as $r) {
             if (!isset($this->qty[$r->id]) || (int)$this->qty[$r->id] < 1) {
                 $this->qty[$r->id] = 1;

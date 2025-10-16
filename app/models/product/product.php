@@ -2,136 +2,52 @@
 
 namespace App\models\product;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Spatie\Translatable\HasTranslations;
 
-/**
- * @property string|null $image_path
- * @property string|null $sku
- * @property string|null $barcode
- * @property array|string $name
- * @property array|string|null $description
- * @property int|null $unit_id
- * @property int|null $category_id
- * @property float|int|null $tax_rate
- * @property float|int|null $opening_stock
- * @property bool $track_batch
- * @property bool $track_serial
- * @property int|null $reorder_level
- * @property string $status
- * @property-read string|null $thumb_url
- */
 class product extends Model
 {
-    use HasFactory, HasTranslations, SoftDeletes;
+    use HasFactory, SoftDeletes, HasTranslations;
 
-    protected $table = 'products';
+    protected $table = 'products'; // غيّره لو مختلف
+    protected $guarded = [];
+    public $translatable = ['name','description'];
 
-    /**
-     * الحقول القابلة للتعبئة
-     */
-    protected $fillable = [
-        'image_path', 'sku', 'barcode', 'name', 'description',
-        'unit_id', 'category_id', 'tax_rate', 'opening_stock',
-        'track_batch', 'track_serial', 'reorder_level', 'status',
-    ];
+    /* ===== علاقات أساسية ===== */
+    public function category()   { return $this->belongsTo(category::class); }
+    public function unit()       { return $this->belongsTo(unit::class, 'unit_id'); } // الوحدة الافتراضية للمنتج (غالبًا كبرى)
+    public function transactions(){ return $this->hasMany(\App\models\inventory\stock_transaction_line::class, 'product_id'); }
+    public function batches()    { return $this->hasMany(\App\models\inventory\batch::class); }
+    public function serials()    { return $this->hasMany(\App\models\inventory\serial::class); }
+    public function reorderLevel(){ return $this->hasOne(\App\models\inventory\reorder_level::class); }
 
-    /**
-     * حقول قابلة للترجمة
-     */
-    public $translatable = ['name', 'description'];
-
-    /**
-     * إظهار الـ accessor ضمن المخرجات
-     */
-    protected $appends = ['thumb_url'];
-
-    /**
-     * تحويل أنواع الحقول
-     */
-    protected $casts = [
-        'name'          => 'array',   // Spatie will still handle accessors
-        'description'   => 'array',
-        'unit_id'       => 'integer',
-        'category_id'   => 'integer',
-        'tax_rate'      => 'decimal:2',
-        'opening_stock' => 'decimal:2',
-        'track_batch'   => 'boolean',
-        'track_serial'  => 'boolean',
-        'reorder_level' => 'integer',
-        'deleted_at'    => 'datetime',
-    ];
-
-    /* ================= Relations ================= */
-
-    public function unit()
+    /* ===== رصيد لحظي مجمّع (بالصغرى) =====
+       يمكن استعمال where('warehouse_id', X) عبر Scopes على الـlines */
+    public function scopeWithCurrentQty($q)
     {
-        return $this->belongsTo(\App\models\product\unit::class);
+        return $q->withSum(['transactions as qty_in_minor' => function($qq){
+                    $qq->whereHas('transaction', fn($t)=>$t->whereIn('type',['in','transfer','adjustment']))
+                       ->select(\DB::raw("coalesce(sum(case 
+                           when stock_transactions.type in ('in','transfer') then qty_minor 
+                           when stock_transactions.type='adjustment' and qty_minor>0 then qty_minor
+                           else 0 end),0)"));
+                }], 'qty_minor')
+                ->withSum(['transactions as qty_out_minor' => function($qq){
+                    $qq->whereHas('transaction', fn($t)=>$t->whereIn('type',['out','transfer','adjustment']))
+                       ->select(\DB::raw("coalesce(sum(case 
+                           when stock_transactions.type in ('out','transfer') then qty_minor 
+                           when stock_transactions.type='adjustment' and qty_minor<0 then abs(qty_minor)
+                           else 0 end),0)"));
+                }], 'qty_minor');
     }
 
-    public function category()
+    /* كمية حالية (صغرى) على مستوى كل النظام (تجميعي) */
+    public function getCurrentQtyMinorAttribute()
     {
-        return $this->belongsTo(\App\models\product\category::class);
-    }
-
-    public function priceItems()
-    {
-        return $this->hasMany(\App\models\pricing\price_item::class, 'product_id');
-    }
-
-    /* ================= Scopes ================= */
-
-    public function scopeActive($q)
-    {
-        return $q->where('status', 'active');
-    }
-
-    /* ================= Accessors ================= */
-
-    /**
-     * يعيد رابط الصورة الجاهز للعرض (أولوية: رابط كامل > مسار public/attachments > تخزين disk("public"))
-     */
-    public function getThumbUrlAttribute(): ?string
-    {
-        $p = $this->image_path;
-        if (!$p) {
-            return null;
-        }
-
-        // 1) لو رابط كامل أو يبدأ بشرطة مائلة (رابط مطلق داخل الموقع)
-        if (Str::startsWith($p, ['http://', 'https://', '/'])) {
-            return $p;
-        }
-
-        // 2) جرّب مجلد attachments/products داخل public (الأكثر شيوعًا عندك)
-        $publicAttachments = 'attachments/products/' . ltrim($p, '/');
-        $publicFullPath = public_path($publicAttachments);
-        if (is_file($publicFullPath)) {
-            return asset($publicAttachments);
-        }
-
-        // 3) لو الصورة محفوظة على disk('public') (symlink: public/storage -> storage/app/public)
-        //    جرّب كما هي:
-        if (Storage::disk('public')->exists($p)) {
-            return Storage::url($p); // سيُرجع /storage/...
-        }
-
-        //    وجرّب داخل مجلد images أو attachments/products على القرص العام (لو بترفع هناك)
-        $candidates = [
-            'images/' . ltrim($p, '/'),
-            'attachments/products/' . ltrim($p, '/'),
-        ];
-        foreach ($candidates as $cand) {
-            if (Storage::disk('public')->exists($cand)) {
-                return Storage::url($cand);
-            }
-        }
-
-        // مفيش صورة متاحة
-        return null;
+        $in  = $this->qty_in_minor ?? 0;
+        $out = $this->qty_out_minor ?? 0;
+        return (float)$in - (float)$out;
     }
 }

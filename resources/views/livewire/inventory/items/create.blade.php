@@ -76,7 +76,7 @@
                     <button class="btn btn-success rounded-pill px-4 shadow-sm">
                         <i class="mdi mdi-content-save"></i> {{ __('pos.btn_save') }}
                     </button>
-                    <a href="{{ route('inventory.items.index') }}" class="btn btn-light rounded-pill px-4 shadow-sm">
+                    <a href="{{ route('inventory.manage') }}" class="btn btn-light rounded-pill px-4 shadow-sm">
                         <i class="mdi mdi-close"></i> {{ __('pos.btn_cancel') }}
                     </a>
                 </div>

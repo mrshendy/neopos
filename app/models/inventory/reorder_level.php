@@ -2,25 +2,17 @@
 
 namespace App\models\inventory;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class reorder_level extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'reorder_levels';
+    protected $guarded = [];
+    protected $casts = ['min_qty_minor'=>'decimal:6','max_qty_minor'=>'decimal:6'];
 
-    protected $fillable = ['item_id', 'warehouse_id', 'min_qty'];
-
-    public function product()
-    {
-        return $this->belongsTo(\App\models\product\product::class, 'product_id');
-    }
-
-    public function warehouse()
-    {
-        return $this->belongsTo(warehouse::class, 'warehouse_id');
-    }
+    public function product(){ return $this->belongsTo(\App\models\product\product::class); }
+    public function warehouse(){ return $this->belongsTo(warehouse::class); }
 }

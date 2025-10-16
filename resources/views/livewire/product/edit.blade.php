@@ -28,7 +28,7 @@
                         @php
                             $preview = null;
                             if ($image ?? null) { $preview = $image->temporaryUrl(); }
-                            elseif (!empty($image_path)) { $preview = \Illuminate\Support\Facades\Storage::disk('public')->exists($image_path) ? asset('storage/'.$image_path) : null; }
+                            elseif (!empty($image_path)) { $preview = \Illuminate\Support\Facades\Storage::disk('public')->exists($image_path) ? asset('attachments/'.$image_path) : null; }
                         @endphp
                         @if($preview)
                             <img src="{{ $preview }}" alt="preview" class="rounded-4 border" style="width:160px;height:160px;object-fit:cover;">

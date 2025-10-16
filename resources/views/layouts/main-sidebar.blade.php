@@ -81,7 +81,7 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link font 
         @if (Str::startsWith(Route::currentRouteName(), 'inventory.')) active @endif"
-                                href="{{ route('inventory.items.index') }}">
+                                href="{{ route('inventory.manage') }}">
                                 <i class="mdi mdi-warehouse"></i>
                                 <span data-key="t-inventory">{{ __('pos.inventory_title') ?? 'المخزون' }}</span>
                             </a>

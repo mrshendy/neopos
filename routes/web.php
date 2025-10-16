@@ -3,7 +3,7 @@
 use App\Http\Controllers\customer\customerscontroller;
 use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
-use App\Http\Controllers\inventory\itemscontroller;
+use App\Http\Controllers\inventory\inventorycontroller;
 use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
@@ -108,13 +108,9 @@ Route::group(
         // ✅ مجموعة مسارات المخزون
         Route::prefix('inventory')->group(function () {
 
-            // 🧱 Items
-            Route::get('items', [itemscontroller::class, 'index'])->name('inventory.items.index');
-            Route::get('items/create', [itemscontroller::class, 'create'])->name('inventory.items.create');
-            Route::post('items/store', [itemscontroller::class, 'store'])->name('inventory.items.store');
-            Route::get('items/{id}/edit', [itemscontroller::class, 'edit'])->name('inventory.items.edit');
-            Route::post('items/{id}/update', [itemscontroller::class, 'update'])->name('inventory.items.update');
-            Route::post('items/{id}/delete', [itemscontroller::class, 'destroy'])->name('inventory.items.destroy');
+            // 🧱 inventory
+            Route::get('/', [inventorycontroller::class, 'manage'])->name('inventory.manage');
+      
 
             // 🏠 Warehouses
             Route::get('warehouses', [warehousescontroller::class, 'index'])->name('inventory.warehouses.index');

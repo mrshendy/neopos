@@ -43,7 +43,7 @@ class Index extends Component
 
         $items = $q->orderByDesc('id')->paginate(10);
 
-        return view('livewire.inventory.items.index', compact('items'));
+        return view('livewire.inventory.manage', compact('items'));
     }
 
     public function toggleStatus($id)

@@ -11,6 +11,6 @@
    
     </div>
 
-    @livewire('inventory.items.index')
+    @livewire('inventory.manage')
 </div>
 @endsection

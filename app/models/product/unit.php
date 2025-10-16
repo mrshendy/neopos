@@ -12,75 +12,35 @@ class unit extends Model
     use HasFactory, SoftDeletes, HasTranslations;
 
     protected $table = 'units';
-
-    // name فقط هو المتعدد اللغات (حسب جدولك الحالي)
+    protected $fillable = ['name','code','abbreviation','kind','parent_id','ratio_to_parent','is_default_minor','status'];
     public $translatable = ['name'];
 
-    protected $fillable = [
-        'code',
-        'name',
-        'abbreviation',       // ملاحظة: عمود عادي (VARCHAR) وليس JSON
-        'kind',               // 'major' | 'minor'
-        'parent_id',          // يربط الصغرى بالكبرى
-        'ratio_to_parent',    // نسبة التحويل للصغرى
-        'is_default_minor',   // هل هي الصغرى الافتراضية؟
-        'status',             // 'active' | 'inactive'
-    ];
+    /* علاقات */
+    public function parent() { return $this->belongsTo(self::class, 'parent_id'); }
+    public function minors() { return $this->hasMany(self::class, 'parent_id')->where('kind','minor'); }
+    public function products(){ return $this->hasMany(product::class, 'unit_id'); }
 
-    protected $casts = [
-        'is_default_minor' => 'boolean',
-        'ratio_to_parent'  => 'decimal:6', // أو 'float' لو تفضّل
-    ];
+    /* سكوبات */
+    public function scopeMajors($q){ return $q->where('kind','major'); }
+    public function scopeMinors($q){ return $q->where('kind','minor'); }
+    public function scopeActive($q){ return $q->where('status','active'); }
 
-    /* ================= علاقات ================= */
-
-    // منتجات ترتبط بوحدة (لو عندك FK في products يشير للوحدة)
-    public function products()
+    /* الصغرى الافتراضية لوحدة كبرى */
+    public function defaultMinor()
     {
-        return $this->hasMany(product::class);
+        return $this->hasOne(self::class, 'parent_id')->where('is_default_minor',true)->where('kind','minor');
     }
 
-    // الوحدة الكبرى (لو هذه صغرى)
-    public function parent()
+    /* عامل التحويل للوحدة الصغرى (كم صغرى في 1 من هذه الوحدة) */
+    public function factorToMinor(): float
     {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
+        if ($this->kind === 'minor') return 1.0;
 
-    // الوحدات الصغرى التابعة لهذه الكبرى
-    public function minors()
-    {
-        return $this->hasMany(self::class, 'parent_id')
-                    ->where('kind', 'minor');
-    }
-
-    /* ================= سكوبات مفيدة ================= */
-
-    public function scopeMajors($q)
-    {
-        return $q->where('kind', 'major');
-    }
-
-    public function scopeMinors($q)
-    {
-        return $q->where('kind', 'minor');
-    }
-
-    public function scopeActive($q)
-    {
-        return $q->where('status', 'active');
-    }
-
-    /* =============== هيلبرز اختيارية =============== */
-
-    // هل هذه وحدة كبرى؟
-    public function getIsMajorAttribute(): bool
-    {
-        return $this->kind === 'major';
-    }
-
-    // هل هذه وحدة صغرى؟
-    public function getIsMinorAttribute(): bool
-    {
-        return $this->kind === 'minor';
+        $def = $this->defaultMinor()->first();
+        if ($def && $def->ratio_to_parent > 0) {
+            // ratio_to_parent للصغرى = (كم صغرى في 1 كبرى)
+            return (float)$def->ratio_to_parent;
+        }
+        return 1.0;
     }
 }
