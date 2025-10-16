@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\supplier;
 
 use Livewire\Component;
-use App\Models\supplier\supplier;
+use App\models\supplier\supplier;
 
 class Show extends Component
 {

@@ -19,7 +19,7 @@ class Show extends Component
 
     public function render()
     {
-        return view('customers.show', [
+        return view('customer.show', [
             'customer' => $this->customer,
         ]);
     }

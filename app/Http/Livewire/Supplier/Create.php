@@ -3,15 +3,15 @@
 namespace App\Http\Livewire\supplier;
 
 use Livewire\Component;
-use App\Models\supplier\supplier;
-use App\Models\supplier\suppliercategory;
-use App\Models\supplier\paymentterm;
+use App\models\supplier\supplier;
+use App\models\supplier\suppliercategory;
+use App\models\supplier\paymentterm;
 
-// ✅ الجغرافيا داخل App\Models مباشرة
-use App\Models\country;
-use App\Models\governorate;
-use App\Models\city;
-use App\Models\area;
+// ✅ الجغرافيا داخل App\models مباشرة
+use App\models\country;
+use App\models\governorate;
+use App\models\city;
+use App\models\area;
 
 class Create extends Component
 {

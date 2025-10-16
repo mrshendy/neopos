@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\supplier;
 
 use App\Http\Controllers\Controller;
-use App\Models\supplier\supplier;
+use App\models\supplier\supplier;
 
 class suppliercontroller extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\supplier;
+namespace App\models\supplier;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,8 +28,8 @@ class supplieraddress extends Model
     ];
 
     public function supplier()    { return $this->belongsTo(supplier::class); }
-    public function country()     { return $this->belongsTo(\App\Models\country::class,'country_id'); }
-    public function governorate() { return $this->belongsTo(\App\Models\governorate::class,'governorate_id'); }
-    public function city()        { return $this->belongsTo(\App\Models\city::class,'city_id'); }
-    public function area()        { return $this->belongsTo(\App\Models\area::class,'area_id'); }
+    public function country()     { return $this->belongsTo(\App\models\country::class,'country_id'); }
+    public function governorate() { return $this->belongsTo(\App\models\governorate::class,'governorate_id'); }
+    public function city()        { return $this->belongsTo(\App\models\city::class,'city_id'); }
+    public function area()        { return $this->belongsTo(\App\models\area::class,'area_id'); }
 }

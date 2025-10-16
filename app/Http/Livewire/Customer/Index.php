@@ -61,7 +61,7 @@ class Index extends Component
     {
         $rows = $this->baseQuery()->paginate(12);
 
-        return view('customers.index', [
+        return view('customer.index', [
             'rows' => $rows,
         ]);
     }

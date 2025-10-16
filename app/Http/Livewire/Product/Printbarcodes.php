@@ -7,8 +7,8 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use App\models\product\product;
 use App\models\product\category;
-use App\models\unit\unit; // عدّل لو مختلف
-use App\models\suppliers\supplier; // أو use App\Models\Supplier as supplier;
+use App\models\unit\unit; 
+use App\models\supplier\supplier; 
 
 class edit extends Component
 {

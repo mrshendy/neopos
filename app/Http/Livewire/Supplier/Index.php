@@ -4,10 +4,10 @@ namespace App\Http\Livewire\supplier;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\supplier\supplier;
-use App\Models\supplier\suppliercategory;
-use App\Models\governorate;
-use App\Models\city;
+use App\models\supplier\supplier;
+use App\models\supplier\suppliercategory;
+use App\models\governorate;
+use App\models\city;
 
 class Index extends Component
 {

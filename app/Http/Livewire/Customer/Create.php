@@ -122,7 +122,7 @@ class Create extends Component
 
     public function render()
     {
-        return view('customers.create', [
+        return view('customer.create', [
             'country'      => $this->country,
             'governorates' => $this->governorates,
             'cities'       => $this->cities,
