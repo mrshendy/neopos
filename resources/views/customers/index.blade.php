@@ -8,7 +8,7 @@
 <div class="container-fluid py-3">
 
     {{-- 🧩 مكون Livewire --}}
-    @livewire('customers.index')
+    @livewire('customer.index')
 
 </div>
 @endsection

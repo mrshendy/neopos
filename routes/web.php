@@ -8,7 +8,6 @@ use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\product\categorycontroller;
-use App\Http\Controllers\product\printbarcodecontroller;
 use App\Http\Controllers\product\productcontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
 use App\Http\Controllers\unitcontroller;
@@ -69,16 +68,12 @@ Route::group(
         });
 
         // ✅ Resource Route للعميل
-        Route::resource('customers', customerscontroller::class)->names([
-            'index' => 'customers.index',
-            'create' => 'customers.create',
-            'store' => 'customers.store',
-            'show' => 'customers.show',
-            'edit' => 'customers.edit',
-            'update' => 'customers.update',
-            'destroy' => 'customers.destroy',
-        ]);
-            Route::get('/customer', [customerscontroller::class, 'index'])->name('customer.index');
+        Route::prefix('customers')->group(function () {
+            Route::get('/', [customerscontroller::class, 'index'])->name('customers.index');
+            Route::get('/create', [customerscontroller::class, 'create'])->name('customers.create');
+            Route::get('/{id}/edit', [customerscontroller::class, 'edit'])->name('customers.edit');
+            Route::get('/{id}/show', [customerscontroller::class, 'show'])->name('customers.show');
+        });
 
         Route::resource('suppliers', suppliercontroller::class)
             ->parameters(['suppliers' => 'supplier'])    // يضمن Binding صحيح
@@ -96,12 +91,12 @@ Route::group(
             Route::get('/categories/{id}/edit', [categorycontroller::class, 'edit'])->name('categories.edit');
         });
 
-            // طباعة الباركود
-      Route::get('/products/barcodes/print/{payload?}', \App\Http\Controllers\product\printbarcodecontroller::class.'@show')
-    ->name('product.barcodes');
+        // طباعة الباركود
+        Route::get('/products/barcodes/print/{payload?}', \App\Http\Controllers\product\printbarcodecontroller::class.'@show')
+            ->name('product.barcodes');
 
-Route::post('/products/barcodes/print', \App\Http\Controllers\product\printbarcodecontroller::class.'@showPost')
-    ->name('product.barcodes.post');
+        Route::post('/products/barcodes/print', \App\Http\Controllers\product\printbarcodecontroller::class.'@showPost')
+            ->name('product.barcodes.post');
 
         Route::prefix('units')->group(function () {
             Route::get('/', [unitcontroller::class, 'index'])->name('units.index');

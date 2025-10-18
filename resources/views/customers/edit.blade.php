@@ -6,6 +6,6 @@
 
 @section('content')
 <div class="container-fluid py-3">
-    @livewire('customer.edit-customer', ['id' => $id])
+    @livewire('customer.edit', ['id' => $id])
 </div>
 @endsection
