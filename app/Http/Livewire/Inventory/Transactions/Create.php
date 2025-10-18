@@ -5,9 +5,10 @@ namespace App\Http\Livewire\inventory\transactions;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\models\product\product;
 use Carbon\Carbon;
 use App\models\inventory\{
-    stock_transaction, stock_transaction_line, warehouse, product, setting
+    stock_transaction, stock_transaction_line, warehouse, setting
 };
 
 class Create extends Component

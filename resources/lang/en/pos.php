@@ -1256,6 +1256,7 @@ return [
     'print_page_hint' => 'Review the preview then click Print',
     'btn_print' => 'Print',
     'basic_info_title' => ' Basic Information',
+    'inventory_transactions_sub' => 'Inventory Transactions',
 
     'clear_selection' => 'Clear selection',
     'select_all' => 'Select all',

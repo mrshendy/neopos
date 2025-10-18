@@ -1193,6 +1193,7 @@ return [
     'mark_inactive' => 'تعيين كـ غير نشط',
     'selected_rows' => '{0} لم يتم تحديد أي صف|{1} تم تحديد صف واحد|{2} تم تحديد صفّين|[3,10] تم تحديد :count صفوف|[11,*] تم تحديد :count صفًا',
     'basic_info_title' => 'البيانات الأساسية',
+    'inventory_transactions_sub' => 'معاملات المخزون',
 
     // === Common / Buttons ===
     'btn_back' => 'رجوع',
