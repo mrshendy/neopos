@@ -17,6 +17,13 @@ return [
     'module_warehouses'   => 'المخازن',
     'module_products'     => 'المنتجات',
     'module_stocks'       => 'أرصدة المخزون',
+  
+    'module_branches'   => 'الفروع',
+    'manage_title'      => 'إدارة المخزون',
+    'manage_subtitle'   => 'اختَر أحد برامج إدارة المخزون للمتابعة',
+    'open'              => 'فتح',
+    'soon'              => 'قريبًا',
+    'route_missing'     => 'المسار غير مفعّل بعد',
 
     // ===== Units Index =====
     'units_management_title' => 'إدارة الوحدات',

@@ -15,7 +15,7 @@
     @endif
 
     {{-- Header --}}
-    <div class="d-flex align-products-center justify-content-between mb-3">
+    <div class="d-flex align-items-center justify-content-between mb-3">
         <div>
             <h3 class="mb-1 fw-bold">
                 <i class="mdi mdi-view-grid-outline me-2"></i> {{ __('inventory.manage_title') }}
@@ -27,32 +27,25 @@
     {{-- Modules Grid --}}
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body">
-            <div class="row g-3">
+            <div class="row g-4">
                 @foreach($modules as $m)
                     @php
-                        // احسب وجود الراوت هنا لتفادي أي مفاتيح ناقصة في المصفوفة
                         $exists = \Illuminate\Support\Facades\Route::has($m['route']);
                         $href   = $exists ? route($m['route']) : 'javascript:void(0)';
                     @endphp
 
-                    <div class="col-6 col-md-4 col-xl-3">
-                        <a href="{{ $href }}" class="inv-card {{ $exists ? '' : 'inv-card--disabled' }}"
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <a href="{{ $href }}"
+                           class="hub-card {{ $exists ? '' : 'is-disabled' }}"
                            @unless($exists) aria-disabled="true" title="{{ __('inventory.route_missing') }}" @endunless>
-                            <div class="inv-card__icon">
+                            <div class="hub-card__icon">
                                 <i class="mdi {{ $m['icon'] }}"></i>
                             </div>
-
-                            <div class="inv-card__text">
-                                <div class="inv-card__title">{{ __('inventory.module_'.$m['key']) }}</div>
-                                <div class="inv-card__subtitle">
-                                    {{ $exists ? __('inventory.open') : __('inventory.soon') }}
-                                </div>
+                            <div class="hub-card__title">
+                                {{ __('inventory.module_'.$m['key']) }}
                             </div>
-
-                            
-
-                            <div class="inv-card__chevron">
-                                <i class="mdi mdi-chevron-{{ app()->getLocale()==='ar' ? 'left' : 'right' }}"></i>
+                            <div class="hub-card__subtitle">
+                                {{ $exists ? __('inventory.open') : __('inventory.soon') }}
                             </div>
                         </a>
                     </div>
@@ -62,38 +55,46 @@
     </div>
 </div>
 
-{{-- Styles (Modern cards) --}}
+{{-- Styles — نفس الشكل بالصورة --}}
 <style>
-.inventory-manage .inv-card{
-    display:flex; align-products:center; gap:14px;
-    width:100%; padding:16px 18px; border-radius:18px;
-    background: linear-gradient(180deg,#ffffff 0%,#f9fbff 100%);
-    border:1px solid rgba(13,110,253,.08);
-    box-shadow: 0 6px 18px rgba(13,110,253,.06);
-    text-decoration:none; transition:.18s ease; position:relative; overflow:hidden;
+/* حاوية عامة */
+.inventory-manage { padding: 0.25rem; }
+
+/* كارت الشبكة */
+.hub-card{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:10px;
+    width:100%; min-height:180px; padding:22px;
+    background:#fff; border-radius:22px;
+    border:1px solid rgba(13,110,253,.06);
+    box-shadow:0 6px 18px rgba(13,110,253,.06);
+    text-decoration:none;
+    transition:.18s ease-in-out;
 }
-.inventory-manage .inv-card:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(13,110,253,.12);
+.hub-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 28px rgba(13,110,253,.12);
 }
-.inventory-manage .inv-card__icon{
-    width:54px; height:54px; border-radius:14px;
-    display:flex; align-products:center; justify-content:center;
-    background: radial-gradient(120% 120% at 0% 0%, #e8f1ff 0%, #f3f7ff 100%);
+
+/* كبسولة الأيقونة */
+.hub-card__icon{
+    width:68px; height:68px; border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    background:#f5f8ff;
     border:1px solid rgba(13,110,253,.10);
-    flex: 0 0 54px;
+    box-shadow:0 3px 10px rgba(13,110,253,.08) inset;
 }
-.inventory-manage .inv-card__icon i{ font-size:26px; color:#0d6efd; }
+.hub-card__icon i{ font-size:30px; color:#0d6efd; }
 
-.inventory-manage .inv-card__text{ flex:1 1 auto; min-width:0; }
-.inventory-manage .inv-card__title{
-    font-weight:700; font-size:1.02rem; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+/* العنوان والشرح */
+.hub-card__title{
+    font-weight:700; font-size:1.05rem;
+    color:#0d6efd; line-height:1.2;
 }
-.inventory-manage .inv-card__subtitle{ font-size:.84rem; color:#6b7280; }
-
-.inventory-manage .inv-card__chevron{
-    color:#94a3b8; font-size:22px; margin-{{ app()->getLocale()==='ar' ? 'right' : 'left' }}: auto;
+.hub-card__subtitle{
+    font-size:.9rem; color:#6b7280;
 }
 
-.inventory-manage .inv-card--disabled{ opacity:.55; pointer-events:none; }
+/* تعطيل عند عدم وجود راوت */
+.hub-card.is-disabled{ opacity:.55; pointer-events:none; }
 </style>

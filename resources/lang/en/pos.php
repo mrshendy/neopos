@@ -1271,5 +1271,79 @@ return [
     'mark_active' => 'Mark as active',
     'mark_inactive' => 'Mark as inactive',
     'selected_rows' => '{0} No rows selected|{1} 1 row selected|[2,*] :count rows selected',
+  // Buttons
+    'btn_save'           => 'Save',
+    'btn_cancel'         => 'Cancel',
+    'btn_edit'           => 'Edit',
+    'btn_delete'         => 'Delete',
+    'btn_back'           => 'Back',
+    'btn_save_changes'   => 'Save Changes',
+    'btn_apply_filters'  => 'Apply',
+    'btn_reset'          => 'Reset',
 
+    // Messages
+    'msg_created'        => 'Warehouse created successfully',
+    'msg_updated'        => 'Changes saved successfully',
+    'msg_deleted'        => 'Warehouse deleted',
+    'please_check_errors'=> 'Please check the errors below',
+    'confirm_delete_warehouse' => 'Delete this warehouse?',
+    'no_data'            => 'No data',
+
+    // Titles
+    'warehouses_title'   => 'Warehouses',
+    'btn_new_warehouse'  => 'New Warehouse',
+    'edit_warehouse'     => 'Edit Warehouse',
+
+    // Fields
+    'warehouse_name_ar'  => 'Warehouse Name (AR)',
+    'warehouse_name_en'  => 'Warehouse Name (EN)',
+    'ph_warehouse_name_ar' => 'Write warehouse name in Arabic',
+    'ph_warehouse_name_en' => 'Warehouse name in English',
+    'hint_warehouse_name'  => 'Enter the warehouse name in Arabic.',
+    'hint_warehouse_name_en'=> 'Enter the warehouse name in English.',
+
+    'code'               => 'Code',
+    'ph_code'            => 'WH-001',
+    'hint_unique_warehouse_code' => 'Unique warehouse code.',
+
+    'branch'             => 'Branch',
+    'select_branch'      => '— Select Branch —',
+    'hint_select_branch' => 'Choose the branch associated with this warehouse.',
+    'all_branches'       => 'All branches',
+
+    'status'             => 'Status',
+    'active'             => 'Active',
+    'inactive'           => 'Inactive',
+
+    'warehouse_type'     => 'Warehouse Type',
+    'warehouse_type_short'=> 'Type',
+    'main'               => 'Main',
+    'sub'                => 'Sub',
+    'hint_warehouse_type'=> 'Choose whether the warehouse is main or sub.',
+
+    'warehouse_managers' => 'Warehouse Managers',
+    'hint_select_multiple_managers' => 'You can select multiple managers.',
+    'managers_count'     => 'Managers',
+    'none'               => 'None',
+
+    'warehouse_address'  => 'Warehouse Address',
+    'ph_warehouse_address' => 'e.g., 12 El-Nasr St., Warehouse #3',
+    'hint_address'       => 'Provide a clear warehouse location.',
+
+    'category'           => 'Category',
+    'select_category'    => '— Select Category —',
+    'hint_select_category'=> 'Pick a category first to load its products.',
+
+    'products'           => 'Products',
+    'products_all_category' => 'Entire Category (All products)',
+    'products_all_chip'  => 'Entire Category',
+    'hint_products_all'  => 'If you choose Entire Category, individual product selections will be ignored.',
+    'err_load_products'  => 'Failed to load products for this category',
+
+    // Filters/Search
+    'search'             => 'Search',
+    'ph_search_wh'       => 'Search by code or name',
+    'all'                => 'All',
+    'name'               => 'Name',
+    'actions'            => 'Actions',
 ];

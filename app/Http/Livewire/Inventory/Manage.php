@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Inventory;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Route;
 
 class Manage extends Component
 {
@@ -16,9 +17,18 @@ class Manage extends Component
             ['route' => 'inventory.alerts.index',       'icon' => 'mdi-alert-decagram-outline', 'key' => 'alerts'],
             ['route' => 'inventory.transactions.index', 'icon' => 'mdi-swap-horizontal-bold',   'key' => 'transactions'],
             ['route' => 'inventory.warehouses.index',   'icon' => 'mdi-warehouse',               'key' => 'warehouses'],
-            ['route' => 'product.index',                'icon' => 'mdi-package-variant-closed', 'key' => 'products'],
-            // ['route' => 'inventory.stocks.index',    'icon' => 'mdi-database',                'key' => 'stocks'],
+
+            // ✅ كارت الفروع (عدّل اسم الراوت لو عندك بصيغة أخرى مثل inventory.branches.index)
+            ['route' => 'branches.index',               'icon' => 'mdi-office-building-outline', 'key' => 'branches'],
+
+            ['route' => 'product.index',                'icon' => 'mdi-package-variant-closed',  'key' => 'products'],
         ];
+
+        // فلترة أي عنصر ملوش Route عشان مانشوفش 404
+        $this->modules = array_values(array_filter(
+            $this->modules,
+            fn ($m) => isset($m['route']) && Route::has($m['route'])
+        ));
     }
 
     public function render()

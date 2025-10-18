@@ -1304,5 +1304,79 @@ return [
     'print_page_title' => 'طباعة الباركود',
     'print_page_hint' => 'راجِع المعاينة ثم اضغط طباعة',
     'btn_print' => 'طباعة',
+   // أزرار عامة
+    'btn_save'           => 'حفظ',
+    'btn_cancel'         => 'إلغاء',
+    'btn_edit'           => 'تعديل',
+    'btn_delete'         => 'حذف',
+    'btn_back'           => 'رجوع',
+    'btn_save_changes'   => 'حفظ التعديلات',
+    'btn_apply_filters'  => 'تطبيق',
+    'btn_reset'          => 'إعادة تعيين',
 
+    // رسائل
+    'msg_created'        => 'تم إنشاء المخزن بنجاح',
+    'msg_updated'        => 'تم حفظ التعديلات بنجاح',
+    'msg_deleted'        => 'تم حذف المخزن',
+    'please_check_errors'=> 'من فضلك راجع أخطاء الإدخال',
+    'confirm_delete_warehouse' => 'تأكيد حذف المخزن؟',
+    'no_data'            => 'لا توجد بيانات',
+
+    // العناوين
+    'warehouses_title'   => 'المخازن',
+    'btn_new_warehouse'  => 'مخزن جديد',
+    'edit_warehouse'     => 'تعديل مخزن',
+
+    // الحقول
+    'warehouse_name_ar'  => 'اسم المخزن (ع)',
+    'warehouse_name_en'  => 'اسم المخزن (En)',
+    'ph_warehouse_name_ar' => 'اكتب اسم المخزن بالعربية',
+    'ph_warehouse_name_en' => 'Warehouse name in English',
+    'hint_warehouse_name'  => 'اكتب اسم المخزن باللغة العربية.',
+    'hint_warehouse_name_en'=> 'Write the warehouse name in English.',
+
+    'code'               => 'الكود',
+    'ph_code'            => 'WH-001',
+    'hint_unique_warehouse_code' => 'كود المخزن يجب أن يكون فريدًا.',
+
+    'branch'             => 'الفرع',
+    'select_branch'      => '— اختر الفرع —',
+    'hint_select_branch' => 'اختر الفرع المرتبط بالمخزن.',
+    'all_branches'       => 'كل الفروع',
+
+    'status'             => 'الحالة',
+    'active'             => 'نشط',
+    'inactive'           => 'غير نشط',
+
+    'warehouse_type'     => 'نوع المخزن',
+    'warehouse_type_short'=> 'النوع',
+    'main'               => 'رئيسي',
+    'sub'                => 'فرعي',
+    'hint_warehouse_type'=> 'اختر ما إذا كان المخزن رئيسيًا أو فرعيًا.',
+
+    'warehouse_managers' => 'مسئولو المخزن',
+    'hint_select_multiple_managers' => 'يمكنك اختيار أكثر من مسئول.',
+    'managers_count'     => 'المسئولين',
+    'none'               => 'لا يوجد',
+
+    'warehouse_address'  => 'عنوان المخزن',
+    'ph_warehouse_address' => 'مثال: 12 شارع النصر، مخزن رقم 3',
+    'hint_address'       => 'أدخل وصفًا واضحًا لموقع المخزن.',
+
+    'category'           => 'القسم',
+    'select_category'    => '— اختر القسم —',
+    'hint_select_category'=> 'اختر القسم أولًا ليظهر لك المنتجات التابعة له.',
+
+    'products'           => 'المنتجات',
+    'products_all_category' => 'القسم كامل (كل المنتجات)',
+    'products_all_chip'  => 'القسم كامل',
+    'hint_products_all'  => 'إذا اخترت “القسم كامل”، سيتم تجاهل تحديد المنتجات الفردية.',
+    'err_load_products'  => 'تعذر تحميل المنتجات لهذا القسم',
+
+    // فلاتر/بحث
+    'search'             => 'بحث',
+    'ph_search_wh'       => 'ابحث بالكود أو الاسم',
+    'all'                => 'الكل',
+    'name'               => 'الاسم',
+    'actions'            => 'إجراءات',
 ];

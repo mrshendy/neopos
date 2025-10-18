@@ -27,6 +27,12 @@ return [
     'search_hint'            => 'Search by code or name (AR/EN).',
     'clear_search'           => 'Clear search',
 
+    'module_branches'   => 'Branches',
+    'manage_title'      => 'Inventory Management',
+    'manage_subtitle'   => 'Pick a module to continue',
+    'open'              => 'Open',
+    'soon'              => 'Coming soon',
+    'route_missing'     => 'Route not available yet',
     'major_unit'     => 'Major Unit',
     'minor_unit'     => 'Minor Unit',
     'active'         => 'Active',
