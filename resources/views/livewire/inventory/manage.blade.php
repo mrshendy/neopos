@@ -49,6 +49,8 @@
                                 </div>
                             </div>
 
+                            
+
                             <div class="inv-card__chevron">
                                 <i class="mdi mdi-chevron-{{ app()->getLocale()==='ar' ? 'left' : 'right' }}"></i>
                             </div>

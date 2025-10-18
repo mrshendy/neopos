@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\customer\customerscontroller;
+use App\Http\Controllers\general\branchcontroller;
 use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
 use App\Http\Controllers\inventory\inventorycontroller;
@@ -138,6 +139,11 @@ Route::group(
             Route::post('settings/update', [settingscontroller::class, 'update'])->name('inventory.settings.update');
         });
 
+        Route::prefix('branches')->name('branches.')->controller(branchcontroller::class)->group(function () {
+            Route::get('/', 'index')->name('index');                 // GET /branches
+            Route::get('/create', 'create')->name('create');         // GET /branches/create
+            Route::get('/{branch_id}/edit', 'edit')->name('edit');   // GET /branches/{id}/edit
+        });
         Route::get('/{page}', 'AdminController@index');
 
     });
