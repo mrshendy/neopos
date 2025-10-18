@@ -59,15 +59,15 @@
     </div>
 
     @php
-        // قيم مختارة للوحدات لتصفية القوائم
-        $selMinor  = $units_matrix['minor']['unit_id']  ?? null;
-        $selMiddle = $units_matrix['middle']['unit_id'] ?? null;
+        // قيَم مختارة للوحدات بعد تبديل الترتيب
         $selMajor  = $units_matrix['major']['unit_id']  ?? null;
+        $selMiddle = $units_matrix['middle']['unit_id'] ?? null;
+        $selMinor  = $units_matrix['minor']['unit_id']  ?? null;
 
-        // تصفية القوائم: الوسطى تستبعد الصغرى، الكبرى تستبعد الصغرى والوسطى
-        $optsMinor = $units; // الصغرى: الكل
-        $optsMiddle = $units->when($selMinor, fn($q) => $q->where('id', '!=', $selMinor));
-        $optsMajor  = $units->when($selMinor, fn($q) => $q->where('id', '!=', $selMinor))
+        // التصفية: الكبرى = الكل، الوسطى تستبعد الكبرى، الصغرى تستبعد الكبرى والوسطى
+        $optsMajor  = $units;
+        $optsMiddle = $units->when($selMajor, fn($q) => $q->where('id', '!=', $selMajor));
+        $optsMinor  = $units->when($selMajor, fn($q) => $q->where('id', '!=', $selMajor))
                             ->when($selMiddle, fn($q) => $q->where('id', '!=', $selMiddle));
     @endphp
 
@@ -249,7 +249,7 @@
             </div>
         </div>
 
-        {{-- جدول الوحدات المربوط بوحدات النظام --}}
+        {{-- جدول الوحدات (ترتيب: كبرى، وسطى، صغرى) --}}
         <div class="col-12">
             <div class="card shadow-sm rounded-4">
                 <div class="card-body">
@@ -260,32 +260,32 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>{{ __('pos.field') ?? 'الحقل' }}</th>
-                                    <th>{{ __('pos.minor') ?? 'الوحدة الصغرى' }}</th>
-                                    <th>{{ __('pos.middle') ?? 'الوحدة الوسطى' }}</th>
                                     <th>{{ __('pos.major') ?? 'الوحدة الكبرى' }}</th>
+                                    <th>{{ __('pos.middle') ?? 'الوحدة الوسطى' }}</th>
+                                    <th>{{ __('pos.minor') ?? 'الوحدة الصغرى' }}</th>
                                 </tr>
                             </thead>
                             <tbody>
 
-                                {{-- اختيار الوحدة (مع التصفية لمنع التكرار) --}}
+                                {{-- اختيار الوحدة --}}
                                 <tr>
                                     <td class="text-muted">{{ __('pos.unit') ?? 'الوحدة' }}</td>
 
-                                    {{-- minor --}}
+                                    {{-- major --}}
                                     <td>
-                                        <select class="form-select @error('units_matrix.minor.unit_id') is-invalid @enderror"
-                                                wire:model="units_matrix.minor.unit_id">
+                                        <select class="form-select @error('units_matrix.major.unit_id') is-invalid @enderror"
+                                                wire:model="units_matrix.major.unit_id">
                                             <option value="">{{ __('pos.choose') ?? 'اختر' }}</option>
-                                            @foreach($optsMinor as $u)
+                                            @foreach($optsMajor as $u)
                                                 <option value="{{ $u->id }}">{{ $u->getTranslation('name', app()->getLocale()) }}</option>
                                             @endforeach
                                         </select>
                                         <small class="text-muted d-block mb-1">{{ __('pos.hint_pick_unit') ?? 'اختر وحدة لهذا المستوى' }}</small>
-                                        @error('units_matrix.minor.unit_id') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
-                                        @if(!empty($units_matrix['minor']['unit_id']))
+                                        @error('units_matrix.major.unit_id') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
+                                        @if(!empty($units_matrix['major']['unit_id']))
                                             <div class="preview-box">
                                                 <i class="mdi mdi-ruler-square"></i>
-                                                <span>{{ optional($units->firstWhere('id',$units_matrix['minor']['unit_id']))->getTranslation('name', app()->getLocale()) }}</span>
+                                                <span>{{ optional($units->firstWhere('id',$units_matrix['major']['unit_id']))->getTranslation('name', app()->getLocale()) }}</span>
                                             </div>
                                         @endif
                                     </td>
@@ -309,21 +309,21 @@
                                         @endif
                                     </td>
 
-                                    {{-- major --}}
+                                    {{-- minor --}}
                                     <td>
-                                        <select class="form-select @error('units_matrix.major.unit_id') is-invalid @enderror"
-                                                wire:model="units_matrix.major.unit_id">
+                                        <select class="form-select @error('units_matrix.minor.unit_id') is-invalid @enderror"
+                                                wire:model="units_matrix.minor.unit_id">
                                             <option value="">{{ __('pos.choose') ?? 'اختر' }}</option>
-                                            @foreach($optsMajor as $u)
+                                            @foreach($optsMinor as $u)
                                                 <option value="{{ $u->id }}">{{ $u->getTranslation('name', app()->getLocale()) }}</option>
                                             @endforeach
                                         </select>
                                         <small class="text-muted d-block mb-1">{{ __('pos.hint_pick_unit') ?? 'اختر وحدة لهذا المستوى' }}</small>
-                                        @error('units_matrix.major.unit_id') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
-                                        @if(!empty($units_matrix['major']['unit_id']))
+                                        @error('units_matrix.minor.unit_id') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
+                                        @if(!empty($units_matrix['minor']['unit_id']))
                                             <div class="preview-box">
                                                 <i class="mdi mdi-ruler-square"></i>
-                                                <span>{{ optional($units->firstWhere('id',$units_matrix['major']['unit_id']))->getTranslation('name', app()->getLocale()) }}</span>
+                                                <span>{{ optional($units->firstWhere('id',$units_matrix['minor']['unit_id']))->getTranslation('name', app()->getLocale()) }}</span>
                                             </div>
                                         @endif
                                     </td>
@@ -332,7 +332,7 @@
                                 {{-- cost --}}
                                 <tr>
                                     <td class="text-muted">{{ __('pos.cost_price') ?? 'سعر التكلفة' }}</td>
-                                    @foreach (['minor','middle','major'] as $lvl)
+                                    @foreach (['major','middle','minor'] as $lvl)
                                         <td>
                                             <input type="number" step="0.0001" class="form-control"
                                                    wire:model.debounce.400ms="units_matrix.{{ $lvl }}.cost" placeholder="0.00">
@@ -347,7 +347,7 @@
                                 {{-- price --}}
                                 <tr>
                                     <td class="text-muted">{{ __('pos.sale_price') ?? 'سعر البيع' }}</td>
-                                    @foreach (['minor','middle','major'] as $lvl)
+                                    @foreach (['major','middle','minor'] as $lvl)
                                         <td>
                                             <input type="number" step="0.0001" class="form-control"
                                                    wire:model.debounce.400ms="units_matrix.{{ $lvl }}.price" placeholder="0.00">
@@ -362,7 +362,7 @@
                                 {{-- factor --}}
                                 <tr>
                                     <td class="text-muted">{{ __('pos.conv_factor') ?? 'معامل التحويل' }}</td>
-                                    @foreach (['minor','middle','major'] as $lvl)
+                                    @foreach (['major','middle','minor'] as $lvl)
                                         <td>
                                             <input type="number" step="0.0001" class="form-control @error('units_matrix.'.$lvl.'.factor') is-invalid @enderror"
                                                    wire:model.debounce.400ms="units_matrix.{{ $lvl }}.factor" placeholder="1">
@@ -383,9 +383,9 @@
                         <div class="col-12 col-md-6">
                             <label class="form-label">{{ __('pos.sale_unit') ?? 'وحدة البيع' }}</label>
                             <select class="form-select @error('sale_unit_key') is-invalid @enderror" wire:model="sale_unit_key">
-                                <option value="minor"  @disabled(empty($selMinor))>{{ __('pos.minor') ?? 'الصغرى' }}</option>
-                                <option value="middle" @disabled(empty($selMiddle))>{{ __('pos.middle') ?? 'الوسطى' }}</option>
                                 <option value="major"  @disabled(empty($selMajor))>{{ __('pos.major') ?? 'الكبرى' }}</option>
+                                <option value="middle" @disabled(empty($selMiddle))>{{ __('pos.middle') ?? 'الوسطى' }}</option>
+                                <option value="minor"  @disabled(empty($selMinor))>{{ __('pos.minor') ?? 'الصغرى' }}</option>
                             </select>
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_sale_unit') ?? 'يجب أن تكون من الثلاث وحدات المختارة أعلاه' }}</small>
                             @error('sale_unit_key') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
@@ -405,9 +405,9 @@
                         <div class="col-12 col-md-6">
                             <label class="form-label">{{ __('pos.purchase_unit') ?? 'وحدة الشراء' }}</label>
                             <select class="form-select @error('purchase_unit_key') is-invalid @enderror" wire:model="purchase_unit_key">
-                                <option value="minor"  @disabled(empty($selMinor))>{{ __('pos.minor') ?? 'الصغرى' }}</option>
-                                <option value="middle" @disabled(empty($selMiddle))>{{ __('pos.middle') ?? 'الوسطى' }}</option>
                                 <option value="major"  @disabled(empty($selMajor))>{{ __('pos.major') ?? 'الكبرى' }}</option>
+                                <option value="middle" @disabled(empty($selMiddle))>{{ __('pos.middle') ?? 'الوسطى' }}</option>
+                                <option value="minor"  @disabled(empty($selMinor))>{{ __('pos.minor') ?? 'الصغرى' }}</option>
                             </select>
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_purchase_unit') ?? 'يجب أن تكون من الثلاث وحدات المختارة أعلاه' }}</small>
                             @error('purchase_unit_key') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
@@ -476,39 +476,7 @@
                                     <div class="preview-box"><i class="mdi mdi-numeric"></i><span>{{ $expiry_value }}</span></div>
                                 @endif
                             </div>
-
-                            @if($expiry_unit === 'day')
-                                <div class="col-12">
-                                    <label class="form-label d-block">{{ __('pos.expiry_weekdays') ?? 'أيام الأسبوع' }}</label>
-                                    @php
-                                        $days = [
-                                            'sat'=>__('pos.sat') ?? 'السبت',
-                                            'sun'=>__('pos.sun') ?? 'الأحد',
-                                            'mon'=>__('pos.mon') ?? 'الإثنين',
-                                            'tue'=>__('pos.tue') ?? 'الثلاثاء',
-                                            'wed'=>__('pos.wed') ?? 'الأربعاء',
-                                            'thu'=>__('pos.thu') ?? 'الخميس',
-                                            'fri'=>__('pos.fri') ?? 'الجمعة',
-                                        ];
-                                    @endphp
-                                    <div class="d-flex flex-wrap gap-3">
-                                        @foreach($days as $key => $label)
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="wd-{{ $key }}"
-                                                       wire:model="expiry_weekdays" value="{{ $key }}">
-                                                <label class="form-check-label" for="wd-{{ $key }}">{{ $label }}</label>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    <small class="text-muted d-block mb-1">{{ __('pos.hint_expiry_days') ?? 'اختر الأيام المتاحة' }}</small>
-                                    @if(!empty($expiry_weekdays))
-                                        <div class="preview-box">
-                                            <i class="mdi mdi-calendar-multiselect"></i>
-                                            <span>{{ implode('، ', $expiry_weekdays) }}</span>
-                                        </div>
-                                    @endif
-                                </div>
-                            @endif
+                            {{-- تم حذف اختيار أيام الأسبوع كما طلبت --}}
                         </div>
                     @endif
                 </div>
@@ -529,7 +497,6 @@
 
 {{-- styles --}}
 <style>
-    /* preview box (يظهر فقط لما يكون في قيمة) */
     .preview-box{
         margin-top:.35rem;
         border:1px dashed rgba(0,0,0,.15);
@@ -542,7 +509,6 @@
     }
     .preview-box i{ opacity:.75; }
 
-    /* basic head */
     .basic-head{
         background: linear-gradient(180deg, #ffffff, #fbfcff);
         border: 1px solid rgba(0,0,0,.06);

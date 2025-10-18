@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Customer;
+namespace App\Http\Livewire\Customers;
 
 use Livewire\Component;
 use App\Models\customer\customer;
@@ -160,7 +160,7 @@ class Edit extends Component
 
     public function render()
     {
-        return view('customer.edit', [
+        return view('customers.edit', [
             'country'      => $this->country,
             'governorates' => $this->governorates,
             'cities'       => $this->cities,
