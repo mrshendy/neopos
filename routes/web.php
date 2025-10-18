@@ -78,6 +78,7 @@ Route::group(
             'update' => 'customers.update',
             'destroy' => 'customers.destroy',
         ]);
+            Route::get('/customer', [customerscontroller::class, 'index'])->name('customer.index');
 
         Route::resource('suppliers', suppliercontroller::class)
             ->parameters(['suppliers' => 'supplier'])    // يضمن Binding صحيح

@@ -10,7 +10,7 @@ use App\models\product\category;
 use App\models\unit\unit; 
 use App\models\supplier\supplier; 
 
-class edit extends Component
+class Printbarcodes extends Component
 {
     use WithFileUploads;
 
