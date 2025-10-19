@@ -1379,4 +1379,74 @@ return [
     'all'                => 'الكل',
     'name'               => 'الاسم',
     'actions'            => 'إجراءات',
+    'select_category_first' => '— اختر القسم أولًا —',
+    'no_products_in_category' => 'لا توجد منتجات في هذا القسم',
+      // ===== عناوين عامة =====
+    'warehouses_title'      => 'المخازن',
+    'warehouse_details'     => 'تفاصيل المخزن',
+
+    // ===== أزرار عامة =====
+    'btn_back'              => 'رجوع',
+    'btn_edit'              => 'تعديل',
+    'btn_save'              => 'حفظ',
+    'btn_save_changes'      => 'حفظ التغييرات',
+    'btn_cancel'            => 'إلغاء',
+    'btn_new_warehouse'     => 'مخزن جديد',
+    'btn_show'              => 'عرض',
+    'btn_delete'            => 'حذف',
+    'btn_reset'             => 'تصفية',
+    'actions'               => 'الإجراءات',
+
+    // ===== حقول أساسية =====
+    'warehouse_name'        => 'اسم المخزن',
+    'warehouse_name_ar'     => 'اسم المخزن (ع)',
+    'warehouse_name_en'     => 'اسم المخزن (En)',
+    'code'                  => 'الكود',
+    'branch'                => 'الفرع',
+    'status'                => 'الحالة',
+    'active'                => 'نشط',
+    'inactive'              => 'غير نشط',
+    'warehouse_type'        => 'نوع المخزن',
+    'warehouse_type_short'  => 'النوع',
+    'main'                  => 'رئيسي',
+    'sub'                   => 'فرعي',
+    'warehouse_address'     => 'عنوان المخزن',
+    'warehouse_managers'    => 'مسئولو المخزن',
+    'category'              => 'القسم',
+    'products'              => 'المنتجات',
+
+    // ===== عناصر العرض (Show) =====
+    'lang_current'          => 'اللغة الحالية',
+    'products_all_chip'     => 'القسم كامل',
+
+    // ===== فلاتر وبحث (Index) =====
+    'search'                => 'بحث',
+    'ph_search_wh'          => 'ابحث باسم المخزن أو الكود',
+    'all'                   => 'الكل',
+    'all_branches'          => 'كل الفروع',
+    'per_page'              => 'لكل صفحة',
+    'name'                  => 'الاسم',
+    'managers_count'        => 'عدد المسئولين',
+    'none'                  => 'لا يوجد',
+    'no_data'               => 'لا توجد بيانات',
+
+    // ===== رسائل نجاح/أخطاء =====
+    'msg_created'           => 'تم إنشاء المخزن بنجاح.',
+    'msg_updated'           => 'تم تحديث بيانات المخزن بنجاح.',
+    'msg_deleted'           => 'تم حذف المخزن بنجاح.',
+
+    // ===== تلميحات (Hints/Placeholders) اختيارية =====
+    'ph_code'               => 'مثل: WH-001',
+    'hint_unique_warehouse_code' => 'كود المخزن يجب أن يكون فريدًا.',
+    'hint_warehouse_name'   => 'أدخل اسم المخزن باللغة العربية.',
+    'hint_warehouse_name_en'=> 'أدخل اسم المخزن باللغة الإنجليزية.',
+    'hint_select_branch'    => 'اختر الفرع المرتبط بالمخزن.',
+    'hint_warehouse_type'   => 'اختر ما إذا كان المخزن رئيسيًا أو فرعيًا.',
+    'hint_address'          => 'اكتب وصفًا واضحًا للموقع.',
+    'select_branch'         => 'اختر الفرع',
+    'select_category'       => 'اختر القسم',
+    'products_all_category' => 'القسم كامل (كل المنتجات)',
+    'hint_products_all'     => 'إذا اخترت “القسم كامل” سيتم تجاهل تحديد المنتجات.',
+    'select_category_first' => 'اختر قسمًا أولًا لعرض المنتجات.',
+    'no_products_in_category' => 'لا توجد منتجات ضمن هذا القسم.',
 ];

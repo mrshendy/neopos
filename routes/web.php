@@ -117,6 +117,7 @@ Route::group(
             Route::get('warehouses/{id}/edit', [warehousescontroller::class, 'edit'])->name('inventory.warehouses.edit');
             Route::post('warehouses/{id}/update', [warehousescontroller::class, 'update'])->name('inventory.warehouses.update');
             Route::post('warehouses/{id}/delete', [warehousescontroller::class, 'destroy'])->name('inventory.warehouses.destroy');
+            Route::get('warehouses/{warehouse}', [warehousescontroller::class, 'show'])->name('inventory.warehouses.show');
 
             // 🔄 Transactions
             Route::get('transactions', [transactionscontroller::class, 'index'])->name('inventory.transactions.index');
