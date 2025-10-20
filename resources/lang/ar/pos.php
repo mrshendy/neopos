@@ -1505,6 +1505,8 @@ return [
     'usage' => 'الاستخدام',
     'max_uses_per_customer' => 'الحد لكل عميل',
     'max_total_uses' => 'الحد الإجمالي',
+    'branches' => 'الفروع',
+    'customers' => 'العملاء',
 
     // ======== Placeholders & Hints ========
     'ph_search_offer' => 'ابحث بالكود/الاسم',

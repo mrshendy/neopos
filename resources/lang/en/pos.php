@@ -1471,7 +1471,8 @@ return [
     'usage' => 'Usage',
     'max_uses_per_customer' => 'Max Uses / Customer',
     'max_total_uses' => 'Max Total Uses',
-
+    'branches' => 'Applicable Branches',
+    'customers' => 'Applicable Customers',
     // ======== Placeholders & Hints ========
     'ph_search_offer' => 'Search by code/name',
     'ph_search_coupon' => 'Search coupon by code/name',
