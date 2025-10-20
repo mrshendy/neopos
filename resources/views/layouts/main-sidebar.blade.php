@@ -68,7 +68,38 @@
                             </a>
                         </li>
 
-                   
+                        {{-- العروض والكوبونات --}}
+                        @php
+                            $promoOpen =
+                                Str::startsWith(Route::currentRouteName(), 'offers.') ||
+                                Str::startsWith(Route::currentRouteName(), 'coupons.');
+                        @endphp
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font {{ $promoOpen ? 'active' : '' }}" href="#sidebarpromos"
+                                data-bs-toggle="collapse" role="button"
+                                aria-expanded="{{ $promoOpen ? 'true' : 'false' }}" aria-controls="sidebarpromos">
+                                <i class="mdi mdi-ticket-percent-outline me-1"></i> 
+                                <span data-key="t-promos">{{ __('pos.offers_title') }} &
+                                    {{ __('pos.coupons_title') }}</span>
+                            </a>
+                            <div class="collapse menu-dropdown {{ $promoOpen ? 'show' : '' }}" id="sidebarpromos">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ Str::startsWith(Route::currentRouteName(), 'offers.') ? 'active' : '' }}"
+                                            href="{{ route('offers.index') }}">
+                                            {{ __('pos.offers_title') }}
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ Str::startsWith(Route::currentRouteName(), 'coupons.') ? 'active' : '' }}"
+                                            href="{{ route('coupons.index') }}">
+                                            {{ __('pos.coupons_title') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
                         {{-- المخزون --}}
                         <li class="nav-item">
                             <a class="nav-link menu-link font 

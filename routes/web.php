@@ -8,6 +8,8 @@ use App\Http\Controllers\inventory\inventorycontroller;
 use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
+use App\Http\Controllers\offers\couponscontroller;
+use App\Http\Controllers\offers\offerscontroller;
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
@@ -144,6 +146,19 @@ Route::group(
             Route::get('/', 'index')->name('index');                 // GET /branches
             Route::get('/create', 'create')->name('create');         // GET /branches/create
             Route::get('/{branch_id}/edit', 'edit')->name('edit');   // GET /branches/{id}/edit
+        });
+        // عروض
+        Route::prefix('offers')->name('offers.')->group(function () {
+            Route::get('/', [offerscontroller::class, 'index'])->name('index');
+            Route::get('/create', [offerscontroller::class, 'create'])->name('create');
+            Route::get('/{offer}/edit', [offerscontroller::class, 'edit'])->name('edit');
+        });
+
+        // كوبونات
+        Route::prefix('coupons')->name('coupons.')->group(function () {
+            Route::get('/', [couponscontroller::class, 'index'])->name('index');
+            Route::get('/create', [couponscontroller::class, 'create'])->name('create');
+            Route::get('/{coupon}/edit', [couponscontroller::class, 'edit'])->name('edit');
         });
         Route::get('/{page}', 'AdminController@index');
 
