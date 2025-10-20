@@ -4,6 +4,7 @@ use App\Http\Controllers\customer\customerscontroller;
 use App\Http\Controllers\general\branchcontroller;
 use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
+use App\Http\Controllers\inventory\dscontroller;
 use App\Http\Controllers\inventory\inventorycontroller;
 use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
@@ -160,6 +161,7 @@ Route::group(
             Route::get('/create', [couponscontroller::class, 'create'])->name('create');
             Route::get('/{coupon}/edit', [couponscontroller::class, 'edit'])->name('edit');
         });
+        Route::get('inv/ds', [dscontroller::class, 'index'])->name('inv.ds');
         Route::get('/{page}', 'AdminController@index');
 
     });

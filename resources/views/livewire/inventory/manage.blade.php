@@ -24,6 +24,26 @@
         </div>
     </div>
 
+    {{-- تحضير كارد "إضافة مباشرة إلى المخزن" وإضافته لو غير موجود --}}
+    @php
+        $directStoreCard = [
+            'key'   => 'direct_store',
+            'icon'  => 'mdi-database-plus-outline', // أو 'mdi-warehouse' إن كانت أيقوناتك قديمة
+            'route' => 'inv.ds',                    // الراوت القصير
+        ];
+
+        if (!isset($modules) || !is_array($modules)) {
+            $modules = [$directStoreCard];
+        } else {
+            $already = collect($modules)->contains(function($m){
+                return ($m['key'] ?? null) === 'direct_store';
+            });
+            if (!$already) {
+                array_unshift($modules, $directStoreCard); // يظهر أول عنصر
+            }
+        }
+    @endphp
+
     {{-- Modules Grid --}}
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body">
@@ -58,7 +78,7 @@
 {{-- Styles — نفس الشكل بالصورة --}}
 <style>
 /* حاوية عامة */
-.inventory-manage { padding: 0.25rem; }
+.inventory-manage { padding: .25rem; }
 
 /* كارت الشبكة */
 .hub-card{
