@@ -7,13 +7,14 @@ use App\Http\Controllers\inventory\countscontroller;
 use App\Http\Controllers\inventory\dscontroller;
 use App\Http\Controllers\inventory\inventorycontroller;
 use App\Http\Controllers\inventory\settingscontroller;
+use App\Http\Controllers\Inventory\stockbalancecontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\offers\couponscontroller;
 use App\Http\Controllers\offers\offerscontroller;
 use App\Http\Controllers\product\categorycontroller;
-use App\Http\Controllers\Inventory\stockbalancecontroller;
 use App\Http\Controllers\product\productcontroller;
+use App\Http\Controllers\purchasescontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
 use App\Http\Controllers\unitcontroller;
 use Illuminate\Support\Facades\Auth;
@@ -170,6 +171,20 @@ Route::group(
 
             // إعادة بناء جدول الرصيد من الحركات (اختياري)
             Route::post('balance/rebuild', [stockbalancecontroller::class, 'rebuild'])->name('inv.balance.rebuild');
+        });
+        Route::prefix('inventory')->group(function () {
+            Route::get('purchases', [purchasescontroller::class, 'index'])->name('purchases.index');
+            Route::get('purchases/create', [purchasescontroller::class, 'create'])->name('purchases.create');
+        });
+        Route::prefix('inventory')->name('inv.')->group(function () {
+
+            // ===== Stock Transactions =====
+            Route::get('transactions', [transactionscontroller::class, 'index'])
+                ->name('trx.index');
+
+            // إنشاء/ترحيل حركة: يعرض Blade فيه @livewire('inventory.transactions.manage')
+            Route::get('transactions/create', [transactionscontroller::class, 'create'])
+                ->name('trx.create');
         });
         Route::get('/{page}', 'AdminController@index');
 
