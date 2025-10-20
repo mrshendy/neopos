@@ -1550,4 +1550,26 @@ return [
     'engine_offer_expired' => 'انتهت صلاحية العرض – لم يتم تطبيقه.',
     'engine_bulk_import_ok' => 'تم استيراد :count كود كوبون بنجاح.',
     'engine_not_eligible' => 'العرض غير مؤهل لهذا الفرع أو التاريخ.',
+
+
+
+    'balance_title'      => 'رصيد المخزن',
+    'rebuild_btn'        => 'إعادة بناء الرصيد',
+    'rebuild_confirm'    => 'تأكيد إعادة بناء الرصيد؟',
+    'balance_missing_table' => 'جدول stock_balances غير موجود. نفّذ الميجريشن أولاً.',
+    'balance_rebuilt_ok' => 'تمت إعادة بناء رصيد المخزن بنجاح.',
+    'balance_rebuilt_fail' => 'تعذّر إعادة بناء الرصيد',
+
+    'warehouse'          => 'المخزن',
+    'product'            => 'الصنف',
+    'uom'                => 'الوحدة',
+    'onhand'             => 'الرصيد',
+    'last_update'        => 'آخر تحديث',
+
+    'search'             => 'بحث',
+    'search_ph'          => 'ابحث بالاسم/الوحدة',
+    'search_btn'         => 'بحث',
+    'clear'              => 'تصفية',
+    'all'                => '— الكل —',
+    'no_data'            => 'لا توجد بيانات — تأكد من تشغيل الميجريشن أو إدخال حركات.',
 ];

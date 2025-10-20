@@ -50,7 +50,7 @@ return [
     'ds_save'          => 'حفظ',
     'ds_reset'         => 'إعادة تعيين',
     'ds_remove_row'    => 'حذف الصف',
-
+    'module_stock_balance' => 'رصيد المخزون',
     // اختيارات
     'choose'           => '— اختر —',
     'optional'         => '— اختياري —',

@@ -12,6 +12,7 @@ use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\offers\couponscontroller;
 use App\Http\Controllers\offers\offerscontroller;
 use App\Http\Controllers\product\categorycontroller;
+use App\Http\Controllers\Inventory\stockbalancecontroller;
 use App\Http\Controllers\product\productcontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
 use App\Http\Controllers\unitcontroller;
@@ -162,6 +163,14 @@ Route::group(
             Route::get('/{coupon}/edit', [couponscontroller::class, 'edit'])->name('edit');
         });
         Route::get('inv/ds', [dscontroller::class, 'index'])->name('inv.ds');
+
+        Route::prefix('inventory')->group(function () {
+            // صفحة رصيد المخزن — اسم راوت صغير
+            Route::get('balance', [stockbalancecontroller::class, 'index'])->name('inv.balance');
+
+            // إعادة بناء جدول الرصيد من الحركات (اختياري)
+            Route::post('balance/rebuild', [stockbalancecontroller::class, 'rebuild'])->name('inv.balance.rebuild');
+        });
         Route::get('/{page}', 'AdminController@index');
 
     });

@@ -49,6 +49,7 @@ return [
     'ds_batch_no'      => 'Batch No.',
     'ds_cost_price'    => 'Cost Price',
     'ds_sale_price'    => 'Sale Price',
+    'module_stock_balance' => 'Stock Balance',
 
     'ds_save'          => 'Save',
     'ds_reset'         => 'Reset',

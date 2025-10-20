@@ -24,24 +24,30 @@
         </div>
     </div>
 
-    {{-- تحضير كارد "إضافة مباشرة إلى المخزن" وإضافته لو غير موجود --}}
+    {{-- تحضير الكروت (يضيف "رصيد المخزن" + "إضافة مباشرة إلى المخزن" إن لم يكونا موجودين) --}}
     @php
+        $stockBalanceCard = [
+            'key'   => 'stock_balance',              // يظهر كنص: inventory.module_stock_balance
+            'icon'  => 'mdi-clipboard-list-outline',
+            'route' => 'inv.balance',               // عدّلها لاسم الراوت الفعلي لصفحة الرصيد إن لزم
+        ];
+
         $directStoreCard = [
             'key'   => 'direct_store',
-            'icon'  => 'mdi-database-plus-outline', // أو 'mdi-warehouse' إن كانت أيقوناتك قديمة
-            'route' => 'inv.ds',                    // الراوت القصير
+            'icon'  => 'mdi-database-plus-outline', // أو 'mdi-warehouse' حسب مكتبة الأيقونات لديك
+            'route' => 'inv.ds',                    // الراوت المختصر للإضافة المباشرة
         ];
 
         if (!isset($modules) || !is_array($modules)) {
-            $modules = [$directStoreCard];
-        } else {
-            $already = collect($modules)->contains(function($m){
-                return ($m['key'] ?? null) === 'direct_store';
-            });
-            if (!$already) {
-                array_unshift($modules, $directStoreCard); // يظهر أول عنصر
-            }
+            $modules = [];
         }
+
+        $hasBalance = collect($modules)->contains(fn($m) => ($m['key'] ?? null) === 'stock_balance');
+        $hasDirect  = collect($modules)->contains(fn($m) => ($m['key'] ?? null) === 'direct_store');
+
+        // اجعل "رصيد المخزن" أول كارد
+        if (!$hasBalance) array_unshift($modules, $stockBalanceCard);
+        if (!$hasDirect)  array_unshift($modules, $directStoreCard);
     @endphp
 
     {{-- Modules Grid --}}

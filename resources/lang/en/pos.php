@@ -1515,5 +1515,23 @@ return [
     'engine_offer_expired' => 'Offer has expired and was not applied.',
     'engine_bulk_import_ok' => ':count coupon codes were imported successfully.',
     'engine_not_eligible' => 'Offer is not eligible for this branch or date.',
+ 'balance_title'      => 'Stock Balance',
+    'rebuild_btn'        => 'Rebuild Balance',
+    'rebuild_confirm'    => 'Are you sure you want to rebuild balance?',
+    'balance_missing_table' => 'Table stock_balances does not exist. Run migrations first.',
+    'balance_rebuilt_ok' => 'Stock balance rebuilt successfully.',
+    'balance_rebuilt_fail' => 'Failed to rebuild balance',
 
+    'warehouse'          => 'Warehouse',
+    'product'            => 'Product',
+    'uom'                => 'Unit',
+    'onhand'             => 'On-hand',
+    'last_update'        => 'Last update',
+
+    'search'             => 'Search',
+    'search_ph'          => 'Search by name/unit',
+    'search_btn'         => 'Search',
+    'clear'              => 'Clear',
+    'all'                => '— All —',
+    'no_data'            => 'No data yet — run migrations or add transactions.',
 ];
