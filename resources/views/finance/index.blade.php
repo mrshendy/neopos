@@ -126,7 +126,7 @@
                 <div class="col-xxl-3 col-lg-4 col-md-6">
                     <div class="tile h-100">
                         <div class="tile-icon mb-2"><i class="mdi mdi-cog-outline"></i></div>
-                        <a href="{{ route('finance.settings') }}" class="tile-title stretched-link">
+                        <a href="{{ route('finance_settings.index') }}" class="tile-title stretched-link">
                             {{ __('pos.cashboxes_settings') }}
                         </a>
                         <div class="tile-open">{{ __('pos.open') }}</div>

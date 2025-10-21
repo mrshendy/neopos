@@ -2129,4 +2129,203 @@ return [
 'cashboxes_movements'     => 'Cash Movements',
 'cashboxes_shifts'        => 'Cashbox Handover',
 'cashboxes_receipts'      => 'Receipts',
+
+
+    // ===== Titles =====
+    'pos_title_new'      => 'New Sales Invoice',
+    'pos_title_edit'     => 'Edit Sales Invoice',
+    'pos_index_title'    => 'Sales Invoices',
+    'pos_index_subtitle' => 'Manage and filter your sales invoices',
+
+    // ===== Header Fields =====
+    'sale_date'          => 'Sale Date',
+    'delivery_date'      => 'Delivery Date',
+    'warehouse'          => 'Warehouse',
+    'customer'           => 'Customer',
+
+    // ===== Missing Hints (the ones that appeared as keys) =====
+    'hint_sale_date'     => 'Select the sale date',
+    'hint_delivery_date' => 'Choose the warehouse delivery date',
+    'hint_warehouse'     => 'Select receiving warehouse',
+    'hint_customer'      => 'Select customer',
+
+    // ===== Notes =====
+    'notes_ar'           => 'Notes (AR)',
+    'notes_en'           => 'Notes (EN)',
+    'notes_ph'           => 'Write any extra notes...',
+
+    // ===== Lines =====
+    'items_details'      => 'Items Details',
+    'category'           => 'Category',
+    'product'            => 'Product',
+    'unit'               => 'Unit',
+    'qty'                => 'Quantity',
+    'unit_price'         => 'Unit Price',
+    'onhand'             => 'On Hand',
+    'expiry_date'        => 'Expiry Date',
+    'batch_no'           => 'Batch/Lot No.',
+    'has_expiry'         => 'Has expiry date?',
+
+    // ===== Placeholders/Choices =====
+    'choose'             => 'Choose',
+    'select_category'    => 'Select category',
+    'choose_product'     => 'Select product',
+    'choose_unit'        => 'Select unit',
+
+    // ===== Buttons =====
+    'add_row'            => 'Add Row',
+    'remove_row'         => 'Remove Row',
+    'save'               => 'Save',
+    'update'             => 'Update',
+    'back'               => 'Back',
+    'refresh'            => 'Refresh',
+    'saved_ok'           => 'Saved successfully',
+
+    // ===== Totals =====
+    'subtotal'           => 'Subtotal',
+    'discount'           => 'Discount',
+    'tax'                => 'Tax',
+    'grand_total'        => 'Grand Total',
+
+    // ===== Confirms & Alerts =====
+    'confirm_delete_title'     => 'Delete Confirmation',
+    'confirm_delete_row_text'  => 'Are you sure you want to remove this row?',
+    'confirm_delete_text'      => 'Are you sure? This action cannot be undone.',
+    'confirm'                  => 'Confirm',
+    'cancel'                   => 'Cancel',
+    'deleted'                  => 'Deleted',
+    'deleted_ok'               => 'Deleted successfully',
+    'row_deleted_ok'           => 'Row deleted successfully',
+
+    // ===== List / Filters =====
+    'per_page'          => 'Per page',
+    'search'            => 'Search',
+    'search_ph'         => 'Search by invoice no. or customer...',
+    'status'            => 'Status',
+    'status_draft'      => 'Draft',
+    'status_approved'   => 'Approved',
+    'status_posted'     => 'Posted',
+    'status_cancelled'  => 'Cancelled',
+    'sale_no'           => 'Invoice No.',
+    'items_count'       => 'Items',
+    'actions'           => 'Actions',
+    'no_data'           => 'No data',
+
+    
+    // ===== Common =====
+    'all' => 'All',
+    'yes' => 'Yes',
+    'no'  => 'No',
+    'enabled'  => 'Enabled',
+    'disabled' => 'Disabled',
+    'open' => 'Open',
+
+    // Buttons
+    'btn_new'    => 'New',
+    'btn_edit'   => 'Edit',
+    'btn_delete' => 'Delete',
+    'btn_show'   => 'Show',
+    'btn_save'   => 'Save',
+    'btn_back'   => 'Back',
+    'btn_toggle_status' => 'Toggle Status',
+    'btn_add_row'    => 'Add Row',
+    'btn_remove_row' => 'Remove Row',
+
+    // Table / misc
+    'col_actions' => 'Actions',
+    'no_data'     => 'No data found',
+    'pagination_info' => 'Showing :from to :to of :total rows',
+
+    // Alerts (SweetAlert2)
+    'alert_title' => 'Warning',
+    'alert_text'  => '⚠️ Are you sure? This action cannot be undone!',
+    'alert_confirm' => 'Yes, continue',
+    'alert_cancel'  => 'Cancel',
+    'alert_deleted_title' => 'Deleted!',
+    'alert_deleted_text'  => '✅ Deleted successfully.',
+
+    // Flash messages
+    'msg_created_success' => 'Created successfully.',
+    'msg_updated_success' => 'Updated successfully.',
+    'msg_deleted_success' => 'Deleted successfully.',
+    'msg_status_toggled'  => 'Status toggled successfully.',
+    'msg_saved_finset'    => 'Warehouse settings saved successfully.',
+
+    // ===== Cashboxes Hub (four tiles) =====
+    'cashboxes_hub_title'     => 'Cashboxes Management',
+    'cashboxes_hub_subtitle'  => 'Quick modules for managing cashboxes',
+    'cashboxes_settings'      => 'Cashbox Settings',
+    'cashboxes_movements'     => 'Cash Movements',
+    'cashboxes_shifts'        => 'Cashbox Handover',
+    'cashboxes_receipts'      => 'Receipts',
+    'cashboxes_settings_desc' => 'Define cashboxes, numbering, permissions & GL mapping.',
+    'cashboxes_movements_desc'=> 'Browse movements with filters, print & export.',
+    'cashboxes_shifts_desc'   => 'Open/close shifts, counting & variances.',
+    'cashboxes_receipts_desc' => 'In/Out receipts with accounting & attachments.',
+
+    // (Legacy titles if used)
+    'finance_title_index'  => 'Cashboxes',
+    'finance_title_create' => 'Create Cashbox',
+    'finance_title_edit'   => 'Edit Cashbox',
+    'finance_title_show'   => 'Show Cashbox',
+
+    // ===== Finance Settings (finance_settings) =====
+    'finset_title'   => 'Warehouse Settings',
+    'creating'       => 'Creating',
+    'editing'        => 'Editing',
+
+    // Name
+    'finset_name_ar'        => 'Name (Arabic)',
+    'finset_ph_name_ar'     => 'e.g., إعدادات مخزن رئيسي',
+    'finset_help_name_ar'   => 'Enter the settings name in Arabic.',
+    'finset_name_en'        => 'Name (English)',
+    'finset_ph_name_en'     => 'e.g., Main Warehouse Settings',
+    'finset_help_name_en'   => 'Enter the settings name in English.',
+
+    // Links
+    'finset_branch'         => 'Branch',
+    'finset_ph_branch'      => 'Branch ID (optional)',
+    'finset_help_branch'    => 'Optional: link to a specific branch.',
+    'finset_warehouse'      => 'Warehouse',
+    'finset_ph_warehouse'   => 'Warehouse ID (optional)',
+    'finset_help_warehouse' => 'Optional: choose a default warehouse.',
+    'finset_currency'       => 'Currency',
+    'finset_ph_currency'    => 'Currency ID (optional)',
+    'finset_help_currency'  => 'Optional: default currency for operations.',
+
+    // Switches
+    'finset_is_available'            => 'Is Available',
+    'finset_allow_negative_stock'    => 'Allow Negative Stock',
+    'finset_return_window_days'      => 'Return Window (days)',
+    'finset_help_return_window_days' => 'Number of days allowed for returns.',
+    'finset_require_return_approval' => 'Require Return Approval',
+    'finset_approval_over_amount'    => 'Approval Over Amount',
+    'finset_help_approval_over_amount'=> 'Leave empty to disable the condition.',
+
+    // Return numbering
+    'finset_receipt_prefix'          => 'Return Number Prefix',
+    'finset_help_receipt_prefix'     => 'Used to build the next return number.',
+    'finset_next_return_number'      => 'First Return Sequence Number',
+    'finset_help_next_return_number' => 'The starting number for the next return.',
+
+    // Notes
+    'finset_notes_ar'      => 'Notes (Arabic)',
+    'finset_ph_notes_ar'   => 'Write notes in Arabic...',
+    'finset_notes_en'      => 'Notes (English)',
+    'finset_ph_notes_en'   => 'Write notes in English...',
+    'finset_help_notes'    => 'Internal notes for reference only.',
+
+    // User Limits
+    'finset_user_limits_section' => 'User Limits (Return caps)',
+    'finset_ul_user'             => 'User',
+    'finset_ul_ph_user'          => 'User ID',
+    'finset_ul_help_user'        => 'Enter the user ID or select later from a list.',
+    'finset_ul_daily_count'      => 'Daily Count Limit',
+    'finset_ul_help_daily_count' => 'Maximum number of return operations per day.',
+    'finset_ul_daily_amount'     => 'Daily Amount Limit',
+    'finset_ul_help_daily_amount'=> 'Maximum total return amounts per day.',
+    'finset_ul_require_supervisor'=> 'Require Supervisor',
+    'finset_ul_active'           => 'Active',
+    'finset_ul_no_rows'          => 'No limits added yet.',
+
 ];

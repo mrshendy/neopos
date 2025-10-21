@@ -2162,5 +2162,200 @@ return [
 'cashboxes_movements'     => 'حركات الخزائن',
 'cashboxes_shifts'        => 'استلام/تسليم الخزينة',
 'cashboxes_receipts'      => 'الإيصالات',
+// ===== عناوين عامة =====
+    'pos_title_new'      => 'فاتورة بيع جديدة',
+    'pos_title_edit'     => 'تعديل فاتورة بيع',
+    'pos_index_title'    => 'فواتير البيع',
+    'pos_index_subtitle' => 'إدارة وفلترة فواتير البيع الخاصة بك',
+
+    // ===== حقول الرأس في صفحة الإنشاء/التعديل =====
+    'sale_date'          => 'تاريخ البيع',
+    'delivery_date'      => 'تاريخ التوريد',
+    'warehouse'          => 'المخزن',
+    'customer'           => 'العميل',
+
+    // ===== تلميحات (Hints) المفقودة التي ظهرت كمفاتيح =====
+    'hint_sale_date'     => 'حدد تاريخ البيع',
+    'hint_delivery_date' => 'حدد تاريخ التوريد للمخزن',
+    'hint_warehouse'     => 'اختر المخزن المستلم',
+    'hint_customer'      => 'اختر العميل',
+
+    // ===== الملاحظات =====
+    'notes_ar'           => 'ملحوظات (عربي)',
+    'notes_en'           => 'ملحوظات (إنجليزي)',
+    'notes_ph'           => 'اكتب أي ملاحظات إضافية...',
+
+    // ===== تفاصيل الأصناف =====
+    'items_details'      => 'تفاصيل الأصناف',
+    'category'           => 'القسم',
+    'product'            => 'المنتج',
+    'unit'               => 'الوحدة',
+    'qty'                => 'الكمية',
+    'unit_price'         => 'سعر الوحدة',
+    'onhand'             => 'الرصيد الحالي',
+    'expiry_date'        => 'تاريخ الصلاحية',
+    'batch_no'           => 'رقم التشغيلة/الدفعة',
+    'has_expiry'         => 'له تاريخ صلاحية؟',
+
+    // ===== خيارات/Placeholders =====
+    'choose'             => 'اختر',
+    'select_category'    => 'اختر القسم',
+    'choose_product'     => 'اختر المنتج',
+    'choose_unit'        => 'اختر الوحدة',
+
+    // ===== الأزرار =====
+    'add_row'            => 'إضافة سطر',
+    'remove_row'         => 'حذف السطر',
+    'save'               => 'حفظ',
+    'update'             => 'تحديث',
+    'back'               => 'رجوع',
+    'refresh'            => 'تحديث',
+    'saved_ok'           => 'تم الحفظ بنجاح',
+
+    // ===== المجاميع =====
+    'subtotal'           => 'الإجمالي',
+    'discount'           => 'الخصم',
+    'tax'                => 'الضريبة',
+    'grand_total'        => 'الإجمالي الكلي',
+
+    // ===== تأكيدات ورسائل =====
+    'confirm_delete_title'     => 'تأكيد الحذف',
+    'confirm_delete_row_text'  => 'هل أنت متأكد من حذف هذا السطر؟',
+    'confirm_delete_text'      => 'هل أنت متأكد من الحذف؟ لا يمكن التراجع.',
+    'confirm'                  => 'تأكيد',
+    'cancel'                   => 'إلغاء',
+    'deleted'                  => 'تم الحذف',
+    'deleted_ok'               => 'تمت عملية الحذف بنجاح',
+    'row_deleted_ok'           => 'تم حذف السطر بنجاح',
+
+    // ===== أخرى مستخدمة في الفلاتر والجداول =====
+    'per_page'          => 'لكل صفحة',
+    'search'            => 'بحث',
+    'search_ph'         => 'ابحث برقم الفاتورة أو العميل...',
+    'status'            => 'الحالة',
+    'status_draft'      => 'مسودة',
+    'status_approved'   => 'موافق عليها',
+    'status_posted'     => 'مُرحّلة',
+    'status_cancelled'  => 'ملغاة',
+    'sale_no'           => 'رقم الفاتورة',
+    'items_count'       => 'عدد البنود',
+    'actions'           => 'الإجراءات',
+    'no_data'           => 'لا توجد بيانات',
+
+    // ===== عامة =====
+    'all' => 'الكل',
+    'yes' => 'نعم',
+    'no'  => 'لا',
+    'enabled'  => 'مفعّل',
+    'disabled' => 'معطّل',
+    'open' => 'فتح',
+
+    // Buttons
+    'btn_new'    => 'جديد',
+    'btn_edit'   => 'تعديل',
+    'btn_delete' => 'حذف',
+    'btn_show'   => 'عرض',
+    'btn_save'   => 'حفظ',
+    'btn_back'   => 'رجوع',
+    'btn_toggle_status' => 'تغيير الحالة',
+    'btn_add_row'    => 'إضافة صف',
+    'btn_remove_row' => 'إزالة صف',
+
+    // Table / misc
+    'col_actions' => 'إجراءات',
+    'no_data'     => 'لا توجد بيانات',
+    'pagination_info' => 'عرض :from إلى :to من أصل :total صف',
+
+    // Alerts (SweetAlert2)
+    'alert_title' => 'تحذير',
+    'alert_text'  => '⚠️ هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه!',
+    'alert_confirm' => 'نعم، متابعة',
+    'alert_cancel'  => 'إلغاء',
+    'alert_deleted_title' => 'تم الحذف!',
+    'alert_deleted_text'  => '✅ تم الحذف بنجاح.',
+
+    // Flash messages
+    'msg_created_success' => 'تم الإنشاء بنجاح.',
+    'msg_updated_success' => 'تم التعديل بنجاح.',
+    'msg_deleted_success' => 'تم الحذف بنجاح.',
+    'msg_status_toggled'  => 'تم تغيير الحالة بنجاح.',
+    'msg_saved_finset'    => 'تم حفظ إعدادات المخازن بنجاح.',
+
+    // ===== لوحة الخزائن (أربع كروت) =====
+    'cashboxes_hub_title'     => 'إدارة الخزائن',
+    'cashboxes_hub_subtitle'  => 'وحدات وأدوات سريعة لإدارة الخزائن',
+    'cashboxes_settings'      => 'إعدادات الخزائن',
+    'cashboxes_movements'     => 'حركات الخزائن',
+    'cashboxes_shifts'        => 'استلام/تسليم الخزينة',
+    'cashboxes_receipts'      => 'الإيصالات',
+    'cashboxes_settings_desc' => 'تعريف الخزائن، الترقيم، الصلاحيات والربط المحاسبي.',
+    'cashboxes_movements_desc'=> 'تصفح الحركات مع الفلاتر والطباعة/التصدير.',
+    'cashboxes_shifts_desc'   => 'فتح وإغلاق الشفت وتسجيل الجرد والفروقات.',
+    'cashboxes_receipts_desc' => 'قبض/صرف وربط محاسبي مع المرفقات.',
+
+    // (عناوين قديمة إن كنت تستخدمها)
+    'finance_title_index'  => 'الخزائن',
+    'finance_title_create' => 'إنشاء خزنة',
+    'finance_title_edit'   => 'تعديل خزنة',
+    'finance_title_show'   => 'عرض خزنة',
+
+    // ===== إعدادات المخازن (finance_settings) =====
+    'finset_title'   => 'إعدادات المخازن',
+    'creating'       => 'إنشاء',
+    'editing'        => 'تعديل',
+
+    // الاسم
+    'finset_name_ar'        => 'الاسم (عربي)',
+    'finset_ph_name_ar'     => 'مثال: إعدادات مخزن رئيسي',
+    'finset_help_name_ar'   => 'اكتب اسم الإعداد باللغة العربية.',
+    'finset_name_en'        => 'Name (English)',
+    'finset_ph_name_en'     => 'e.g., Main Warehouse Settings',
+    'finset_help_name_en'   => 'Enter the settings name in English.',
+
+    // ربطات
+    'finset_branch'         => 'الفرع',
+    'finset_ph_branch'      => 'رقم الفرع (اختياري)',
+    'finset_help_branch'    => 'اختياري: اربط الإعداد بفرع محدد.',
+    'finset_warehouse'      => 'المخزن',
+    'finset_ph_warehouse'   => 'رقم المخزن (اختياري)',
+    'finset_help_warehouse' => 'اختياري: اختر المخزن الافتراضي.',
+    'finset_currency'       => 'العملة',
+    'finset_ph_currency'    => 'رقم العملة (اختياري)',
+    'finset_help_currency'  => 'اختياري: العملة الافتراضية للعمليات.',
+
+    // مفاتيح التحكم
+    'finset_is_available'            => 'متاح أم لا',
+    'finset_allow_negative_stock'    => 'السماح برصيد سالب للمخزون',
+    'finset_return_window_days'      => 'مهلة الارتجاع (أيام)',
+    'finset_help_return_window_days' => 'عدد الأيام المسموح خلالها بقبول الارتجاع.',
+    'finset_require_return_approval' => 'يتطلب موافقة على الارتجاع',
+    'finset_approval_over_amount'    => 'موافقة إذا تجاوز المبلغ',
+    'finset_help_approval_over_amount'=> 'اتركه فارغًا لتعطيل الشرط.',
+
+    // ترقيم الارتجاع
+    'finset_receipt_prefix'          => 'بادئة ترقيم الارتجاع',
+    'finset_help_receipt_prefix'     => 'تستخدم في تكوين رقم الارتجاع التالي.',
+    'finset_next_return_number'      => 'أول رقم تسلسلي للارتجاع',
+    'finset_help_next_return_number' => 'أول رقم سيُستخدم في عملية الارتجاع التالية.',
+
+    // ملاحظات
+    'finset_notes_ar'      => 'ملاحظات (عربي)',
+    'finset_ph_notes_ar'   => 'اكتب ملاحظات بالعربية...',
+    'finset_notes_en'      => 'Notes (EN)',
+    'finset_ph_notes_en'   => 'Write notes in English...',
+    'finset_help_notes'    => 'ملاحظات داخلية لأغراض المرجعية فقط.',
+
+    // حدود المستخدمين
+    'finset_user_limits_section' => 'حدود المستخدمين (الحد الأقصى للارتجاع)',
+    'finset_ul_user'             => 'المستخدم',
+    'finset_ul_ph_user'          => 'ID المستخدم',
+    'finset_ul_help_user'        => 'اكتب رقم المستخدم أو اختره لاحقًا من قائمة.',
+    'finset_ul_daily_count'      => 'حد يومي للعدد',
+    'finset_ul_help_daily_count' => 'أقصى عدد عمليات ارتجاع يوميًا.',
+    'finset_ul_daily_amount'     => 'حد يومي للمبلغ',
+    'finset_ul_help_daily_amount'=> 'أقصى إجمالي مبالغ الارتجاع يوميًا.',
+    'finset_ul_require_supervisor'=> 'يتطلب مشرف',
+    'finset_ul_active'           => 'نشط',
+    'finset_ul_no_rows'          => 'لا توجد حدود مضافة بعد.',
 
 ];

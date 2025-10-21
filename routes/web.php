@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\customer\customercontroller;
+use App\Http\Controllers\finance_settingscontroller;
 use App\Http\Controllers\financecontroller;
 use App\Http\Controllers\general\branchcontroller;
 use App\Http\Controllers\inventory\alertscontroller;
@@ -214,17 +215,26 @@ Route::group(
         Route::resource('finance', financecontroller::class)->names([
             'index' => 'finance.index',
             'create' => 'finance.create',
-            'store' => 'finance.store',  
+            'store' => 'finance.store',
             'edit' => 'finance.edit',
-            'update' => 'finance.update',  
-            'destroy' => 'finance.destroy', 
+            'update' => 'finance.update',
+            'destroy' => 'finance.destroy',
             'show' => 'finance.show',
         ]);
-        Route::get('/finance/settings',  [financecontroller::class, 'settings'])->name('finance.settings');   // قائمة/إدارة الخزائن
-Route::get('/finance/movements', [financecontroller::class, 'movements'])->name('finance.movements'); // تقرير الحركات
-Route::get('/finance/shifts',    [financecontroller::class, 'shifts'])->name('finance.shifts');       // استلام/تسليم
-Route::get('/finance/receipts',  [financecontroller::class, 'receipts'])->name('finance.receipts');   // الإيصالات
-Route::get('/finance/receipts/void', [financecontroller::class, 'receiptsVoid'])->name('finance.receipts.void'); // إلغاء إيصال
+
+        Route::resource('finance_settings', finance_settingscontroller::class)->names([
+            'index' => 'finance_settings.index',
+            'create' => 'finance_settings.create',
+            'store' => 'finance_settings.store',   // الحفظ عبر Livewire لكن نسيبه لو احتجناه
+            'edit' => 'finance_settings.edit',
+            'update' => 'finance_settings.update',
+            'destroy' => 'finance_settings.destroy',
+            'show' => 'finance_settings.show',
+        ]);
+        Route::get('/finance/movements', [financecontroller::class, 'movements'])->name('finance.movements'); // تقرير الحركات
+        Route::get('/finance/shifts', [financecontroller::class, 'shifts'])->name('finance.shifts');       // استلام/تسليم
+        Route::get('/finance/receipts', [financecontroller::class, 'receipts'])->name('finance.receipts');   // الإيصالات
+        Route::get('/finance/receipts/void', [financecontroller::class, 'receiptsVoid'])->name('finance.receipts.void'); // إلغاء إيصال
         Route::get('/{page}', 'AdminController@index');
 
     });
