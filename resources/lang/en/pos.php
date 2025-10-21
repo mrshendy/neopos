@@ -1711,7 +1711,15 @@ return [
 
     // Validation / errors
     'input_errors'               => 'There were input errors',
+  // ... other keys
 
+    'trx_type_in'          => 'In',
+    'trx_type_out'         => 'Out',
+    'trx_type_transfer'    => 'Transfer',
+    'trx_type_direct_add'  => 'Direct Add',
+
+    // Optional: fallback for unknown type
+    'trx_type_unknown'     => 'Unknown',
     // Delete confirmations (row/invoice)
     'confirm_delete_title'       => 'Warning',
     'confirm_delete_text'        => 'Delete this invoice? This action cannot be undone.',
@@ -1786,4 +1794,89 @@ return [
     'yes_change'             => 'Yes, change',
     'status_changed'         => 'Status changed',
     'status_changed_ok'      => '✅ Status changed successfully.',
+      // ...
+
+    'stock_trx_type' => [
+        'sales_issue'      => 'Sales Issue',
+        'sales_return'     => 'Sales Return',
+        'adjustment'       => 'Adjustment / Count',
+        'transfer'         => 'Warehouse Transfer',
+        'purchase_receive' => 'Purchase Receive',
+    ],
+
+     'pos_index_title'      => 'Sales Invoices',
+    'pos_index_subtitle'   => 'Quick search & manage sales',
+    'pos_new'              => 'New Invoice',
+
+    'purchase_title'       => 'Create Sales Invoice',
+    'purchase_title_edit'  => 'Edit Sales Invoice',
+    'invoice_view'         => 'Invoice View',
+    'print'                => 'Print',
+
+    'sale_no'      => 'Invoice No.',
+    'sale_date'    => 'Sale Date',
+    'delivery_date'=> 'Delivery Date',
+    'warehouse'    => 'Warehouse',
+    'customer'     => 'Customer',
+    'notes_ar'     => 'Notes (AR)',
+    'notes_en'     => 'Notes (EN)',
+    'notes_ph'     => 'Write short notes...',
+
+    'category'     => 'Category',
+    'product'      => 'Product',
+    'unit'         => 'Unit',
+    'qty'          => 'Qty',
+    'unit_price'   => 'Unit Price',
+    'line_total'   => 'Line Total',
+    'onhand'       => 'On Hand',
+    'expiry_date'  => 'Expiry Date',
+    'batch_no'     => 'Batch No.',
+    'has_expiry'   => 'Has expiry?',
+
+    'items_count'  => 'Items',
+    'subtotal'     => 'Subtotal',
+    'discount'     => 'Discount',
+    'tax'          => 'Tax',
+    'grand_total'  => 'Grand Total',
+
+    'search'       => 'Search',
+    'search_ph'    => 'Search by invoice no. or notes',
+    'status'       => 'Status',
+    'status_draft'     => 'Draft',
+    'status_approved'  => 'Approved',
+    'status_posted'    => 'Posted',
+    'status_cancelled' => 'Cancelled',
+    'actions'      => 'Actions',
+    'per_page'     => 'Per page',
+    'all'          => 'All',
+
+    'date_from'    => 'From',
+    'date_to'      => 'To',
+
+    'choose'       => '— Choose —',
+    'select_category' => '— Select Category —',
+    'choose_product'=> '— Select Product —',
+    'choose_unit'   => '— Select Unit —',
+
+    'add_row'      => 'Add Row',
+    'remove_row'   => 'Remove Row',
+
+    'save'         => 'Save',
+    'update'       => 'Update',
+    'back'         => 'Back',
+    'refresh'      => 'Refresh',
+
+    'no_data'      => 'No data',
+    'not_found'    => 'Item not found',
+    'saved_ok'     => 'Saved successfully',
+    'deleted_ok'   => 'Deleted successfully',
+    'status_changed_ok' => 'Status changed successfully',
+
+    'confirm_delete_title' => 'Warning',
+    'confirm_delete_text'  => 'Are you sure you want to delete? This action cannot be undone!',
+    'confirm' => 'Confirm',
+    'cancel'  => 'Cancel',
+    'deleted' => 'Deleted!',
+      'sales_title' => 'Sales Invoices', 
+
 ];

@@ -1820,4 +1820,96 @@ return [
     'yes_change'             => 'نعم، تغيير',
     'status_changed'         => 'تم تغيير الحالة',
     'status_changed_ok'      => '✅ تم تغيير الحالة بنجاح.',
+     // ... مفاتيح أخرى
+
+    'trx_type_in'          => 'وارد',
+    'trx_type_out'         => 'منصرف',
+    'trx_type_transfer'    => 'تحويل',
+    'trx_type_direct_add'  => 'إضافة مباشرة',
+
+    // اختياري: في حالة نوع غير معروف
+    'trx_type_unknown'     => 'غير معروف',
+     'stock_trx_type' => [
+        'sales_issue'      => 'صرف مبيعات',
+        'sales_return'     => 'مرتجع مبيعات',
+        'adjustment'       => 'تسوية / جرد',
+        'transfer'         => 'تحويل مخزني',
+        'purchase_receive' => 'استلام مشتريات',
+    ],
+
+
+    'pos_index_title'      => 'فواتير المبيعات',
+    'pos_index_subtitle'   => 'بحث سريع وإدارة فواتير المبيعات',
+    'pos_new'              => 'فاتورة جديدة',
+
+    'purchase_title'       => 'إنشاء فاتورة بيع',
+    'purchase_title_edit'  => 'تعديل فاتورة بيع',
+    'invoice_view'         => 'عرض الفاتورة',
+    'print'                => 'طباعة',
+
+    'sale_no'      => 'رقم الفاتورة',
+    'sale_date'    => 'تاريخ البيع',
+    'delivery_date'=> 'تاريخ التسليم',
+    'warehouse'    => 'المخزن',
+    'customer'     => 'العميل',
+    'notes_ar'     => 'ملاحظات (عربي)',
+    'notes_en'     => 'ملاحظات (إنجليزي)',
+    'notes_ph'     => 'اكتب ملاحظات مختصرة...',
+
+    'category'     => 'القسم',
+    'product'      => 'الصنف',
+    'unit'         => 'الوحدة',
+    'qty'          => 'الكمية',
+    'unit_price'   => 'سعر الوحدة',
+    'line_total'   => 'إجمالي السطر',
+    'onhand'       => 'المتاح',
+    'expiry_date'  => 'تاريخ الصلاحية',
+    'batch_no'     => 'رقم التشغيلة',
+    'has_expiry'   => 'له تاريخ صلاحية؟',
+
+    'items_count'  => 'عدد البنود',
+    'subtotal'     => 'الإجمالي',
+    'discount'     => 'الخصم',
+    'tax'          => 'الضريبة',
+    'grand_total'  => 'الإجمالي النهائي',
+
+    'search'       => 'بحث',
+    'search_ph'    => 'ابحث برقم الفاتورة أو الملاحظات',
+    'status'       => 'الحالة',
+    'status_draft'     => 'مسودة',
+    'status_approved'  => 'معتمد',
+    'status_posted'    => 'مرحّل',
+    'status_cancelled' => 'ملغي',
+    'actions'      => 'إجراءات',
+    'per_page'     => 'لكل صفحة',
+    'all'          => 'الكل',
+
+    'date_from'    => 'من تاريخ',
+    'date_to'      => 'إلى تاريخ',
+
+    'choose'       => '— اختر —',
+    'select_category' => '— اختر القسم —',
+    'choose_product'=> '— اختر الصنف —',
+    'choose_unit'   => '— اختر الوحدة —',
+
+    'add_row'      => 'إضافة صف',
+    'remove_row'   => 'حذف الصف',
+
+    'save'         => 'حفظ',
+    'update'       => 'تحديث',
+    'back'         => 'رجوع',
+    'refresh'      => 'تحديث',
+
+    'no_data'      => 'لا توجد بيانات',
+    'not_found'    => 'العنصر غير موجود',
+    'saved_ok'     => 'تم الحفظ بنجاح',
+    'deleted_ok'   => 'تم الحذف  بنجاح',
+    'status_changed_ok' => 'تم تغيير الحالة بنجاح',
+
+    'confirm_delete_title' => 'تحذير',
+    'confirm_delete_text'  => '⚠️ هل أنت متأكد أنك تريد حذف هذا الإجراء لا يمكن التراجع عنه!',
+    'confirm' => 'تأكيد',
+    'cancel'  => 'إلغاء',
+    'deleted' => 'تم الحذف!',
+    'sales_title' => 'إدارة المبيعات', 
 ];

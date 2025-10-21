@@ -1,5 +1,6 @@
 <div>
     @php
+        // دالة بسيطة لاختيار الترجمة من JSON في قاعدة البيانات
         $resolveName = function($val){
             if (is_string($val) && strlen($val) && $val[0]==='{'){
                 $arr = json_decode($val,true) ?: [];
@@ -8,8 +9,24 @@
             }
             return $val;
         };
+
+        // الأكواد القياسية لأنواع حركات المخزون
+        $stockTrxTypes = [
+            'sales_issue',
+            'sales_return',
+            'adjustment',
+            'transfer',
+            'purchase_receive',
+        ];
+
+        // دالة ترجمة مع fallback للكود نفسه لو المفتاح ناقص
+        $t = function(string $key, ?string $fallback = null){
+            $val = __($key);
+            return $val === $key ? ($fallback ?? $key) : $val;
+        };
     @endphp
 
+    {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
@@ -40,7 +57,8 @@
                 <div class="text-muted small">{{ __('pos.trx_index_subtitle') }}</div>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ route('inv.trx.create') }}" class="btn btn-primary rounded-pill px-3 shadow-sm">
+                {{-- ستايل الزر المفضل --}}
+                <a href="{{ route('inv.trx.create') }}" class="btn btn-success rounded-pill px-4 shadow-sm">
                     <i class="mdi mdi-plus-circle-outline me-1"></i> {{ __('pos.trx_new') }}
                 </a>
                 <div class="d-flex align-items-center gap-2">
@@ -59,16 +77,17 @@
                     <label class="form-label small text-muted mb-1">{{ __('pos.search') }}</label>
                     <input type="text" class="form-control" placeholder="{{ __('pos.search_ph_trx') }}" wire:model.debounce.400ms="search">
                 </div>
+
                 <div class="col-md-2">
                     <label class="form-label small text-muted mb-1">{{ __('pos.type') }}</label>
                     <select class="form-select" wire:model="type">
                         <option value="">{{ __('pos.all') }}</option>
-                        <option value="in">{{ __('pos.trx_type_in') }}</option>
-                        <option value="out">{{ __('pos.trx_type_out') }}</option>
-                        <option value="transfer">{{ __('pos.trx_type_transfer') }}</option>
-                        <option value="direct_add">{{ __('pos.trx_type_direct_add') }}</option>
+                        @foreach($stockTrxTypes as $code)
+                            <option value="{{ $code }}">{{ $t('pos.stock_trx_type.' . $code, strtoupper($code)) }}</option>
+                        @endforeach
                     </select>
                 </div>
+
                 <div class="col-md-2">
                     <label class="form-label small text-muted mb-1">{{ __('pos.status') }}</label>
                     <select class="form-select" wire:model="status">
@@ -78,6 +97,7 @@
                         <option value="cancelled">{{ __('pos.status_cancelled') }}</option>
                     </select>
                 </div>
+
                 <div class="col-md-2">
                     <label class="form-label small text-muted mb-1">{{ __('pos.date_from') }}</label>
                     <input type="date" class="form-control" wire:model="date_from">
@@ -86,6 +106,7 @@
                     <label class="form-label small text-muted mb-1">{{ __('pos.date_to') }}</label>
                     <input type="date" class="form-control" wire:model="date_to">
                 </div>
+
                 <div class="col-md-3">
                     <label class="form-label small text-muted mb-1">{{ __('pos.warehouse_any') }}</label>
                     <select class="form-select" wire:model="warehouse_id">
@@ -101,68 +122,63 @@
             <div class="table-responsive">
                 <table class="table table-bordered align-middle">
                     <thead>
-                    <tr>
-                        <th style="width:130px">{{ __('pos.trx_no') }}</th>
-                        <th style="width:120px">{{ __('pos.trx_date') }}</th>
-                        <th style="width:140px">{{ __('pos.trx_type') }}</th>
-                        <th>{{ __('pos.from_warehouse') }}</th>
-                        <th>{{ __('pos.to_warehouse') }}</th>
-                        <th class="text-center" style="width:120px">{{ __('pos.status') }}</th>
-                        <th style="width:140px">{{ __('pos.user') }}</th>
-                        <th style="width:170px">{{ __('pos.actions') }}</th>
-                    </tr>
+                        <tr>
+                            <th style="width:130px">{{ __('pos.trx_no') }}</th>
+                            <th style="width:120px">{{ __('pos.trx_date') }}</th>
+                            <th style="width:180px">{{ __('pos.trx_type') }}</th>
+                            <th>{{ __('pos.from_warehouse') }}</th>
+                            <th>{{ __('pos.to_warehouse') }}</th>
+                            <th class="text-center" style="width:120px">{{ __('pos.status') }}</th>
+                            <th style="width:160px">{{ __('pos.user') }}</th>
+                            <th style="width:170px">{{ __('pos.actions') }}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @forelse($rows as $r)
-                        @php
-                            $from = $resolveName($r->warehouseFrom->name ?? '—');
-                            $to   = $resolveName($r->warehouseTo->name   ?? '—');
-                        @endphp
-                        <tr>
-                            <td class="fw-semibold">{{ $r->trx_no }}</td>
-                            <td>{{ \Illuminate\Support\Carbon::parse($r->trx_date)->format('Y-m-d') }}</td>
-                            <td>
-                                @switch($r->type)
-                                    @case('in')         {{ __('pos.trx_type_in') }} @break
-                                    @case('out')        {{ __('pos.trx_type_out') }} @break
-                                    @case('transfer')   {{ __('pos.trx_type_transfer') }} @break
-                                    @case('direct_add') {{ __('pos.trx_type_direct_add') }} @break
-                                    @default {{ $r->type }}
-                                @endswitch
-                            </td>
-                            <td>{{ $from }}</td>
-                            <td>{{ $to }}</td>
-                            <td class="text-center">
-                                <span class="badge badge-status {{ $r->status }}">{{ __("pos.status_{$r->status}") }}</span>
-                            </td>
-                            <td>{{ $r->user->name ?? '—' }}</td>
-                            <td>
-                                <div class="btn-group">
-                                    <a href="{{ route('inv.trx.edit', $r->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="mdi mdi-pencil-outline"></i>
-                                    </a>
-                                    <a href="{{ route('inv.trx.create') }}?copy={{ $r->id }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="mdi mdi-content-copy"></i>
-                                    </a>
+                        @forelse($rows as $r)
+                            @php
+                                $from = $resolveName($r->warehouseFrom->name ?? '—');
+                                $to   = $resolveName($r->warehouseTo->name   ?? '—');
+                                $typeLabel = $t('pos.stock_trx_type.' . ($r->type ?? ''), $r->type ?? '');
+                            @endphp
+                            <tr wire:key="trx-{{ $r->id }}">
+                                <td class="fw-semibold">{{ $r->trx_no }}</td>
+                                <td>{{ \Illuminate\Support\Carbon::parse($r->trx_date)->format('Y-m-d') }}</td>
+                                <td>{{ $typeLabel }}</td>
+                                <td>{{ $from }}</td>
+                                <td>{{ $to }}</td>
+                                <td class="text-center">
+                                    <span class="badge badge-status {{ $r->status }}">{{ __("pos.status_{$r->status}") }}</span>
+                                </td>
+                                <td>{{ $r->user->name ?? '—' }}</td>
+                                <td>
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
-                                            <i class="mdi mdi-flag-variant-outline"></i>
+                                        <a href="{{ route('inv.trx.edit', $r->id) }}" class="btn btn-sm btn-outline-primary" title="{{ __('pos.edit') }}">
+                                            <i class="mdi mdi-pencil-outline"></i>
+                                        </a>
+                                        <a href="{{ route('inv.trx.create') }}?copy={{ $r->id }}" class="btn btn-sm btn-outline-secondary" title="{{ __('pos.copy') }}">
+                                            <i class="mdi mdi-content-copy"></i>
+                                        </a>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" title="{{ __('pos.change_status') }}">
+                                                <i class="mdi mdi-flag-variant-outline"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $r->id }}, 'draft')">{{ __('pos.status_draft') }}</a></li>
+                                                <li><a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $r->id }}, 'posted')">{{ __('pos.status_posted') }}</a></li>
+                                                <li><a class="dropdown-item text-danger" href="#" wire:click.prevent="changeStatus({{ $r->id }}, 'cancelled')">{{ __('pos.status_cancelled') }}</a></li>
+                                            </ul>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $r->id }})" title="{{ __('pos.delete') }}">
+                                            <i class="mdi mdi-trash-can-outline"></i>
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $r->id }}, 'draft')">{{ __('pos.status_draft') }}</a></li>
-                                            <li><a class="dropdown-item" href="#" wire:click.prevent="changeStatus({{ $r->id }}, 'posted')">{{ __('pos.status_posted') }}</a></li>
-                                            <li><a class="dropdown-item text-danger" href="#" wire:click.prevent="changeStatus({{ $r->id }}, 'cancelled')">{{ __('pos.status_cancelled') }}</a></li>
-                                        </ul>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $r->id }})">
-                                        <i class="mdi mdi-trash-can-outline"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="8" class="text-center text-muted py-4">{{ __('pos.no_data') }}</td></tr>
-                    @endforelse
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">{{ __('pos.no_data') }}</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -172,27 +188,32 @@
             </div>
         </div>
     </div>
-{{-- ✅ SweetAlert2 --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'تحذير',
-                text: '⚠️ هل أنت متأكد أنك تريد حذف هذا الإجراء لا يمكن التراجع عنه!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#0d6efd',
-                confirmButtonText: 'نعم، احذفها',
-                cancelButtonText: 'إلغاء'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Livewire.emit('deleteConfirmed', id);
-                    Swal.fire('تم الحذف!', '✅ تم الحذف  بنجاح.', 'success');
-                }
-            })
-        }
-    </script>
 
-
+    {{-- ✅ SweetAlert2 --}}
+    @once
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function confirmDelete(id) {
+                Swal.fire({
+                    title: '{{ __('pos.swal_delete_title', [], app()->getLocale()) ?: 'تحذير' }}',
+                    text: '{{ __('pos.swal_delete_text', [], app()->getLocale()) ?: '⚠️ هل أنت متأكد أنك تريد حذف هذا الإجراء؟ لا يمكن التراجع عنه!' }}',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#198754',
+                    cancelButtonColor: '#0d6efd',
+                    confirmButtonText: '{{ __('pos.swal_confirm', [], app()->getLocale()) ?: 'نعم، احذفها' }}',
+                    cancelButtonText: '{{ __('pos.swal_cancel', [], app()->getLocale()) ?: 'إلغاء' }}'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Livewire.emit('deleteConfirmed', id);
+                        Swal.fire(
+                            '{{ __('pos.swal_deleted', [], app()->getLocale()) ?: 'تم الحذف!' }}',
+                            '{{ __('pos.swal_deleted_text', [], app()->getLocale()) ?: '✅ تم الحذف بنجاح.' }}',
+                            'success'
+                        );
+                    }
+                })
+            }
+        </script>
+    @endonce
 </div>

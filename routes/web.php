@@ -6,15 +6,16 @@ use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
 use App\Http\Controllers\inventory\dscontroller;
 use App\Http\Controllers\inventory\inventorycontroller;
+use App\Http\Controllers\inventory\purchasescontroller;
 use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\Inventory\stockbalancecontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\offers\couponscontroller;
 use App\Http\Controllers\offers\offerscontroller;
+use App\Http\Controllers\poscontroller;
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
-use App\Http\Controllers\inventory\purchasescontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
 use App\Http\Controllers\unitcontroller;
 use Illuminate\Support\Facades\Auth;
@@ -124,7 +125,6 @@ Route::group(
             Route::post('warehouses/{id}/delete', [warehousescontroller::class, 'destroy'])->name('inventory.warehouses.destroy');
             Route::get('warehouses/{warehouse}', [warehousescontroller::class, 'show'])->name('inventory.warehouses.show');
 
-           
             // 📋 Counts
             Route::get('counts', [countscontroller::class, 'index'])->name('inventory.counts.index');
             Route::post('counts/filter', [countscontroller::class, 'filter'])->name('inventory.counts.filter');
@@ -173,7 +173,6 @@ Route::group(
             Route::get('purchases/{id}/print', [purchasescontroller::class, 'print'])->name('purchases.print');   // طباعة A4
         });
 
-        
         Route::prefix('inventory')->name('inv.')->group(function () {
 
             // ===== Stock Transactions =====
@@ -186,8 +185,31 @@ Route::group(
 
             // تعديل حركة موجودة
             Route::get('transactions/{id}/edit', [transactionscontroller::class, 'edit'])
-                ->name('trx.edit'); 
+                ->name('trx.edit');
         });
+        // مجموعة مسارات الـ POS
+        Route::prefix('pos')
+            ->name('pos.')
+            ->controller(poscontroller::class)
+            ->group(function () {
+
+                // قائمة المبيعات
+                Route::get('/', 'index')->name('index');
+
+                // إنشاء فاتورة بيع
+                Route::get('/create', 'create')->name('create');
+
+                // تعديل فاتورة بيع
+                Route::get('/{id}/edit', 'edit')
+                    ->whereNumber('id')
+                    ->name('edit');
+
+                // عرض فاتورة بيع
+                Route::get('/{id}', 'show')
+                    ->whereNumber('id')
+                    ->name('show');
+            });
+
         Route::get('/{page}', 'AdminController@index');
 
     });
