@@ -1,5 +1,4 @@
 <div class="page-wrap">
-
     {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
@@ -9,7 +8,7 @@
     @endif
     @if ($errors->any())
         <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
-            <i class="mdi mdi-alert-circle-outline me-2"></i><strong>{{ __('pos.input_errors') ?? 'حدثت أخطاء' }}</strong>
+            <i class="mdi mdi-alert-circle-outline me-2"></i><strong>{{ __('pos.input_errors') }}</strong>
             <ul class="mb-0 mt-2">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -24,13 +23,15 @@
         .form-hint{color:#6b7280;font-size:.8rem;margin-top:.2rem}
         .toolbar{display:flex;gap:.5rem;align-items:center}
         .toolbar .btn{border-radius:9999px}
+        .totals-box{background:#fafafa;border:1px dashed rgba(0,0,0,.08);border-radius:12px;padding:14px}
+        .totals-box .row > div{margin-bottom:6px}
     </style>
 
     <div class="card shadow-sm rounded-4 stylish-card mb-4">
         <div class="card-header bg-light fw-bold d-flex align-items-center justify-content-between">
             <div>
-                <i class="mdi mdi-cash-register me-1"></i>
-                {{ $pos_id ? __('pos.purchase_title_edit') : __('pos.purchase_title') }}
+                <i class="mdi mdi-receipt-text-outline me-1"></i>
+                {{ $pos_id ? __('pos.pos_title_edit') : __('pos.pos_title_new') }}
                 @if($pos_id)
                     <span class="badge bg-light text-dark border ms-2">#{{ $pos_id }}</span>
                 @endif
@@ -53,7 +54,7 @@
                     <label class="form-label mb-1">{{ __('pos.sale_date') }}</label>
                     <input type="date" class="form-control" wire:model="sale_date">
                     <div class="preview"><i class="mdi mdi-calendar"></i> <span>{{ $sale_date ?: '—' }}</span></div>
-                    <div class="form-hint">{{ __('pos.hint_purchase_date') ?? '' }}</div>
+                    <div class="form-hint">{{ __('pos.hint_sale_date') }}</div>
                     @error('sale_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
@@ -61,7 +62,7 @@
                     <label class="form-label mb-1">{{ __('pos.delivery_date') }}</label>
                     <input type="date" class="form-control" wire:model="delivery_date">
                     <div class="preview"><i class="mdi mdi-calendar-clock"></i> <span>{{ $delivery_date ?: '—' }}</span></div>
-                    <div class="form-hint">{{ __('pos.hint_delivery_date') ?? '' }}</div>
+                    <div class="form-hint">{{ __('pos.hint_delivery_date') }}</div>
                     @error('delivery_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
@@ -71,18 +72,17 @@
                         <option value="">{{ __('pos.choose') }}</option>
                         @foreach($warehouses as $w)
                             @php
-                                $wname = is_array($w) ? ($w['name'] ?? '') : ($w->name ?? '');
+                                $wname = $w->name;
                                 if (is_string($wname) && str_starts_with(trim($wname), '{')) {
-                                    $a = json_decode($wname,true) ?: [];
-                                    $wname = $a[app()->getLocale()] ?? $a['ar'] ?? $wname;
+                                    $a = json_decode($wname,true)?:[];
+                                    $wname = $a[app()->getLocale()] ?? $a['ar'] ?? $w->name;
                                 }
-                                $wid = is_array($w) ? ($w['id'] ?? null) : ($w->id ?? null);
                             @endphp
-                            <option value="{{ $wid }}">{{ $wname }}</option>
+                            <option value="{{ $w->id }}">{{ $wname }}</option>
                         @endforeach
                     </select>
                     <div class="preview"><i class="mdi mdi-warehouse"></i> <span class="badge badge-soft">{{ $warehouse_id ?: '—' }}</span></div>
-                    <div class="form-hint">{{ __('pos.hint_warehouse') ?? '' }}</div>
+                    <div class="form-hint">{{ __('pos.hint_warehouse') }}</div>
                     @error('warehouse_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
@@ -92,18 +92,17 @@
                         <option value="">{{ __('pos.choose') }}</option>
                         @foreach($customers as $s)
                             @php
-                                $sname = is_array($s) ? ($s['name'] ?? '') : ($s->name ?? '');
+                                $sname = $s->name;
                                 if (is_string($sname) && str_starts_with(trim($sname), '{')) {
-                                    $a = json_decode($sname,true) ?: [];
-                                    $sname = $a[app()->getLocale()] ?? $a['ar'] ?? $sname;
+                                    $a = json_decode($sname,true)?:[];
+                                    $sname = $a[app()->getLocale()] ?? $a['ar'] ?? $s->name;
                                 }
-                                $sid = is_array($s) ? ($s['id'] ?? null) : ($s->id ?? null);
                             @endphp
-                            <option value="{{ $sid }}">{{ $sname }}</option>
+                            <option value="{{ $s->id }}">{{ $sname }}</option>
                         @endforeach
                     </select>
                     <div class="preview"><i class="mdi mdi-account-outline"></i> <span class="badge badge-soft">{{ $customer_id ?: '—' }}</span></div>
-                    <div class="form-hint">{{ __('pos.hint_supplier') ?? '' }}</div>
+                    <div class="form-hint">{{ __('pos.hint_customer') }}</div>
                     @error('customer_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
@@ -122,7 +121,7 @@
                 {{-- Lines --}}
                 <div class="col-12">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <div class="fw-bold"><i class="mdi mdi-format-list-bulleted"></i> {{ __('pos.items_details') ?? 'تفاصيل الفاتورة' }}</div>
+                        <div class="fw-bold"><i class="mdi mdi-format-list-bulleted"></i> {{ __('pos.items_details') }}</div>
                         <div class="toolbar">
                             <button type="button" class="btn btn-outline-primary rounded-pill px-3 shadow-sm" wire:click="addRow">
                                 <i class="mdi mdi-plus"></i> {{ __('pos.add_row') }}
@@ -157,17 +156,16 @@
                                         {{-- Category --}}
                                         <td>
                                             <select class="form-select" wire:model="rows.{{ $i }}.category_id" wire:change="rowCategoryChanged({{ $i }})">
-                                                <option value="">{{ __('pos.select_category') }}</option>
+                                                <option value="">{{ __('pos.select_category') ?? '— اختر القسم —' }}</option>
                                                 @foreach($categories as $cat)
                                                     @php
-                                                        $cname = is_array($cat) ? ($cat['name'] ?? '') : ($cat->name ?? '');
+                                                        $cname = $cat->name;
                                                         if (is_string($cname) && str_starts_with(trim($cname), '{')) {
-                                                            $a = json_decode($cname,true) ?: [];
-                                                            $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $cname;
+                                                            $a = json_decode($cname,true)?:[];
+                                                            $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $cat->name;
                                                         }
-                                                        $cid = is_array($cat) ? ($cat['id'] ?? null) : ($cat->id ?? null);
                                                     @endphp
-                                                    <option value="{{ $cid }}">{{ $cname }}</option>
+                                                    <option value="{{ $cat->id }}">{{ $cname }}</option>
                                                 @endforeach
                                             </select>
                                             @error("rows.$i.category_id") <small class="text-danger">{{ $message }}</small> @enderror
@@ -181,17 +179,15 @@
                                                     {{ empty($r['category_id']) ? 'disabled' : '' }}>
                                                 <option value="">{{ __('pos.choose_product') }}</option>
                                                 @foreach($products as $p)
-                                                    @php
-                                                        $pid  = is_array($p) ? ($p['id'] ?? null) : ($p->id ?? null);
-                                                        $pcat = is_array($p) ? ($p['category_id'] ?? null) : ($p->category_id ?? null);
-                                                        $pname = is_array($p) ? ($p['name'] ?? '') : ($p->name ?? '');
-                                                        if (is_string($pname) && str_starts_with(trim($pname), '{')) {
-                                                            $a = json_decode($pname,true) ?: [];
-                                                            $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $pname;
-                                                        }
-                                                    @endphp
-                                                    @if((int)$pcat === (int)($r['category_id'] ?? 0))
-                                                        <option value="{{ $pid }}">{{ $pname }}</option>
+                                                    @if((int)$p->category_id === (int)($r['category_id'] ?? 0))
+                                                        @php
+                                                            $pname = $p->name;
+                                                            if (is_string($pname) && str_starts_with(trim($pname), '{')) {
+                                                                $a = json_decode($pname,true)?:[];
+                                                                $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $p->name;
+                                                            }
+                                                        @endphp
+                                                        <option value="{{ $p->id }}">{{ $pname }}</option>
                                                     @endif
                                                 @endforeach
                                             </select>
@@ -204,14 +200,13 @@
                                                 <option value="">{{ __('pos.choose_unit') }}</option>
                                                 @foreach($units as $u)
                                                     @php
-                                                        $uid = is_array($u) ? ($u['id'] ?? null) : ($u->id ?? null);
-                                                        $uname = is_array($u) ? ($u['name'] ?? '') : ($u->name ?? '');
+                                                        $uname = $u->name;
                                                         if (is_string($uname) && str_starts_with(trim($uname), '{')) {
-                                                            $a = json_decode($uname,true) ?: [];
-                                                            $uname = $a[app()->getLocale()] ?? $a['ar'] ?? $uname;
+                                                            $a = json_decode($uname,true)?:[];
+                                                            $uname = $a[app()->getLocale()] ?? $a['ar'] ?? $u->name;
                                                         }
                                                     @endphp
-                                                    <option value="{{ $uid }}">{{ $uname }}</option>
+                                                    <option value="{{ $u->id }}">{{ $uname }}</option>
                                                 @endforeach
                                             </select>
                                             @error("rows.$i.unit_id") <small class="text-danger">{{ $message }}</small> @enderror
@@ -246,7 +241,7 @@
                                                        wire:model="rows.{{ $i }}.has_expiry"
                                                        id="hasExp{{ $i }}">
                                                 <label class="form-check-label" for="hasExp{{ $i }}">
-                                                    {{ __('pos.has_expiry') }}
+                                                    {{ __('pos.has_expiry') ?? 'له تاريخ صلاحية؟' }}
                                                 </label>
                                             </div>
                                             <input type="date" class="form-control"
@@ -263,6 +258,30 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                {{-- Totals --}}
+                <div class="col-12">
+                    <div class="totals-box">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-muted small">{{ __('pos.subtotal') }}</div>
+                                <div class="fw-bold">{{ number_format((float)$subtotal, 2) }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-muted small">{{ __('pos.discount') }}</div>
+                                <div class="fw-bold">{{ number_format((float)$discount, 2) }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-muted small">{{ __('pos.tax') }}</div>
+                                <div class="fw-bold">{{ number_format((float)$tax, 2) }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-muted small">{{ __('pos.grand_total') }}</div>
+                                <div class="fw-bold text-primary">{{ number_format((float)$grand, 2) }}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -288,7 +307,7 @@
 function confirmDeleteRow(idx) {
     Swal.fire({
         title: '{{ __("pos.confirm_delete_title") }}',
-        text: '{{ __("pos.confirm_delete_row_text") ?? __("pos.confirm_delete_text") }}',
+        text: '{{ __("pos.confirm_delete_row_text") }}',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#198754',
@@ -298,7 +317,7 @@ function confirmDeleteRow(idx) {
     }).then((result) => {
         if (result.isConfirmed) {
             Livewire.emit('deleteConfirmed', idx);
-            Swal.fire('{{ __("pos.deleted") }}', '{{ __("pos.deleted_ok") }}', 'success');
+            Swal.fire('{{ __("pos.deleted") }}', '{{ __("pos.row_deleted_ok") }}', 'success');
         }
     })
 }

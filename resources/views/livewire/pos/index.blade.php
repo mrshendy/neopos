@@ -1,7 +1,14 @@
 <div class="container-fluid">
+    {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
+            <i class="mdi mdi-alert-circle-outline me-2"></i>{{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
@@ -23,9 +30,11 @@
                 <div class="text-muted small">{{ __('pos.pos_index_subtitle') }}</div>
             </div>
             <div class="d-flex gap-2">
+                @if (Route::has('pos.create'))
                 <a href="{{ route('pos.create') }}" class="btn btn-primary rounded-pill px-3 shadow-sm">
                     <i class="mdi mdi-plus-circle-outline me-1"></i> {{ __('pos.pos_new') }}
                 </a>
+                @endif
                 <div class="d-flex align-items-center gap-2">
                     <div class="text-muted small">{{ __('pos.per_page') }}</div>
                     <select class="form-select form-select-sm" style="width:auto" wire:model="perPage">
@@ -42,6 +51,7 @@
                     <label class="form-label small text-muted mb-1">{{ __('pos.search') }}</label>
                     <input type="text" class="form-control" placeholder="{{ __('pos.search_ph') }}" wire:model.debounce.400ms="search">
                 </div>
+
                 <div class="col-md-2">
                     <label class="form-label small text-muted mb-1">{{ __('pos.status') }}</label>
                     <select class="form-select" wire:model="status">
@@ -52,6 +62,7 @@
                         <option value="cancelled">{{ __('pos.status_cancelled') }}</option>
                     </select>
                 </div>
+
                 <div class="col-md-2">
                     <label class="form-label small text-muted mb-1">{{ __('pos.date_from') }}</label>
                     <input type="date" class="form-control" wire:model="date_from">
@@ -60,35 +71,23 @@
                     <label class="form-label small text-muted mb-1">{{ __('pos.date_to') }}</label>
                     <input type="date" class="form-control" wire:model="date_to">
                 </div>
+
                 <div class="col-md-3">
                     <label class="form-label small text-muted mb-1">{{ __('pos.warehouse') }}</label>
                     <select class="form-select" wire:model="warehouse_id">
                         <option value="">{{ __('pos.all') }}</option>
                         @foreach($warehouses as $w)
-                            @php
-                                $wname = $w->name;
-                                if (is_string($wname) && str_starts_with(trim($wname), '{')) {
-                                    $a=json_decode($wname,true)?:[];
-                                    $wname=$a[app()->getLocale()]??$a['ar']??$w->name;
-                                }
-                            @endphp
-                            <option value="{{ $w->id }}">{{ $wname }}</option>
+                            <option value="{{ $w['id'] }}">{{ $w['name'] }}</option>
                         @endforeach
                     </select>
                 </div>
+
                 <div class="col-md-3">
                     <label class="form-label small text-muted mb-1">{{ __('pos.customer') }}</label>
                     <select class="form-select" wire:model="customer_id">
                         <option value="">{{ __('pos.all') }}</option>
                         @foreach($customers as $c)
-                            @php
-                                $cname = $c->name;
-                                if (is_string($cname) && str_starts_with(trim($cname), '{')) {
-                                    $a=json_decode($cname,true)?:[];
-                                    $cname=$a[app()->getLocale()]??$a['ar']??$c->name;
-                                }
-                            @endphp
-                            <option value="{{ $c->id }}">{{ $cname }}</option>
+                            <option value="{{ $c['id'] }}">{{ $c['name'] }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -103,7 +102,7 @@
                         <th style="width:120px">{{ __('pos.sale_date') }}</th>
                         <th>{{ __('pos.customer') }}</th>
                         <th>{{ __('pos.warehouse') }}</th>
-                        <th class="text-center" style="width:100px">{{ __('pos.items_count') }}</th>
+                        <th class="text-center" style="width:110px">{{ __('pos.items_count') }}</th>
                         <th class="text-end" style="width:150px">{{ __('pos.grand_total') }}</th>
                         <th class="text-center" style="width:120px">{{ __('pos.status') }}</th>
                         <th style="width:240px">{{ __('pos.actions') }}</th>
@@ -112,42 +111,69 @@
                     <tbody>
                     @forelse($rows as $r)
                         @php
-                            $wn = $r->warehouse->name ?? '—';
-                            if (is_string($wn) && str_starts_with(trim($wn), '{')) {
-                                $a=json_decode($wn,true)?:[]; $wn=$a[app()->getLocale()]??$a['ar']??$wn;
+                            $noCol     = $columns['no'];
+                            $dateCol   = $columns['date'] ?: 'created_at';
+                            $totalCol  = $columns['total'];
+                            $statusCol = $columns['status'];
+
+                            $saleNo    = $noCol ? ($r->{$noCol} ?? ('#'.$r->id)) : ('#'.$r->id);
+                            $saleDate  = $r->{$dateCol} ?? $r->created_at;
+                            $grand     = $totalCol ? (float)($r->{$totalCol} ?? 0) : 0;
+                            $statusVal = $statusCol ? ($r->{$statusCol} ?? 'draft') : 'draft';
+
+                            // أسماء آمنة مترجمة
+                            $wn = $r->warehouse->name ?? ($r->warehouse->title ?? '—') ?? '—';
+                            if (is_string($wn) && \Illuminate\Support\Str::startsWith(trim($wn), '{')) {
+                                $a = json_decode($wn,true)?:[];
+                                $wn = $a[app()->getLocale()] ?? $a['ar'] ?? '—';
                             }
-                            $cn = $r->customer->name ?? '—';
-                            if (is_string($cn) && str_starts_with(trim($cn), '{')) {
-                                $a=json_decode($cn,true)?:[]; $cn=$a[app()->getLocale()]??$a['ar']??$cn;
+                            $cn = $r->customer->name ?? ($r->customer->title ?? '—') ?? '—';
+                            if (is_string($cn) && \Illuminate\Support\Str::startsWith(trim($cn), '{')) {
+                                $a = json_decode($cn,true)?:[];
+                                $cn = $a[app()->getLocale()] ?? $a['ar'] ?? '—';
                             }
+
+                            $itemsCount = $r->lines_count ?? ($r->items_count ?? 0);
                         @endphp
                         <tr>
-                            <td class="fw-semibold">{{ $r->sale_no }}</td>
-                            <td>{{ \Illuminate\Support\Carbon::parse($r->sale_date)->format('Y-m-d') }}</td>
+                            <td class="fw-semibold">{{ $saleNo }}</td>
+                            <td>{{ $saleDate ? \Illuminate\Support\Carbon::parse($saleDate)->format('Y-m-d') : '—' }}</td>
                             <td>{{ $cn }}</td>
                             <td>{{ $wn }}</td>
-                            <td class="text-center"><span class="badge bg-light text-dark border">{{ $r->lines_count }}</span></td>
-                            <td class="text-end fw-semibold">{{ number_format((float)$r->grand_total,2) }}</td>
                             <td class="text-center">
-                                <span class="badge badge-status {{ $r->status }}">{{ __('pos.status_'.$r->status) }}</span>
+                                <span class="badge bg-light text-dark border">{{ $itemsCount }}</span>
+                            </td>
+                            <td class="text-end fw-semibold">{{ number_format($grand, 2) }}</td>
+                            <td class="text-center">
+                                <span class="badge badge-status {{ $statusVal }}">
+                                    {{ \Illuminate\Support\Facades\Lang::has('pos.status_'.$statusVal) ? __('pos.status_'.$statusVal) : strtoupper($statusVal) }}
+                                </span>
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('pos.show',$r->id) }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="mdi mdi-eye-outline"></i>
-                                    </a>
-                                    <a href="{{ route('pos.edit',$r->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="mdi mdi-pencil-outline"></i>
-                                    </a>
+                                    @if (Route::has('pos.show'))
+                                        <a href="{{ route('pos.show',$r->id) }}" class="btn btn-sm btn-outline-secondary" title="{{ __('pos.show') }}">
+                                            <i class="mdi mdi-eye-outline"></i>
+                                        </a>
+                                    @endif
+                                    @if (Route::has('pos.edit'))
+                                        <a href="{{ route('pos.edit',$r->id) }}" class="btn btn-sm btn-outline-primary" title="{{ __('pos.edit') }}">
+                                            <i class="mdi mdi-pencil-outline"></i>
+                                        </a>
+                                    @endif
                                     <button class="btn btn-sm btn-outline-success"
+                                            title="{{ __('pos.status_approved') }}"
                                             onclick="Livewire.emit('statusChange', {{ $r->id }}, 'approved')">
                                         <i class="mdi mdi-check-bold"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-warning"
+                                            title="{{ __('pos.status_posted') }}"
                                             onclick="Livewire.emit('statusChange', {{ $r->id }}, 'posted')">
                                         <i class="mdi mdi-upload"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $r->id }})">
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            title="{{ __('pos.delete') }}"
+                                            onclick="confirmDelete({{ $r->id }})">
                                         <i class="mdi mdi-trash-can-outline"></i>
                                     </button>
                                 </div>

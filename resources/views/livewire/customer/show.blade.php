@@ -11,19 +11,14 @@
     <style>
         .stylish-card{border:1px solid rgba(0,0,0,.06)}
         .badge-soft{background:#f8fafc;border:1px solid rgba(0,0,0,.05);color:#334155}
-        .kpi{display:flex;align-items:center;gap:.75rem}
-        .kpi .ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#f5f8ff;border:1px solid rgba(13,110,253,.10)}
-        .kpi .val{font-weight:800;font-size:1.05rem}
-        .avatar {
-            width:72px;height:72px;border-radius:22px;
-            display:flex;align-items:center;justify-content:center;
-            background:#eef2ff;border:1px solid rgba(55,48,163,.18);
-            color:#3730a3;font-weight:800;font-size:1.25rem
-        }
+        .avatar{width:72px;height:72px;border-radius:22px;display:flex;align-items:center;justify-content:center;background:#eef2ff;border:1px solid rgba(55,48,163,.18);color:#3730a3;font-weight:800;font-size:1.25rem}
         .section-title{font-weight:800;color:#0d6efd}
         .mini-title{font-weight:700;color:#334155}
-        .info-line{display:flex;align-items:center;gap:.5rem;margin:.25rem 0}
+        .info-line{display:flex;align-items:center;gap:.55rem;margin:.25rem 0}
         .info-line i{opacity:.7}
+        .kpi{display:flex;align-items:center;gap:.75rem}
+        .kpi .ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#f5f8ff;border:1px solid rgba(13,110,253,.10)}
+        .kpi .val{font-weight:800;font-size:1.1rem}
         .table thead th{background:#f8f9fc;white-space:nowrap;position:sticky;top:0;z-index:1}
     </style>
 
@@ -31,12 +26,19 @@
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="d-flex align-items-center gap-3">
             <div class="avatar">
-                {{ mb_strtoupper(mb_substr( __($row->name ?? ''), 0, 2)) }}
+                {{ mb_strtoupper(mb_substr( \Illuminate\Support\Str::of(is_string($row->name) && \Illuminate\Support\Str::startsWith(trim($row->name),'{') ? (json_decode($row->name,true)[app()->getLocale()] ?? json_decode($row->name,true)['ar'] ?? '') : ($row->name ?? '' ))->value(), 0, 2)) }}
             </div>
             <div>
                 <h3 class="mb-1 fw-bold">
                     <i class="mdi mdi-account-badge-outline me-1"></i>
-                    {{ is_string($row->name) ? (Str::startsWith(trim($row->name),'{') ? (json_decode($row->name,true)[app()->getLocale()] ?? json_decode($row->name,true)['ar'] ?? $row->name) : $row->name) : $row->name }}
+                    @php
+                        $displayName = $row->name;
+                        if (is_string($displayName) && \Illuminate\Support\Str::startsWith(trim($displayName), '{')) {
+                            $a = json_decode($displayName,true) ?: [];
+                            $displayName = $a[app()->getLocale()] ?? $a['ar'] ?? $displayName;
+                        }
+                    @endphp
+                    {{ $displayName }}
                     @if($row->code)
                         <span class="badge bg-light text-dark border ms-2">{{ $row->code }}</span>
                     @endif
@@ -47,13 +49,15 @@
                         {{ $row->status === 'active' ? __('pos.status_active') : __('pos.status_inactive') }}
                     </span>
                     @if($row->type)
-                        <span class="ms-2 badge bg-secondary-subtle text-body">{{ $row->type === 'company' ? __('pos.company') : __('pos.person') }}</span>
+                        <span class="ms-2 badge bg-secondary-subtle text-body">
+                            {{ $row->type === 'company' ? __('pos.company') : __('pos.person') }}
+                        </span>
                     @endif
                 </div>
             </div>
         </div>
 
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary">
                 <i class="mdi mdi-arrow-left"></i> {{ __('pos.back') }}
             </a>
@@ -111,17 +115,19 @@
         </div>
     </div>
 
-    {{-- Details cards --}}
+    {{-- Details --}}
     <div class="row g-3">
         {{-- Contact --}}
         <div class="col-12 col-lg-4">
             <div class="card shadow-sm rounded-4 stylish-card">
-                <div class="card-header bg-light section-title"><i class="mdi mdi-card-account-phone-outline me-1"></i> {{ __('pos.contact') ?? 'بيانات التواصل' }}</div>
+                <div class="card-header bg-light section-title">
+                    <i class="mdi mdi-card-account-phone-outline me-1"></i> {{ __('pos.contact') ?? 'بيانات التواصل' }}
+                </div>
                 <div class="card-body">
                     <div class="info-line"><i class="mdi mdi-email-outline"></i> {{ $row->email ?: '—' }}</div>
                     <div class="info-line"><i class="mdi mdi-phone-outline"></i> {{ $row->phone ?: '—' }}</div>
                     <div class="info-line"><i class="mdi mdi-cellphone"></i> {{ $row->mobile ?: '—' }}</div>
-                    <div class="info-line"><i class="mdi mdi-country"></i> {{ $row->country ?: '—' }}</div>
+                    <div class="info-line"><i class="mdi mdi-earth"></i> {{ $row->country ?: '—' }}</div>
                 </div>
             </div>
         </div>
@@ -129,18 +135,21 @@
         {{-- Address --}}
         <div class="col-12 col-lg-4">
             <div class="card shadow-sm rounded-4 stylish-card">
-                <div class="card-header bg-light section-title"><i class="mdi mdi-map-marker-outline me-1"></i> {{ __('pos.address_ar') }}</div>
+                <div class="card-header bg-light section-title">
+                    <i class="mdi mdi-map-marker-outline me-1"></i> {{ __('pos.address_ar') }}
+                </div>
                 <div class="card-body">
                     @php
-                        $city = is_string($row->city) && Str::startsWith(trim($row->city),'{')
+                        $city = is_string($row->city) && \Illuminate\Support\Str::startsWith(trim($row->city),'{')
                             ? (json_decode($row->city,true)[app()->getLocale()] ?? json_decode($row->city,true)['ar'] ?? '')
                             : ($row->city ?? '');
-                        $addr = is_string($row->address) && Str::startsWith(trim($row->address),'{')
+                        $addr = is_string($row->address) && \Illuminate\Support\Str::startsWith(trim($row->address),'{')
                             ? (json_decode($row->address,true)[app()->getLocale()] ?? json_decode($row->address,true)['ar'] ?? '')
                             : ($row->address ?? '');
                     @endphp
                     <div class="info-line"><i class="mdi mdi-city"></i> {{ $city ?: '—' }}</div>
                     <div class="info-line"><i class="mdi mdi-home-outline"></i> {{ $addr ?: '—' }}</div>
+                    <div class="info-line"><i class="mdi mdi-numeric"></i> {{ $row->postal_code ?: '—' }}</div>
                 </div>
             </div>
         </div>
@@ -148,7 +157,9 @@
         {{-- Company / Tax --}}
         <div class="col-12 col-lg-4">
             <div class="card shadow-sm rounded-4 stylish-card">
-                <div class="card-header bg-light section-title"><i class="mdi mdi-briefcase-outline me-1"></i> {{ __('pos.company') ?? 'بيانات الشركة' }}</div>
+                <div class="card-header bg-light section-title">
+                    <i class="mdi mdi-briefcase-outline me-1"></i> {{ __('pos.company') ?? 'بيانات الشركة' }}
+                </div>
                 <div class="card-body">
                     <div class="info-line">
                         <i class="mdi mdi-tag-outline"></i>
@@ -166,7 +177,7 @@
         <div class="card-header bg-light section-title"><i class="mdi mdi-note-text-outline me-1"></i> {{ __('pos.notes_ar') }}</div>
         <div class="card-body">
             @php
-                $notes = is_string($row->notes) && Str::startsWith(trim($row->notes),'{')
+                $notes = is_string($row->notes) && \Illuminate\Support\Str::startsWith(trim($row->notes),'{')
                     ? (json_decode($row->notes,true)[app()->getLocale()] ?? json_decode($row->notes,true)['ar'] ?? '')
                     : ($row->notes ?? '');
             @endphp
@@ -184,42 +195,42 @@
             <div class="table-responsive">
                 <table class="table table-bordered align-middle mb-0">
                     <thead>
-                    <tr>
-                        <th style="width:160px">{{ __('pos.purchase_no') }}</th>
-                        <th style="width:140px">{{ __('pos.purchase_date') }}</th>
-                        <th>{{ __('pos.status') }}</th>
-                        <th class="text-end" style="width:160px">{{ __('pos.grand_total') }}</th>
-                        <th style="width:140px">{{ __('pos.actions') }}</th>
-                    </tr>
+                        <tr>
+                            <th style="width:180px">{{ __('pos.purchase_no') }}</th>
+                            <th style="width:140px">{{ __('pos.purchase_date') }}</th>
+                            <th>{{ __('pos.status') }}</th>
+                            <th class="text-end" style="width:160px">{{ __('pos.grand_total') }}</th>
+                            <th style="width:160px">{{ __('pos.actions') }}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @forelse($invoices as $i)
-                        @php $statusKey = 'pos.status_'.($i->status ?? 'draft'); @endphp
-                        <tr>
-                            <td class="fw-semibold">{{ $i->sale_no ?? ('#'.$i->id) }}</td>
-                            <td>{{ $i->sale_date ? \Illuminate\Support\Carbon::parse($i->sale_date)->format('Y-m-d') : '—' }}</td>
-                            <td>
-                                <span class="badge bg-light text-dark border">
-                                    {{ \Illuminate\Support\Facades\Lang::has($statusKey) ? __($statusKey) : strtoupper($i->status ?? 'draft') }}
-                                </span>
-                            </td>
-                            <td class="text-end">{{ number_format((float)($i->grand_total ?? 0), 2) }}</td>
-                            <td>
-                                @if (Route::has('pos.edit'))
-                                    <a href="{{ route('pos.edit', $i->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="mdi mdi-file-document-edit-outline"></i>
-                                    </a>
-                                @endif
-                                @if (Route::has('pos.show'))
-                                    <a href="{{ route('pos.show', $i->id) }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="mdi mdi-eye-outline"></i>
-                                    </a>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="text-center text-muted py-4">{{ __('pos.no_data') }}</td></tr>
-                    @endforelse
+                        @forelse($invoices as $i)
+                            @php $statusKey = 'pos.status_'.($i['status'] ?? 'draft'); @endphp
+                            <tr>
+                                <td class="fw-semibold">{{ $i['sale_no'] }}</td>
+                                <td>{{ $i['date'] ? \Illuminate\Support\Carbon::parse($i['date'])->format('Y-m-d') : '—' }}</td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        {{ \Illuminate\Support\Facades\Lang::has($statusKey) ? __($statusKey) : strtoupper($i['status'] ?? 'draft') }}
+                                    </span>
+                                </td>
+                                <td class="text-end">{{ number_format((float)($i['grand_total'] ?? 0), 2) }}</td>
+                                <td class="d-flex gap-1">
+                                    @if (Route::has('pos.show'))
+                                        <a href="{{ route('pos.show', $i['id']) }}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="mdi mdi-eye-outline"></i>
+                                        </a>
+                                    @endif
+                                    @if (Route::has('pos.edit'))
+                                        <a href="{{ route('pos.edit', $i['id']) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="mdi mdi-file-document-edit-outline"></i>
+                                        </a>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="5" class="text-center text-muted py-4">{{ __('pos.no_data') }}</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -239,8 +250,8 @@
                 cancelButtonColor: '#0d6efd',
                 confirmButtonText: '{{ __("pos.confirm") }}',
                 cancelButtonText: '{{ __("pos.cancel") }}'
-            }).then((result) => {
-                if (result.isConfirmed) {
+            }).then((r) => {
+                if (r.isConfirmed) {
                     Livewire.emit('deleteConfirmed', id);
                     Swal.fire('{{ __("pos.deleted") }}', '{{ __("pos.deleted_ok") }}', 'success');
                 }

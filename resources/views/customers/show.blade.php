@@ -1,4 +1,5 @@
 @extends('layouts.master')
+
 @section('content')
-    <livewire:customer.manage :id="$id" />
+    <livewire:customer.show :customerId="$id" />
 @endsection

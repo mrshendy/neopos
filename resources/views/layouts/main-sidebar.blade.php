@@ -126,6 +126,14 @@
                                 <span data-key="t-inventory">{{ __('pos.inventory_title') ?? 'المخزون' }}</span>
                             </a>
                         </li>
+                        {{-- الخزائن --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'finance.')) active @endif"
+                                href="{{ route('finance.index') }}">
+                                <i class="mdi mdi-safe"></i>
+                                <span data-key="t-cashboxes">{{ __('pos.finance_title_index') }}</span>
+                            </a>
+                        </li>
 
 
                         <!--user management-->

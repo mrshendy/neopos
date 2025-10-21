@@ -4,13 +4,14 @@ namespace App\Http\Livewire\Pos;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
-use App\Models\pos\Pos;
-use App\Models\pos\PosLine;
-use App\Models\Product;
-use App\Models\Unit;
-use App\Models\Category;
-use App\Models\inventory\Warehouse;
-use App\Models\customer\customer;
+
+use App\models\pos\pos as Pos;
+use App\models\pos\posLine as PosLine;
+use App\models\product\product as Product;
+use App\models\unit\unit as Unit;
+use App\models\product\category as Category;
+use App\models\inventory\warehouse as Warehouse;
+use App\models\customer\customer as Customer;
 
 class Manage extends Component
 {
@@ -26,6 +27,12 @@ class Manage extends Component
     /** @var array<int, array> */
     public $rows = [];
 
+    // Totals (عرض فقط)
+    public $subtotal = 0.0;
+    public $discount = 0.0;
+    public $tax      = 0.0;
+    public $grand    = 0.0;
+
     protected $listeners = ['deleteConfirmed' => 'removeRow'];
 
     public function mount($id = null): void
@@ -37,7 +44,7 @@ class Manage extends Component
             $this->pos_id = (int) $id;
             $pos = Pos::with('lines')->findOrFail($id);
 
-            $t = (array) $pos->getTranslations('notes');
+            $t = (array) ($pos->getTranslations('notes') ?? []);
             $this->notes_ar = $t['ar'] ?? '';
             $this->notes_en = $t['en'] ?? '';
 
@@ -53,8 +60,8 @@ class Manage extends Component
                     'unit_id'     => $l->unit_id,
                     'qty'         => (float) $l->qty,
                     'unit_price'  => (float) $l->unit_price,
-                    'onhand'      => (float) $l->onhand,
-                    'uom'         => $l->uom,
+                    'onhand'      => 0, // للعرض فقط
+                    'uom_text'    => $l->uom_text ?? null,
                     'has_expiry'  => !empty($l->expiry_date),
                     'expiry_date' => $l->expiry_date,
                     'batch_no'    => $l->batch_no,
@@ -63,6 +70,8 @@ class Manage extends Component
         } else {
             $this->rows = [$this->blankRow()];
         }
+
+        $this->recalcTotals();
     }
 
     public function blankRow(): array
@@ -74,7 +83,7 @@ class Manage extends Component
             'qty'         => 0,
             'unit_price'  => 0,
             'onhand'      => 0,
-            'uom'         => null,
+            'uom_text'    => null,
             'has_expiry'  => false,
             'expiry_date' => null,
             'batch_no'    => null,
@@ -92,11 +101,22 @@ class Manage extends Component
         if (!$this->rows) {
             $this->rows[] = $this->blankRow();
         }
+        $this->recalcTotals();
+    }
+
+    public function updated($field): void
+    {
+        if (str_starts_with($field, 'rows.')) {
+            $this->recalcTotals();
+        }
     }
 
     public function rowCategoryChanged(int $i): void
     {
         $this->rows[$i]['product_id'] = null;
+        $this->rows[$i]['unit_id']    = null;
+        $this->rows[$i]['uom_text']   = null;
+        $this->rows[$i]['onhand']     = 0;
     }
 
     public function rowProductChanged(int $i): void
@@ -106,10 +126,25 @@ class Manage extends Component
             $p = Product::find($pid);
             if ($p) {
                 $this->rows[$i]['unit_id'] = $p->unit_id ?? null;
-                $this->rows[$i]['uom']     = $p->uom ?? null;
-                $this->rows[$i]['onhand']  = 0; // احسبها من رصيد المخزن لو عندك فانكشن جاهز
+
+                // حساب اسم الوحدة من جدول الوحدات (مع دعم JSON name)
+                $uom = null;
+                if ($p->unit_id) {
+                    $u = Unit::find($p->unit_id);
+                    if ($u) {
+                        $uname = $u->name;
+                        if (is_string($uname) && str_starts_with(trim($uname), '{')) {
+                            $a = json_decode($uname, true) ?: [];
+                            $uname = $a[app()->getLocale()] ?? $a['ar'] ?? $u->name;
+                        }
+                        $uom = $uname;
+                    }
+                }
+                $this->rows[$i]['uom_text'] = $uom;
+                $this->rows[$i]['onhand']   = 0; // لو عندك دالة رصيد مخزني، استبدله هنا
             }
         }
+        $this->recalcTotals();
     }
 
     protected function rules(): array
@@ -132,32 +167,40 @@ class Manage extends Component
     }
 
     protected $messages = [
-        'sale_date.required'        => 'تاريخ البيع مطلوب',
-        'warehouse_id.required'     => 'المخزن مطلوب',
-        'rows.required'             => 'تفاصيل الفاتورة مطلوبة',
-        'rows.*.product_id.required'=> 'يرجى اختيار الصنف',
-        'rows.*.qty.min'            => 'الكمية لابد أن تكون أكبر من صفر',
-        'rows.*.unit_price.min'     => 'السعر لا يمكن أن يكون سالب',
+        'sale_date.required'         => 'تاريخ البيع مطلوب',
+        'warehouse_id.required'      => 'المخزن مطلوب',
+        'rows.required'              => 'تفاصيل الفاتورة مطلوبة',
+        'rows.*.product_id.required' => 'يرجى اختيار الصنف',
+        'rows.*.qty.min'             => 'الكمية لابد أن تكون أكبر من صفر',
+        'rows.*.unit_price.min'      => 'السعر لا يمكن أن يكون سالب',
     ];
+
+    private function recalcTotals(): void
+    {
+        $subtotal = 0;
+        foreach ($this->rows as $r) {
+            $q  = (float) ($r['qty'] ?? 0);
+            $up = (float) ($r['unit_price'] ?? 0);
+            $subtotal += $q * $up;
+        }
+        $this->subtotal = round($subtotal, 4);
+        $this->grand    = round($this->subtotal - (float)$this->discount + (float)$this->tax, 4);
+    }
 
     public function save()
     {
         $this->validate();
 
         DB::transaction(function () {
-            $subtotal = 0;
-            foreach ($this->rows as &$r) {
-                $r['line_total'] = (float) ($r['qty'] ?? 0) * (float) ($r['unit_price'] ?? 0);
-                $subtotal += $r['line_total'];
-            }
-            $discount = 0; $tax = 0; $grand = $subtotal - $discount + $tax;
+            $this->recalcTotals();
 
             if ($this->pos_id) {
-                $pos = Pos::findOrFail($this->pos_id);
+                $pos = Pos::lockForUpdate()->findOrFail($this->pos_id);
             } else {
                 $pos = new Pos();
-                $pos->sale_no = 'SO-'.now()->format('Ymd').'-'.str_pad((string) ((Pos::max('id') ?? 0) + 1), 4, '0', STR_PAD_LEFT);
-                $pos->status = 'draft';
+                $next = (int) ((Pos::max('id') ?? 0) + 1);
+                $pos->sale_no = 'SO-'.now()->format('Ymd').'-'.str_pad((string)$next, 4, '0', STR_PAD_LEFT);
+                $pos->status  = 'draft';
             }
 
             $pos->sale_date     = $this->sale_date;
@@ -165,21 +208,32 @@ class Manage extends Component
             $pos->warehouse_id  = $this->warehouse_id;
             $pos->customer_id   = $this->customer_id;
             $pos->notes         = ['ar' => $this->notes_ar, 'en' => $this->notes_en];
-            $pos->subtotal      = $subtotal;
-            $pos->discount      = $discount;
-            $pos->tax           = $tax;
-            $pos->grand_total   = $grand;
+            $pos->subtotal      = $this->subtotal;
+            $pos->discount      = $this->discount;
+            $pos->tax           = $this->tax;
+            $pos->grand_total   = $this->grand;
             $pos->user_id       = auth()->id();
 
             $pos->save();
 
+            // إعادة بناء البنود
             $pos->lines()->delete();
+
             foreach ($this->rows as $r) {
-                // لو الحقل has_expiry=false هنلغي التاريخ
                 if (empty($r['has_expiry'])) {
                     $r['expiry_date'] = null;
                 }
-                $line = new PosLine($r);
+                $line = new PosLine([
+                    'category_id' => $r['category_id'],
+                    'product_id'  => $r['product_id'],
+                    'unit_id'     => $r['unit_id'],
+                    'qty'         => (float) $r['qty'],
+                    'unit_price'  => (float) $r['unit_price'],
+                    'uom_text'    => $r['uom_text'], // ✅ العمود الصحيح في pos_lines
+                    'expiry_date' => $r['expiry_date'],
+                    'batch_no'    => $r['batch_no'],
+                    'line_total'  => (float)$r['qty'] * (float)$r['unit_price'],
+                ]);
                 $pos->lines()->save($line);
             }
 
@@ -196,6 +250,7 @@ class Manage extends Component
             'warehouses' => Warehouse::orderBy('name')->get(['id','name']),
             'customers'  => Customer::orderBy('name')->get(['id','name']),
             'categories' => Category::orderBy('name')->get(['id','name']),
+            // ✅ لا نطلب uom من products لأنه غير موجود عندك
             'products'   => Product::orderBy('name')->get(['id','name','category_id','unit_id']),
             'units'      => Unit::orderBy('name')->get(['id','name']),
         ]);

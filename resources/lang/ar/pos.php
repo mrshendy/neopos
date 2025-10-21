@@ -2071,4 +2071,96 @@ return [
     'route_missing'        => 'المسار غير متوفر',
     'open'                 => 'فتح',
     'soon'                 => 'قريبًا',
+      // عامة
+    'all' => 'الكل',
+    'yes' => 'نعم',
+    'no'  => 'لا',
+    'search' => 'بحث',
+    'status' => 'الحالة',
+    'branch' => 'الفرع',
+    'date_from' => 'التاريخ من',
+    'date_to'   => 'التاريخ إلى',
+    'per_page'  => '/صفحة',
+    'btn_new'   => 'جديد',
+    'btn_edit'  => 'تعديل',
+    'btn_delete'=> 'حذف',
+    'btn_show'  => 'عرض',
+    'btn_save'  => 'حفظ',
+    'btn_back'  => 'رجوع',
+    'btn_toggle_status' => 'تغيير الحالة',
+    'status_active'   => 'نشط',
+    'status_inactive' => 'غير نشط',
+    'no_data' => 'لا توجد بيانات',
+    'pagination_info' => 'عرض :from إلى :to من أصل :total صف',
+
+    // تنبيهات الحذف (SweetAlert2)
+    'alert_title' => 'تحذير',
+    'alert_text'  => '⚠️ هل أنت متأكد أنك تريد حذف هذا الإجراء؟ لا يمكن التراجع!',
+    'alert_confirm' => 'نعم، احذف',
+    'alert_cancel'  => 'إلغاء',
+    'alert_deleted_title' => 'تم الحذف!',
+    'alert_deleted_text'  => '✅ تم الحذف بنجاح.',
+
+    // رسائل عمليات
+    'msg_created_success' => 'تم الإنشاء بنجاح.',
+    'msg_updated_success' => 'تم التعديل بنجاح.',
+    'msg_deleted_success' => 'تم الحذف بنجاح.',
+    'msg_status_toggled'  => 'تم تغيير الحالة بنجاح.',
+
+    // عناوين صفحات finance
+    'finance_title_index'  => 'الخزائن',
+    'finance_title_create' => 'إنشاء خزنة',
+    'finance_title_edit'   => 'تعديل خزنة',
+    'finance_title_show'   => 'عرض خزنة',
+
+    // فلاتر البحث في index
+    'ph_search_finance' => 'ابحث بالاسم (AR/EN) أو البادئة',
+    'hint_search_finance'=> 'إدخال جزء من الاسم أو البادئة',
+
+    // أعمدة الجدول
+    'col_name'     => 'الاسم',
+    'col_branch'   => 'الفرع',
+    'col_currency' => 'العملة',
+    'col_prefix'   => 'البادئة',
+    'col_next_no'  => 'أول رقم',
+    'col_status'   => 'الحالة',
+    'col_actions'  => 'إجراءات',
+
+    // حقول الفورم
+    'f_name_ar' => 'الاسم (عربي)',
+    'f_name_en' => 'الاسم (English)',
+    'f_branch'  => 'الفرع',
+    'f_currency'=> 'العملة',
+    'f_prefix'  => 'بادئة الترقيم',
+    'f_next_no' => 'أول رقم متسلسل',
+    'f_allow_negative' => 'السماح بالسالب',
+    'lbl_switch' => 'تفعيل/تعطيل',
+    'f_status'  => 'الحالة',
+    'f_notes_ar'=> 'ملاحظات (عربي)',
+    'f_notes_en'=> 'Notes (EN)',
+
+    // Placeholders + Help
+    'ph_name_ar'   => 'مثال: خزينة رئيسية',
+    'ph_name_en'   => 'e.g., Main Cashbox',
+    'ph_branch_id' => 'رقم الفرع (اختياري)',
+    'ph_currency_id' => 'رقم العملة (اختياري)',
+    'ph_prefix'    => 'مثال: CBX',
+    'ph_notes_ar'  => 'اكتب ملاحظات بالعربية...',
+    'ph_notes_en'  => 'Write notes in English...',
+
+    'help_name_ar' => 'أدخل اسم الخزنة باللغة العربية.',
+    'help_name_en' => 'Enter the cashbox name in English.',
+    'help_branch'  => 'اختياري: اربط الخزنة بفرع محدد.',
+    'help_currency'=> 'اختياري: اختر عملة الخزنة.',
+    'help_prefix'  => 'تُستخدم كبادئة لتكوين رقم الإيصال.',
+    'help_next_no' => 'أول رقم يُستخدم عند إنشاء الإيصال التالي.',
+    'help_notes'   => 'ملاحظات داخلية تظهر في السجلات فقط.',
+    'cashboxes_hub_title'     => 'إدارة الخزائن',
+'cashboxes_hub_subtitle'  => 'وحدات وأدوات سريعة لإدارة الخزائن',
+'open'                    => 'فتح',
+'cashboxes_settings'      => 'إعدادات الخزائن',
+'cashboxes_movements'     => 'حركات الخزائن',
+'cashboxes_shifts'        => 'استلام/تسليم الخزينة',
+'cashboxes_receipts'      => 'الإيصالات',
+
 ];

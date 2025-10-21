@@ -5,19 +5,21 @@ namespace App\Http\Livewire\Customer;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
-use App\Models\customer\customer as Customer;
+use App\models\customer\customer as Customer;
 
 class Show extends Component
 {
-    public $customerId;
+    public $customerId;   // لا تستخدم $id
     public $row;
 
+    // إحصائيات ملخصة
     public $stats = [
-        'sales_count' => 0,
-        'sales_total' => 0.0,
+        'sales_count'  => 0,
+        'sales_total'  => 0.0,
         'last_sale_at' => null,
     ];
 
+    // آخر فواتير للعرض
     public $invoices = [];
 
     protected $listeners = [
@@ -28,66 +30,81 @@ class Show extends Component
     {
         $this->customerId = (int) $customerId;
         $this->row = Customer::findOrFail($this->customerId);
-
         $this->loadStats();
     }
 
-    /** عرض قيمة متوافقة مع الترجمة سواء كانت JSON أو Spatie أو نص عادي */
+    /** ترجمة قيمة (تدعم JSON) */
     public function tr($value, $fallback = '—')
     {
-        if (is_null($value) || $value === '') return $fallback;
+        if ($value === null || $value === '') return $fallback;
 
-        // لو الموديل قابل للترجمة عبر spatie
-        if (method_exists($this->row, 'getTranslation') && is_string($value)) {
-            // في حالة الترجمة محفوظة كسلاسل JSON بالنموذج، سنتعامل معها بالفرع التالي
-        }
-
-        // JSON string؟ ({"ar":"...","en":"..."})
         if (is_string($value) && Str::startsWith(trim($value), '{')) {
             $a = json_decode($value, true) ?: [];
             return $a[app()->getLocale()] ?? $a['ar'] ?? $a['en'] ?? $fallback;
         }
-
-        // لو السمة نفسها translatable عبر spatie
-        if (is_string($value) === false && is_object($this->row) && method_exists($this->row, 'getTranslation')) {
-            // تم تمرير اسم الحقل بدل القيمة
-            if (is_string($value)) {
-                return $this->row->getTranslation($value, app()->getLocale()) ?: $fallback;
-            }
-        }
-
         return $value;
     }
 
-    /** تحميل إحصائيات وفواتير العميل إن وُجد جدول pos */
-    private function loadStats(): void
+    /** اختيار أول عمود موجود من قائمة */
+    private function pickColumn(string $table, array $list): ?string
     {
-        $posModel = '\\App\\Models\\pos\\pos';
-
-        if (class_exists($posModel) && Schema::hasTable('pos')) {
-            /** @var \Illuminate\Database\Eloquent\Model $posModel */
-            $posQ = $posModel::query()->where('customer_id', $this->row->id);
-
-            $this->stats['sales_count'] = (int) $posQ->count();
-            $this->stats['sales_total'] = (float) $posQ->sum('grand_total');
-
-            $last = (clone $posQ)->orderByDesc('sale_date')->first();
-            $this->stats['last_sale_at'] = $last ? ($last->sale_date ?? $last->created_at) : null;
-
-            $this->invoices = (clone $posQ)
-                ->orderByDesc('sale_date')
-                ->limit(10)
-                ->get(['id','sale_no','sale_date','status','grand_total']);
+        foreach ($list as $c) {
+            if (Schema::hasColumn($table, $c)) return $c;
         }
+        return null;
     }
 
-    public function toggleStatus()
+    /** تحميل إحصائيات وفواتير العميل اعتمادًا على الأعمدة المتاحة */
+    private function loadStats(): void
     {
-        $this->row->status = ($this->row->status === 'active') ? 'inactive' : 'active';
-        $this->row->save();
+        $posModel = '\\App\\models\\pos\\pos';
+        if (!class_exists($posModel) || !Schema::hasTable('pos')) {
+            $this->stats = ['sales_count'=>0,'sales_total'=>0,'last_sale_at'=>null];
+            $this->invoices = [];
+            return;
+        }
 
+        $table     = 'pos';
+        $dateCol   = $this->pickColumn($table, ['sale_date','trx_date','pos_date','invoice_date','date','created_at']);
+        $totalCol  = $this->pickColumn($table, ['grand_total','total','amount','net_total']);
+        $noCol     = $this->pickColumn($table, ['sale_no','code','invoice_no','ref_no','number']);
+        $statusCol = $this->pickColumn($table, ['status','state']);
+
+        /** @var \Illuminate\Database\Eloquent\Model $posModel */
+        $q = $posModel::query()->where('customer_id', $this->row->id);
+
+        $this->stats['sales_count'] = (int) (clone $q)->count();
+        $this->stats['sales_total'] = $totalCol ? (float) (clone $q)->sum($totalCol) : 0;
+
+        $last = (clone $q)
+            ->when($dateCol, fn($qq) => $qq->orderByDesc($dateCol), fn($qq) => $qq->orderByDesc('id'))
+            ->first();
+
+        $this->stats['last_sale_at'] = $last
+            ? ($dateCol ? $last->{$dateCol} : $last->created_at)
+            : null;
+
+        $rows = (clone $q)
+            ->when($dateCol, fn($qq) => $qq->orderByDesc($dateCol), fn($qq) => $qq->orderByDesc('id'))
+            ->limit(10)->get();
+
+        $this->invoices = $rows->map(function ($r) use ($noCol,$dateCol,$statusCol,$totalCol) {
+            return [
+                'id'          => $r->id,
+                'sale_no'     => $noCol     ? ($r->{$noCol} ?? ('#'.$r->id)) : ('#'.$r->id),
+                'date'        => $dateCol   ? ($r->{$dateCol} ?? null) : ($r->created_at ?? null),
+                'status'      => $statusCol ? ($r->{$statusCol} ?? null) : null,
+                'grand_total' => $totalCol  ? (float) ($r->{$totalCol} ?? 0) : 0,
+            ];
+        })->all();
+    }
+
+    public function toggleStatus(): void
+    {
+        $this->row->status = $this->row->status === 'active' ? 'inactive' : 'active';
+        $this->row->save();
         session()->flash('success', __('pos.status_changed'));
-        $this->dispatchBrowserEvent('toast', ['type' => 'success', 'text' => __('pos.status_changed')]);
+        $this->dispatchBrowserEvent('toast', ['type'=>'success','text'=>__('pos.status_changed')]);
     }
 
     public function delete()

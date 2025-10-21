@@ -2037,5 +2037,96 @@ return [
     'route_missing'        => 'Route missing',
     'open'                 => 'Open',
     'soon'                 => 'Coming soon',
+    
+    // Common
+    'all' => 'All',
+    'yes' => 'Yes',
+    'no'  => 'No',
+    'search' => 'Search',
+    'status' => 'Status',
+    'branch' => 'Branch',
+    'date_from' => 'Date From',
+    'date_to'   => 'Date To',
+    'per_page'  => '/page',
+    'btn_new'   => 'New',
+    'btn_edit'  => 'Edit',
+    'btn_delete'=> 'Delete',
+    'btn_show'  => 'Show',
+    'btn_save'  => 'Save',
+    'btn_back'  => 'Back',
+    'btn_toggle_status' => 'Toggle Status',
+    'status_active'   => 'Active',
+    'status_inactive' => 'Inactive',
+    'no_data' => 'No data found',
+    'pagination_info' => 'Showing :from to :to of :total rows',
 
+    // Delete Alerts (SweetAlert2)
+    'alert_title' => 'Warning',
+    'alert_text'  => '⚠️ Are you sure? This action cannot be undone!',
+    'alert_confirm' => 'Yes, delete',
+    'alert_cancel'  => 'Cancel',
+    'alert_deleted_title' => 'Deleted!',
+    'alert_deleted_text'  => '✅ Deleted successfully.',
+
+    // Flash messages
+    'msg_created_success' => 'Created successfully.',
+    'msg_updated_success' => 'Updated successfully.',
+    'msg_deleted_success' => 'Deleted successfully.',
+    'msg_status_toggled'  => 'Status toggled successfully.',
+
+    // Finance page titles
+    'finance_title_index'  => 'Cashboxes',
+    'finance_title_create' => 'Create Cashbox',
+    'finance_title_edit'   => 'Edit Cashbox',
+    'finance_title_show'   => 'Show Cashbox',
+
+    // Index filters
+    'ph_search_finance' => 'Search by name (AR/EN) or prefix',
+    'hint_search_finance'=> 'Enter part of a name or the prefix',
+
+    // Table columns
+    'col_name'     => 'Name',
+    'col_branch'   => 'Branch',
+    'col_currency' => 'Currency',
+    'col_prefix'   => 'Prefix',
+    'col_next_no'  => 'Next No.',
+    'col_status'   => 'Status',
+    'col_actions'  => 'Actions',
+
+    // Form fields
+    'f_name_ar' => 'Name (Arabic)',
+    'f_name_en' => 'Name (English)',
+    'f_branch'  => 'Branch',
+    'f_currency'=> 'Currency',
+    'f_prefix'  => 'Receipt Prefix',
+    'f_next_no' => 'First Sequence Number',
+    'f_allow_negative' => 'Allow Negative',
+    'lbl_switch' => 'Enable/Disable',
+    'f_status'  => 'Status',
+    'f_notes_ar'=> 'Notes (Arabic)',
+    'f_notes_en'=> 'Notes (English)',
+
+    // Placeholders + Help
+    'ph_name_ar'   => 'e.g., خزينة رئيسية',
+    'ph_name_en'   => 'e.g., Main Cashbox',
+    'ph_branch_id' => 'Branch ID (optional)',
+    'ph_currency_id' => 'Currency ID (optional)',
+    'ph_prefix'    => 'e.g., CBX',
+    'ph_notes_ar'  => 'Write notes in Arabic...',
+    'ph_notes_en'  => 'Write notes in English...',
+
+    'help_name_ar' => 'Enter the cashbox name in Arabic.',
+    'help_name_en' => 'Enter the cashbox name in English.',
+    'help_branch'  => 'Optional: link the cashbox to a specific branch.',
+    'help_currency'=> 'Optional: choose the cashbox currency.',
+    'help_prefix'  => 'Used as a prefix to build the receipt number.',
+    'help_next_no' => 'The first sequence number to be used next.',
+    'help_notes'   => 'Internal notes for records.',
+'cashboxes_hub_title'     => 'Cashboxes Management',
+'cashboxes_hub_subtitle'  => 'Quick tools to manage cashboxes',
+'open'                    => 'Open',
+'cashboxes_settings'      => 'Cashbox Settings',
+'cashboxes_movements'     => 'Cash Movements',
+'cashboxes_shifts'        => 'Cashbox Handover',
+'cashboxes_receipts'      => 'Receipts',
 ];
