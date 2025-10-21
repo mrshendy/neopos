@@ -4,119 +4,78 @@ namespace App\Http\Livewire\Purchases;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\DB;
 use App\models\purchases\purchases as Purchase;
 use App\models\inventory\warehouse as Warehouse;
-use App\models\supplier\supplier   as Supplier;
+use App\models\supplier\supplier as Supplier;
 
 class Index extends Component
 {
     use WithPagination;
 
-    protected $paginationTheme = 'bootstrap';
-
-    // فلاتر
     public $search = '';
     public $status = '';
-    public $date_from = null;
-    public $date_to   = null;
+    public $date_from;
+    public $date_to;
     public $warehouse_id = '';
     public $supplier_id  = '';
-    public $per_page = 10;
+    public $perPage = 10;
 
-    protected $listeners = [
-        'deleteConfirmed' => 'delete',   // يأتي من SweetAlert (JS)
+    protected $queryString = [
+        'search', 'status', 'date_from', 'date_to', 'warehouse_id', 'supplier_id', 'perPage'
     ];
 
-    public function updatingSearch()     { $this->resetPage(); }
-    public function updatingStatus()     { $this->resetPage(); }
-    public function updatingDateFrom()   { $this->resetPage(); }
-    public function updatingDateTo()     { $this->resetPage(); }
-    public function updatingWarehouseId(){ $this->resetPage(); }
-    public function updatingSupplierId() { $this->resetPage(); }
-    public function updatingPerPage()    { $this->resetPage(); }
+    protected $listeners = ['deleteConfirmed' => 'destroy'];
 
-    public function changeStatus($id, $newStatus)
-    {
-        $allowed = ['draft','approved','posted','cancelled'];
-        if (!in_array($newStatus, $allowed, true)) {
-            session()->flash('error', __('pos.invalid_status'));
-            return;
-        }
+    // خلى الباجيناشن بتصميم البوتستراب (لو عامل publish للـ views)
+    protected $paginationTheme = 'bootstrap';
 
-        $p = Purchase::find($id);
-        if (!$p) {
-            session()->flash('error', __('pos.not_found'));
-            return;
-        }
+    // عشان كل ما تغيّر فلتر نرجّع لأول صفحة
+    public function updatingSearch()      { $this->resetPage(); }
+    public function updatingStatus()      { $this->resetPage(); }
+    public function updatingDateFrom()    { $this->resetPage(); }
+    public function updatingDateTo()      { $this->resetPage(); }
+    public function updatingWarehouseId() { $this->resetPage(); }
+    public function updatingSupplierId()  { $this->resetPage(); }
+    public function updatingPerPage()     { $this->resetPage(); }
 
-        $p->status = $newStatus;
-        $p->save();
-
-        session()->flash('success', __('pos.status_updated'));
-    }
-
-    public function delete($id)
+    public function destroy($id)
     {
         $p = Purchase::find($id);
         if (!$p) {
-            session()->flash('error', __('pos.not_found'));
+            session()->flash('error', __('pos.not_found') ?? 'Not found');
             return;
         }
-        $p->delete();
+        $p->delete(); // Soft delete
         session()->flash('success', __('pos.deleted_ok'));
-        $this->resetPage();
-    }
-
-    private function resolveName($value)
-    {
-        $locale = app()->getLocale();
-        if (is_string($value) && strlen($value) && $value[0] === '{') {
-            $arr = json_decode($value, true) ?: [];
-            return $arr[$locale] ?? $arr['ar'] ?? $arr['en'] ?? $value;
-        }
-        return $value;
     }
 
     public function render()
     {
-        $wTable = (new Warehouse)->getTable();
-        $sTable = (new Supplier )->getTable();
-
         $q = Purchase::query()
-            ->leftJoin($wTable.' as w', 'w.id', '=', 'purchases.warehouse_id')
-            ->leftJoin($sTable.' as s', 's.id', '=', 'purchases.supplier_id')
-            ->select('purchases.*', 'w.name as wh_name', 's.name as sup_name')
-            ->when($this->status !== '', fn($qq) => $qq->where('purchases.status', $this->status))
-            ->when($this->warehouse_id !== '', fn($qq) => $qq->where('purchases.warehouse_id', (int)$this->warehouse_id))
-            ->when($this->supplier_id  !== '', fn($qq) => $qq->where('purchases.supplier_id', (int)$this->supplier_id))
-            ->when($this->date_from, fn($qq) => $qq->whereDate('purchases.purchase_date', '>=', $this->date_from))
-            ->when($this->date_to,   fn($qq) => $qq->whereDate('purchases.purchase_date', '<=', $this->date_to))
-            ->when($this->search, function($qq) {
-                $term = '%'.$this->search.'%';
-                $qq->where(function($w) use ($term) {
-                    $w->where('purchases.purchase_no', 'like', $term)
-                      ->orWhere('purchases.notes', 'like', $term)
-                      ->orWhere('w.name', 'like', $term)
-                      ->orWhere('s.name', 'like', $term);
-                });
-            })
-            ->orderByDesc('purchases.purchase_date')
-            ->orderByDesc('purchases.id');
+            ->with(['warehouse:id,name', 'supplier:id,name'])
+            ->withCount('lines');
 
-        $purchases = $q->paginate((int)$this->per_page)->withQueryString();
+        if ($s = trim($this->search)) {
+            $q->where(function ($qq) use ($s) {
+                $qq->where('purchase_no', 'like', "%{$s}%")
+                   ->orWhere('notes->ar', 'like', "%{$s}%")
+                   ->orWhere('notes->en', 'like', "%{$s}%");
+            });
+        }
 
-        // قوائم الفلاتر
-        $warehouses = Warehouse::orderBy('name')->get(['id','name']);
-        $suppliers  = Supplier ::orderBy('name')->get(['id','name']);
+        $q->when($this->status,       fn ($qq) => $qq->where('status', $this->status))
+          ->when($this->warehouse_id, fn ($qq) => $qq->where('warehouse_id', $this->warehouse_id))
+          ->when($this->supplier_id,  fn ($qq) => $qq->where('supplier_id',  $this->supplier_id))
+          ->when($this->date_from,    fn ($qq) => $qq->whereDate('purchase_date', '>=', $this->date_from))
+          ->when($this->date_to,      fn ($qq) => $qq->whereDate('purchase_date', '<=', $this->date_to))
+          ->orderByDesc('id');
 
-        // حل أسماء متعددة اللغات (عرض فقط)
-        $purchases->getCollection()->transform(function($row) {
-            $row->wh_name  = $this->resolveName($row->wh_name);
-            $row->sup_name = $this->resolveName($row->sup_name);
-            return $row;
-        });
+        $rows = $q->paginate($this->perPage);
 
-        return view('livewire.purchases.index', compact('purchases','warehouses','suppliers'));
+        return view('livewire.purchases.index', [
+            'rows'       => $rows, // <-- مهم
+            'warehouses' => Warehouse::select('id','name')->orderBy('id')->get(),
+            'suppliers'  => Supplier::select('id','name')->orderBy('id')->get(),
+        ]);
     }
 }

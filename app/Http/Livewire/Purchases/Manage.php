@@ -4,210 +4,344 @@ namespace App\Http\Livewire\Purchases;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
 
-use App\models\purchases\purchases as Purchase;
-use App\models\purchases\purchase_line as Line;
+use App\models\purchases\purchase as Purchase;
+use App\models\purchases\purchase_line as PurchaseLine;
+use App\models\product\product as Product;
+use App\models\supplier\supplier as Supplier;
 use App\models\inventory\warehouse as Warehouse;
-use App\models\supplier\supplier   as Supplier;
-use App\models\product\product     as Product;
-use App\models\unit\unit           as Unit;
+use App\models\unit\unit as Unit;
 
 class Manage extends Component
 {
-    // Header
-    public $purchase_date, $delivery_date, $warehouse_id, $supplier_id, $notes_ar, $notes_en;
+    public ?int $purchase_id = null;
 
-    // Rows
-    public $rows = [];
+    public ?string $purchase_date = null;
+    public ?string $delivery_date = null;
+    public $warehouse_id = null;
+    public $supplier_id  = null;
 
-    // lists
-    public $warehouses, $suppliers, $products, $units;
+    public ?string $notes_ar = null;
+    public ?string $notes_en = null;
 
-    protected $listeners = ['deleteRowConfirmed' => 'removeRow'];
+    public array $rows = [];
 
-    public function mount()
+    public array $warehouses = [];
+    public array $suppliers  = [];
+    public array $categories = [];
+    public array $products   = [];
+    public array $units      = [];
+
+    protected $listeners = ['deleteConfirmed' => 'removeRow'];
+
+    /* =========================
+     *  Helpers
+     * =======================*/
+    protected function t($value): string
     {
-        $this->purchase_date = now()->toDateString();
-        $this->delivery_date = null;
+        // حوّل أي قيمة (JSON \ Array \ String) إلى نص في لغة الواجهة
+        $locale = app()->getLocale();
 
-        $this->warehouses = Warehouse::orderBy('name')->get(['id','name']);
-        $this->suppliers  = Supplier ::orderBy('name')->get(['id','name']);
-        $this->products   = Product  ::orderBy('name')->get(['id','name','category_id','code']);
-        $this->units      = Unit     ::orderBy('name')->get(['id','name']);
+        if (is_array($value)) {
+            return (string) ($value[$locale] ?? ($value['ar'] ?? reset($value) ?? ''));
+        }
 
-        $this->rows = [ $this->blankRow() ];
+        if (is_string($value)) {
+            $trim = trim($value);
+            if ($trim !== '' && $trim[0] === '{') {
+                $a = json_decode($value, true) ?: [];
+                return (string) ($a[$locale] ?? ($a['ar'] ?? $value));
+            }
+            return $value;
+        }
+
+        return (string) $value;
     }
 
-    private function blankRow(): array
+    protected function asRowStringId($id): string
+    {
+        return (string) ($id ?? '');
+    }
+
+    protected function blankRow(): array
     {
         return [
-            'product_id' => null,
-            'code'       => null,
-            'category'   => null,
-            'unit_id'    => null,
-            'uom'        => null,
-            'qty'        => 1,
-            'unit_price' => null,
-            'expiry_date'=> null,
-            'batch_no'   => null,
-            'onhand'     => 0,
+            'category_id' => null,
+            'product_id'  => null,
+            'code'        => null,
+            'unit_id'     => null,
+            'qty'         => null,
+            'unit_price'  => null,
+            'onhand'      => 0,
+            'has_expiry'  => false,
+            'expiry_date' => null,
+            'batch_no'    => null,
         ];
     }
 
-    // عندما يختار صنف، عبّي الكود / الفئة
-    public function updatedRows($value, $name)
+    /* =========================
+     *  Mount / Edit loader
+     * =======================*/
+    public function mount(?int $purchaseId = null): void
     {
-        // $name = "0.product_id" مثلاً
-        if (preg_match('/^(\d+)\.product_id$/', $name, $m)) {
-            $i = (int)$m[1];
-            $pid = (int)($this->rows[$i]['product_id'] ?? 0);
-            $p = collect($this->products)->firstWhere('id', $pid);
-            if ($p) {
-                $this->rows[$i]['code']     = $p->code ?? null;
-                $this->rows[$i]['category'] = $this->resolveCategoryName($p->category_id ?? null);
+        $this->purchase_id   = $purchaseId;
+        $this->purchase_date = $this->purchase_date ?: Carbon::now()->toDateString();
+        $this->delivery_date = $this->delivery_date ?: null;
+
+        // طبّع كل الأسماء إلى نصوص
+        $this->warehouses = Warehouse::orderBy('name')
+            ->get(['id','name'])
+            ->map(fn ($w) => ['id' => $w->id, 'name' => $this->t($w->name)])
+            ->toArray();
+
+        $this->suppliers = Supplier::orderBy('name')
+            ->get(['id','name'])
+            ->map(fn ($s) => ['id' => $s->id, 'name' => $this->t($s->name)])
+            ->toArray();
+
+        $this->units = Unit::orderBy('name')
+            ->get(['id','name'])
+            ->map(fn ($u) => ['id' => $u->id, 'name' => $this->t($u->name)])
+            ->toArray();
+
+        // لو جدول الأقسام مختلف غير هذا السطر
+        $this->categories = DB::table('categories')->select('id','name')->orderBy('name')->get()
+            ->map(fn ($c) => ['id' => $c->id, 'name' => $this->t($c->name)])
+            ->toArray();
+
+        // المنتجات (بدون حقل code لأنّه غير موجود عندك)
+        $this->products = Product::orderBy('name')
+            ->get(['id','name','category_id','sku','barcode'])
+            ->map(function ($p) {
+                return [
+                    'id'          => $p->id,
+                    'name'        => $this->t($p->name),
+                    'category_id' => $p->category_id,
+                    'sku'         => $p->sku,
+                    'barcode'     => $p->barcode,
+                ];
+            })->toArray();
+
+        if ($this->purchase_id) {
+            $this->loadForEdit($this->purchase_id);
+        } else {
+            $this->rows = [ $this->blankRow() ];
+        }
+    }
+
+    protected function loadForEdit(int $id): void
+    {
+        $p = Purchase::with(['warehouse','supplier','lines.product','lines.unit'])->findOrFail($id);
+
+        $this->purchase_date = $p->purchase_date ? (string)$p->purchase_date : Carbon::now()->toDateString();
+        $this->delivery_date = $p->supply_date   ? (string)$p->supply_date   : null;
+        $this->warehouse_id  = $p->warehouse_id;
+        $this->supplier_id   = $p->supplier_id;
+
+        $notes = is_array($p->notes) ? $p->notes : (json_decode((string)$p->notes, true) ?: []);
+        $this->notes_ar = $notes['ar'] ?? null;
+        $this->notes_en = $notes['en'] ?? null;
+
+        $this->rows = [];
+        foreach ($p->lines as $line) {
+            $prod = $line->product;
+            $code = $prod?->sku ?? $prod?->barcode ?? '';
+            $this->rows[] = [
+                'category_id' => $prod?->category_id,
+                'product_id'  => $line->product_id,
+                'code'        => $code ?: null,
+                'unit_id'     => $line->unit_id,
+                'qty'         => (float)$line->qty,
+                'unit_price'  => (float)$line->unit_price,
+                'onhand'      => $this->getOnHand($this->warehouse_id, $line->product_id),
+                'has_expiry'  => !empty($line->expiry_date),
+                'expiry_date' => $line->expiry_date ? (string)$line->expiry_date : null,
+                'batch_no'    => $line->batch_no,
+            ];
+        }
+
+        if (empty($this->rows)) {
+            $this->rows = [ $this->blankRow() ];
+        }
+    }
+
+    /* =========================
+     *  Row ops
+     * =======================*/
+    public function addRow(): void
+    {
+        $this->rows[] = $this->blankRow();
+    }
+
+    public function removeRow(int $idx): void
+    {
+        if (isset($this->rows[$idx])) {
+            unset($this->rows[$idx]);
+            $this->rows = array_values($this->rows);
+        }
+    }
+
+    public function rowCategoryChanged(int $i): void
+    {
+        if (!isset($this->rows[$i])) return;
+        $this->rows[$i] = array_merge($this->rows[$i], [
+            'product_id'  => null,
+            'code'        => null,
+            'unit_id'     => null,
+            'qty'         => null,
+            'unit_price'  => null,
+            'onhand'      => 0,
+            'has_expiry'  => false,
+            'expiry_date' => null,
+            'batch_no'    => null,
+        ]);
+    }
+
+    public function rowProductChanged(int $i): void
+    {
+        if (!isset($this->rows[$i])) return;
+
+        $pid = (int)($this->rows[$i]['product_id'] ?? 0);
+        if (!$pid) {
+            $this->rows[$i]['code']   = null;
+            $this->rows[$i]['onhand'] = 0;
+            return;
+        }
+
+        $p = collect($this->products)->firstWhere('id', $pid);
+        $code = $p['sku'] ?? ($p['barcode'] ?? '');
+        $this->rows[$i]['code']   = $code ?: null;
+        $this->rows[$i]['onhand'] = $this->getOnHand($this->warehouse_id, $pid);
+    }
+
+    protected function getOnHand($warehouseId, $productId): float
+    {
+        $warehouseId = (int)$warehouseId;
+        $productId   = (int)$productId;
+        if (!$warehouseId || !$productId) return 0;
+
+        try {
+            if (Schema()->hasTable('stock_balance')) {
+                return (float) (DB::table('stock_balance')
+                    ->where('warehouse_id', $warehouseId)
+                    ->where('product_id',   $productId)
+                    ->value('onhand') ?? 0);
             }
-        }
-        if (preg_match('/^(\d+)\.(unit_id|qty)$/', $name, $m)) {
-            $i = (int)$m[1];
-            $this->rows[$i]['uom'] = $this->uomLabel($this->rows[$i]['unit_id']);
-            $this->rows[$i]['onhand'] = $this->calcOnHand(
-                $this->warehouse_id, $this->rows[$i]['product_id'], $this->rows[$i]['uom']
-            );
-        }
+            if (Schema()->hasTable('stock_balances')) {
+                return (float) (DB::table('stock_balances')
+                    ->where('warehouse_id', $warehouseId)
+                    ->where('product_id',   $productId)
+                    ->value('onhand') ?? 0);
+            }
+        } catch (\Throwable $e) {}
+        return 0;
     }
 
-    private function resolveCategoryName($categoryId)
+    /* =========================
+     *  Validation & Save
+     * =======================*/
+    protected function rules(): array
     {
-        // إن كان عندك موديل category، استبدلها باستعلام فعلي.
-        return $categoryId ? __('pos.category').' #'.$categoryId : '—';
-    }
-
-    private function uomLabel($unitId): ?string
-    {
-        $u = collect($this->units)->firstWhere('id', (int)$unitId);
-        $label = $u->name ?? null;
-
-        // لو الاسم JSON متعدد لغات
-        if (is_string($label) && str_starts_with(trim($label), '{')) {
-            $arr = json_decode($label, true) ?: [];
-            $label = $arr[app()->getLocale()] ?? $arr['ar'] ?? $label;
-        }
-        return $label;
-    }
-
-    private function calcOnHand($warehouseId, $productId, $uom): float
-    {
-        if (!$warehouseId || !$productId) return 0.0;
-
-        if (\Illuminate\Support\Facades\Schema::hasTable('stock_balances')) {
-            $v = DB::table('stock_balances')->where([
-                'warehouse_id' => $warehouseId,
-                'product_id'   => $productId,
-                'uom'          => $uom,
-            ])->value('onhand');
-            return (float)($v ?? 0);
-        }
-        return 0.0;
-    }
-
-    protected function rules()
-    {
-        $wh = Rule::exists((new Warehouse)->getTable(),'id');
-        $sp = Rule::exists((new Supplier )->getTable(),'id');
-        $pr = Rule::exists((new Product  )->getTable(),'id');
-        $un = Rule::exists((new Unit     )->getTable(),'id');
-
         return [
-            'purchase_date' => ['required','date'],
-            'delivery_date' => ['nullable','date','after_or_equal:purchase_date'],
-            'warehouse_id'  => ['required',$wh],
-            'supplier_id'   => ['required',$sp],
-            'notes_ar'      => ['nullable','string','max:2000'],
-            'notes_en'      => ['nullable','string','max:2000'],
+            'purchase_date'        => ['required','date'],
+            'delivery_date'        => ['nullable','date'],
+            'warehouse_id'         => ['required','integer'],
+            'supplier_id'          => ['required','integer'],
 
             'rows'                 => ['required','array','min:1'],
-            'rows.*.product_id'    => ['required',$pr],
-            'rows.*.unit_id'       => ['required',$un],
-            'rows.*.qty'           => ['required','numeric','min:0.0001'],
-            'rows.*.unit_price'    => ['nullable','numeric','min:0'],
+            'rows.*.category_id'   => ['required','integer'],
+            'rows.*.product_id'    => ['required','integer'],
+            'rows.*.unit_id'       => ['required','integer'],
+            'rows.*.qty'           => ['required','numeric','gt:0'],
+            'rows.*.unit_price'    => ['nullable','numeric','gte:0'],
             'rows.*.expiry_date'   => ['nullable','date'],
-            'rows.*.batch_no'      => ['nullable','string','max:60'],
+            'rows.*.batch_no'      => ['nullable','string','max:100'],
         ];
     }
 
-    protected $messages = [
-        'purchase_date.required'   => 'برجاء إدخال تاريخ الشراء',
-        'warehouse_id.required'    => 'اختر المخزن',
-        'supplier_id.required'     => 'اختر المورد',
-        'rows.required'            => 'أضف صنفًا واحدًا على الأقل',
-        'rows.*.product_id.required' => 'اختر الصنف',
-        'rows.*.unit_id.required'  => 'اختر الوحدة',
-        'rows.*.qty.min'           => 'الكمية يجب أن تكون أكبر من صفر',
-    ];
-
-    public function addRow(){ $this->rows[] = $this->blankRow(); }
-
-    public function removeRow($index){
-        unset($this->rows[$index]);
-        $this->rows = array_values($this->rows) ?: [ $this->blankRow() ];
+    protected function messages(): array
+    {
+        return [
+            'purchase_date.required'      => __('pos.v_required'),
+            'warehouse_id.required'       => __('pos.v_required'),
+            'supplier_id.required'        => __('pos.v_required'),
+            'rows.required'               => __('pos.v_at_least_one_row'),
+            'rows.*.qty.gt'               => __('pos.v_gt_zero'),
+        ];
     }
 
     public function save()
     {
-        $data = $this->validate();
+        $this->validate();
 
-        DB::transaction(function () use ($data) {
-            $code = $this->makeCode($data['purchase_date']);
+        $grand = 0;
+        foreach ($this->rows as $r) {
+            $q = (float)($r['qty'] ?? 0);
+            $u = (float)($r['unit_price'] ?? 0);
+            $grand += ($q * $u);
+        }
 
-            $purchaseId = Purchase::query()->insertGetId([
-                'code'          => $code,
-                'supplier_id'   => $data['supplier_id'],
-                'warehouse_id'  => $data['warehouse_id'],
-                'purchase_date' => $data['purchase_date'],
-                'delivery_date' => $data['delivery_date'],
-                'status'        => 'draft',
-                'notes'         => ['ar'=>($data['notes_ar']??null),'en'=>($data['notes_en']??null)],
-                'created_at'    => now(), 'updated_at' => now(),
-            ]);
-
-            $lines = [];
-            foreach ($data['rows'] as $r){
-                $uom = $this->uomLabel($r['unit_id']);
-                $lines[] = [
-                    'purchase_id'      => $purchaseId,
-                    'product_id'       => $r['product_id'],
-                    'category_id'      => null, // استبدلها لو عندك جدول الفئات
-                    'unit_id'          => $r['unit_id'],
-                    'uom'              => $uom,
-                    'qty'              => $r['qty'],
-                    'unit_price'       => $r['unit_price'] ?? null,
-                    'batch_no'         => $r['batch_no'] ?? null,
-                    'expiry_date'      => $r['expiry_date'] ?? null,
-                    'onhand_snapshot'  => $this->calcOnHand($data['warehouse_id'],$r['product_id'],$uom),
-                    'created_at'       => now(), 'updated_at' => now(),
-                ];
+        DB::transaction(function () use ($grand) {
+            if ($this->purchase_id) {
+                $p = Purchase::lockForUpdate()->findOrFail($this->purchase_id);
+            } else {
+                $p = new Purchase();
+                $p->purchase_no = $this->generateNo();
+                $p->status      = 'approved';
             }
-            if ($lines) Line::query()->insert($lines);
+
+            $p->purchase_date = $this->purchase_date;
+            $p->supply_date   = $this->delivery_date;
+            $p->warehouse_id  = $this->warehouse_id;
+            $p->supplier_id   = $this->supplier_id;
+            $p->notes         = json_encode([
+                'ar' => $this->notes_ar,
+                'en' => $this->notes_en,
+            ], JSON_UNESCAPED_UNICODE);
+
+            $p->subtotal    = $grand;
+            $p->discount    = 0;
+            $p->tax         = 0;
+            $p->grand_total = $grand;
+            $p->save();
+
+            if ($this->purchase_id) {
+                PurchaseLine::where('purchase_id', $p->id)->delete();
+            }
+
+            foreach ($this->rows as $r) {
+                $line = new PurchaseLine();
+                $line->purchase_id = $p->id;
+                $line->product_id  = (int)$r['product_id'];
+                $line->unit_id     = (int)$r['unit_id'];
+                $line->qty         = (float)$r['qty'];
+                $line->unit_price  = (float)($r['unit_price'] ?? 0);
+                $line->expiry_date = !empty($r['has_expiry']) ? ($r['expiry_date'] ?: null) : null;
+                $line->batch_no    = $r['batch_no'] ?: null;
+                $line->save();
+            }
+
+            $this->purchase_id = $p->id;
         });
 
         session()->flash('success', __('pos.saved_ok'));
         return redirect()->route('purchases.index');
     }
 
-    private function makeCode($date, $prefix='PO'): string
+    protected function generateNo(): string
     {
-        $day = Carbon::parse($date)->format('Ymd');
-        $base = "$prefix-$day-";
-        $last = Purchase::query()->where('code','like',$base.'%')->orderBy('code','desc')->value('code');
-        $seq = 1;
-        if ($last && preg_match('/(\d{3,})$/',$last,$m)) $seq = (int)$m[1]+1;
-        return $base . str_pad((string)$seq, 4, '0', STR_PAD_LEFT);
+        $prefix = 'PO-'.Carbon::now()->format('Ymd').'-';
+        $lastId = (int)(DB::table('purchases')->max('id') ?? 0);
+        return $prefix.str_pad((string)($lastId+1), 5, '0', STR_PAD_LEFT);
     }
 
     public function render()
     {
         return view('livewire.purchases.manage');
     }
+}
+
+if (!function_exists('Schema')) {
+    function Schema() { return app('db.schema'); }
 }

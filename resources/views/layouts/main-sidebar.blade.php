@@ -67,6 +67,14 @@
                                 <span data-key="t-products">{{ __('pos.products_index_title') }}</span>
                             </a>
                         </li>
+                        {{-- المشتريات --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'purchases.')) active @endif"
+                                href="{{ route('purchases.index') }}">
+                                <i class="mdi mdi-cart-outline"></i>
+                                <span data-key="t-purchases">{{ __('pos.purchases_title') ?? 'المشتريات' }}</span>
+                            </a>
+                        </li>
 
                         {{-- العروض والكوبونات --}}
                         @php
@@ -78,7 +86,7 @@
                             <a class="nav-link menu-link font {{ $promoOpen ? 'active' : '' }}" href="#sidebarpromos"
                                 data-bs-toggle="collapse" role="button"
                                 aria-expanded="{{ $promoOpen ? 'true' : 'false' }}" aria-controls="sidebarpromos">
-                                <i class="mdi mdi-ticket-percent-outline me-1"></i> 
+                                <i class="mdi mdi-ticket-percent-outline me-1"></i>
                                 <span data-key="t-promos">{{ __('pos.offers_title') }} &
                                     {{ __('pos.coupons_title') }}</span>
                             </a>

@@ -14,7 +14,7 @@ use App\Http\Controllers\offers\couponscontroller;
 use App\Http\Controllers\offers\offerscontroller;
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
-use App\Http\Controllers\purchasescontroller;
+use App\Http\Controllers\inventory\purchasescontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
 use App\Http\Controllers\unitcontroller;
 use Illuminate\Support\Facades\Auth;
@@ -168,7 +168,12 @@ Route::group(
         Route::prefix('inventory')->group(function () {
             Route::get('purchases', [purchasescontroller::class, 'index'])->name('purchases.index');
             Route::get('purchases/create', [purchasescontroller::class, 'create'])->name('purchases.create');
+            Route::get('purchases/{id}/edit', [purchasescontroller::class, 'edit'])->name('purchases.edit');
+            Route::get('purchases/{id}/show', [purchasescontroller::class, 'show'])->name('purchases.show');     // عرض الفاتورة
+            Route::get('purchases/{id}/print', [purchasescontroller::class, 'print'])->name('purchases.print');   // طباعة A4
         });
+
+        
         Route::prefix('inventory')->name('inv.')->group(function () {
 
             // ===== Stock Transactions =====
