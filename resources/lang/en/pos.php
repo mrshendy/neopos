@@ -1878,5 +1878,164 @@ return [
     'cancel'  => 'Cancel',
     'deleted' => 'Deleted!',
       'sales_title' => 'Sales Invoices', 
+      
+    // ========= Generic =========
+    'input_errors'   => 'There are validation errors, please review your input.',
+    'back'           => 'Back',
+    'refresh'        => 'Refresh',
+    'save'           => 'Save',
+    'update'         => 'Update',
+    'created_at'     => 'Created at',
+    'updated_at'     => 'Last update',
+    'actions'        => 'Actions',
+    'show'           => 'Show',
+    'edit'           => 'Edit',
+    'delete'         => 'Delete',
+    'change_status'  => 'Change status',
+    'per_page'       => 'Per page',
+    'search'         => 'Search',
+    'all'            => 'All',
+    'date_from'      => 'Date from',
+    'date_to'        => 'Date to',
+    'no_data'        => 'No data',
+    'records_showing'=> 'Showing',
+    'records_total'  => 'Total records',
+
+    // System messages
+    'confirm_delete_title'     => 'Delete confirmation',
+    'confirm_delete_text'      => 'Are you sure you want to delete? This action cannot be undone.',
+    'confirm_delete_row_text'  => 'Delete this row?',
+    'confirm'        => 'Confirm',
+    'cancel'         => 'Cancel',
+    'deleted'        => 'Deleted',
+    'deleted_ok'     => 'Record deleted successfully.',
+    'row_deleted_ok' => 'Row deleted successfully.',
+    'not_found'      => 'Item not found.',
+    'saved_ok'       => 'Saved successfully.',
+    'updated_ok'     => 'Updated successfully.',
+    'status_changed' => 'Status changed successfully.',
+
+    // ========= Statuses =========
+    'status'           => 'Status',
+    'status_all'       => 'All statuses',
+    'status_active'    => 'Active',
+    'status_inactive'  => 'Inactive',
+
+    // (for purchases)
+    'status_draft'     => 'Draft',
+    'status_approved'  => 'Approved',
+    'status_posted'    => 'Posted',
+    'status_cancelled' => 'Cancelled',
+
+    // ========= Menu =========
+    'purchases_title'         => 'Purchases',
+    'inventory_title'         => 'Inventory',
+    'products_index_title'    => 'Products',
+    'supplier_title'          => 'Suppliers',
+    'offers_title'            => 'Offers',
+    'coupons_title'           => 'Coupons',
+    'title_customers_index'   => 'Customers',
+
+    // ========= Customers (Index) =========
+    'customers_index_title'    => 'Customers Management',
+    'customers_index_subtitle' => 'Browse and manage customers with filters & search.',
+    'customers_new'            => 'New customer',
+    'customers_search_ph'      => 'Search by name / code / phone / email',
+
+    // ========= Customers (Manage/Create/Edit) =========
+    'customer_title_create' => 'Add customer',
+    'customer_title_edit'   => 'Edit customer',
+
+    'code'         => 'Code',
+    'hint_code'    => 'Example: CUS-0001 (optional & unique).',
+
+    'type'         => 'Type',
+    'person'       => 'Person',
+    'company'      => 'Company',
+    'hint_type'    => 'Select whether the customer is a person or a company.',
+
+    'status_active_label'   => 'Active',
+    'status_inactive_label' => 'Inactive',
+    'hint_status'           => 'Controls whether the customer is enabled/visible.',
+
+    'country'      => 'Country',
+    'hint_country' => 'Write country code or name (optional).',
+
+    'name'      => 'Name',
+    'name_ar'   => 'Name (Arabic)',
+    'name_en'   => 'Name (English)',
+    'hint_name_ar' => 'Arabic name is required.',
+    'hint_name_en' => 'English name is optional.',
+
+    'phone'      => 'Phone',
+    'hint_phone' => 'Phone number (optional).',
+    'mobile'      => 'Mobile',
+    'hint_mobile' => 'Mobile number (optional).',
+    'email'       => 'Email',
+    'hint_email'  => 'Valid email address (optional).',
+
+    'city_ar'   => 'City (Arabic)',
+    'city_en'   => 'City (English)',
+    'hint_city_ar' => 'Arabic city (optional).',
+    'hint_city_en' => 'English city (optional).',
+
+    'address_ar'   => 'Address (Arabic)',
+    'address_en'   => 'Address (English)',
+    'hint_address_ar' => 'Arabic address (optional).',
+    'hint_address_en' => 'English address (optional).',
+
+    'tax_no'           => 'Tax number',
+    'hint_tax_no'      => 'Enter tax number if available.',
+    'commercial_no'    => 'Commercial register',
+    'hint_commercial_no'=> 'Enter CR number if available.',
+
+    'notes_ar'   => 'Notes (Arabic)',
+    'notes_en'   => 'Notes (English)',
+    'notes_ph'   => 'Write any additional notes...',
+
+    // ========= Purchases (legacy keys used before) =========
+    'purchase_title'         => 'Create Purchase Invoice',
+    'purchase_title_edit'    => 'Edit Purchase Invoice',
+    'purchases_index_title'  => 'Purchase Invoices',
+    'purchases_index_subtitle'=> 'Manage and search purchase invoices.',
+    'purchases_new'          => 'New invoice',
+    'purchases_search_ph'    => 'Search by number / supplier / warehouse',
+
+    'purchase_no'    => 'Invoice No.',
+    'purchase_date'  => 'Purchase date',
+    'delivery_date'  => 'Delivery date',
+    'supplier'       => 'Supplier',
+    'warehouse'      => 'Warehouse',
+    'items_count'    => 'Items count',
+    'grand_total'    => 'Grand total',
+
+    'category'     => 'Category',
+    'product'      => 'Product',
+    'unit'         => 'Unit',
+    'qty'          => 'Qty',
+    'unit_price'   => 'Unit price',
+    'onhand'       => 'On hand',
+    'expiry_date'  => 'Expiry date',
+    'batch_no'     => 'Batch No.',
+
+    'choose'           => 'Choose',
+    'choose_product'   => '— Select product —',
+    'choose_unit'      => '— Select unit —',
+    'select_category'  => '— Select category —',
+    'has_expiry'       => 'Has expiry date?',
+    'items_details'    => 'Items details',
+    'add_row'          => 'Add row',
+    'remove_row'       => 'Remove row',
+    'hint_purchase_date'=> 'Select purchase invoice date.',
+    'hint_delivery_date'=> 'Select delivery date to warehouse.',
+    'hint_supplier'     => 'Choose supplier related to invoice.',
+    'hint_warehouse'    => 'Choose receiving warehouse.',
+
+    // ========= Inventory cards =========
+    'module_stock_balance' => 'Stock balance',
+    'module_direct_store'  => 'Direct store-in',
+    'route_missing'        => 'Route missing',
+    'open'                 => 'Open',
+    'soon'                 => 'Coming soon',
 
 ];

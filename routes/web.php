@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\customer\customerscontroller;
+use App\Http\Controllers\customer\customercontroller;
 use App\Http\Controllers\general\branchcontroller;
 use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
@@ -76,10 +76,10 @@ Route::group(
 
         // ✅ Resource Route للعميل
         Route::prefix('customers')->group(function () {
-            Route::get('/', [customerscontroller::class, 'index'])->name('customers.index');
-            Route::get('/create', [customerscontroller::class, 'create'])->name('customers.create');
-            Route::get('/{id}/edit', [customerscontroller::class, 'edit'])->name('customers.edit');
-            Route::get('/{id}/show', [customerscontroller::class, 'show'])->name('customers.show');
+            Route::get('/', [customercontroller::class, 'index'])->name('customers.index');
+            Route::get('/create', [customercontroller::class, 'create'])->name('customers.create');
+            Route::get('/{id}/edit', [customercontroller::class, 'edit'])->name('customers.edit');
+            Route::get('/{id}/show', [customercontroller::class, 'show'])->name('customers.show');
         });
 
         Route::resource('suppliers', suppliercontroller::class)

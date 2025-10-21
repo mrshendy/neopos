@@ -1912,4 +1912,163 @@ return [
     'cancel'  => 'إلغاء',
     'deleted' => 'تم الحذف!',
     'sales_title' => 'إدارة المبيعات', 
+
+      // ========= عام / جنريك =========
+    'input_errors'   => 'توجد أخطاء في الإدخال، يرجى المراجعة.',
+    'back'           => 'رجوع',
+    'refresh'        => 'تحديث',
+    'save'           => 'حفظ',
+    'update'         => 'تحديث',
+    'created_at'     => 'تاريخ الإنشاء',
+    'updated_at'     => 'آخر تحديث',
+    'actions'        => 'إجراءات',
+    'show'           => 'عرض',
+    'edit'           => 'تعديل',
+    'delete'         => 'حذف',
+    'change_status'  => 'تغيير الحالة',
+    'per_page'       => 'لكل صفحة',
+    'search'         => 'بحث',
+    'all'            => 'الكل',
+    'date_from'      => 'من تاريخ',
+    'date_to'        => 'إلى تاريخ',
+    'no_data'        => 'لا توجد بيانات',
+    'records_showing'=> 'المعروض الآن',
+    'records_total'  => 'إجمالي السجلات',
+
+    // رسائل نظام
+    'confirm_delete_title'     => 'تأكيد الحذف',
+    'confirm_delete_text'      => 'هل أنت متأكد من الحذف؟ هذا الإجراء لا يمكن التراجع عنه.',
+    'confirm_delete_row_text'  => 'هل تريد حذف هذا السطر؟',
+    'confirm'        => 'تأكيد',
+    'cancel'         => 'إلغاء',
+    'deleted'        => 'تم الحذف',
+    'deleted_ok'     => 'تم حذف السجل بنجاح.',
+    'row_deleted_ok' => 'تم حذف السطر بنجاح.',
+    'not_found'      => 'العنصر غير موجود.',
+    'saved_ok'       => 'تم الحفظ بنجاح.',
+    'updated_ok'     => 'تم التحديث بنجاح.',
+    'status_changed' => 'تم تغيير الحالة بنجاح.',
+
+    // ========= الحالات =========
+    'status'           => 'الحالة',
+    'status_all'       => 'كل الحالات',
+    'status_active'    => 'نشط',
+    'status_inactive'  => 'غير نشط',
+
+    // (للمشتريات)
+    'status_draft'     => 'مسودة',
+    'status_approved'  => 'معتمد',
+    'status_posted'    => 'مرحّلة',
+    'status_cancelled' => 'ملغاة',
+
+    // ========= عناصر المينيو =========
+    'purchases_title'         => 'المشتريات',
+    'inventory_title'         => 'المخزون',
+    'products_index_title'    => 'المنتجات',
+    'supplier_title'          => 'المورّدون',
+    'offers_title'            => 'العروض',
+    'coupons_title'           => 'الكوبونات',
+    'title_customers_index'   => 'العملاء',
+
+    // ========= العملاء (Index) =========
+    'customers_index_title'    => 'إدارة العملاء',
+    'customers_index_subtitle' => 'عرض وإدارة بيانات العملاء مع خيارات البحث والتصفية.',
+    'customers_new'            => 'عميل جديد',
+    'customers_search_ph'      => 'ابحث بالاسم / الكود / الهاتف / البريد',
+
+    // ========= العملاء (Manage/Create/Edit) =========
+    'customer_title_create' => 'إضافة عميل',
+    'customer_title_edit'   => 'تعديل عميل',
+
+    'code'         => 'الكود',
+    'hint_code'    => 'مثال: CUS-0001 (اختياري وغير متكرر).',
+
+    'type'         => 'النوع',
+    'person'       => 'فرد',
+    'company'      => 'شركة',
+    'hint_type'    => 'اختر نوع العميل: فرد أو شركة.',
+
+    'status_active_label'   => 'نشط',
+    'status_inactive_label' => 'غير نشط',
+    'hint_status'           => 'حدد حالة ظهور وتفعيل العميل بالنظام.',
+
+    'country'      => 'الدولة',
+    'hint_country' => 'اكتب رمز الدولة أو اسمها (اختياري).',
+
+    'name'      => 'الاسم',
+    'name_ar'   => 'الاسم بالعربية',
+    'name_en'   => 'الاسم بالإنجليزية',
+    'hint_name_ar' => 'الاسم بالعربية مطلوب.',
+    'hint_name_en' => 'يمكن كتابة الاسم باللغة الإنجليزية (اختياري).',
+
+    'phone'      => 'الهاتف',
+    'hint_phone' => 'رقم الهاتف (اختياري).',
+    'mobile'      => 'الجوال',
+    'hint_mobile' => 'رقم الجوال (اختياري).',
+    'email'       => 'البريد الإلكتروني',
+    'hint_email'  => 'اكتب بريدًا صحيحًا (اختياري).',
+
+    'city_ar'   => 'المدينة (عربي)',
+    'city_en'   => 'المدينة (إنجليزي)',
+    'hint_city_ar' => 'المدينة بالعربية (اختياري).',
+    'hint_city_en' => 'المدينة بالإنجليزية (اختياري).',
+
+    'address_ar'   => 'العنوان (عربي)',
+    'address_en'   => 'العنوان (إنجليزي)',
+    'hint_address_ar' => 'العنوان بالعربية (اختياري).',
+    'hint_address_en' => 'العنوان بالإنجليزية (اختياري).',
+
+    'tax_no'           => 'الرقم الضريبي',
+    'hint_tax_no'      => 'أدخل الرقم الضريبي إن وجد.',
+    'commercial_no'    => 'السجل التجاري',
+    'hint_commercial_no'=> 'أدخل رقم السجل التجاري إن وجد.',
+
+    'notes_ar'   => 'ملاحظات (عربي)',
+    'notes_en'   => 'ملاحظات (إنجليزي)',
+    'notes_ph'   => 'اكتب أي ملاحظات إضافية...',
+
+    // ========= المشتريات (للاستخدام السابق) =========
+    'purchase_title'         => 'إنشاء فاتورة مشتريات',
+    'purchase_title_edit'    => 'تعديل فاتورة مشتريات',
+    'purchases_index_title'  => 'قائمة فواتير المشتريات',
+    'purchases_index_subtitle'=> 'إدارة فواتير المشتريات والبحث فيها.',
+    'purchases_new'          => 'فاتورة جديدة',
+    'purchases_search_ph'    => 'ابحث برقم الفاتورة / المورد / المخزن',
+
+    'purchase_no'    => 'رقم الفاتورة',
+    'purchase_date'  => 'تاريخ الشراء',
+    'delivery_date'  => 'تاريخ التوريد',
+    'supplier'       => 'المورّد',
+    'warehouse'      => 'المخزن',
+    'items_count'    => 'عدد البنود',
+    'grand_total'    => 'الإجمالي',
+
+    'category'     => 'القسم',
+    'product'      => 'المنتج',
+    'unit'         => 'الوحدة',
+    'qty'          => 'الكمية',
+    'unit_price'   => 'سعر الوحدة',
+    'onhand'       => 'الرصيد الحالي',
+    'expiry_date'  => 'تاريخ الصلاحية',
+    'batch_no'     => 'رقم التشغيلة/الدفعة',
+
+    'choose'           => 'اختر',
+    'choose_product'   => '— اختر المنتج —',
+    'choose_unit'      => '— اختر الوحدة —',
+    'select_category'  => '— اختر القسم —',
+    'has_expiry'       => 'له تاريخ صلاحية؟',
+    'items_details'    => 'تفاصيل الأصناف',
+    'add_row'          => 'إضافة سطر',
+    'remove_row'       => 'حذف السطر',
+    'hint_purchase_date'=> 'حدد تاريخ إنشاء فاتورة الشراء.',
+    'hint_delivery_date'=> 'حدد تاريخ التوريد للمخزن.',
+    'hint_supplier'     => 'اختر المورد المرتبط بالفاتورة.',
+    'hint_warehouse'    => 'اختر المخزن المستلم.',
+
+    // ========= وحدات واجهة المخزون (كروت) =========
+    'module_stock_balance' => 'رصيد المخزن',
+    'module_direct_store'  => 'إضافة مباشرة إلى المخزن',
+    'route_missing'        => 'المسار غير متوفر',
+    'open'                 => 'فتح',
+    'soon'                 => 'قريبًا',
 ];
