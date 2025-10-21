@@ -1534,4 +1534,103 @@ return [
     'clear'              => 'Clear',
     'all'                => '— All —',
     'no_data'            => 'No data yet — run migrations or add transactions.',
+
+      // Common
+    'choose'  => '— Choose —',
+    'save'    => 'Save',
+    'refresh' => 'Refresh',
+    'back'    => 'Back',
+    'search'  => 'Search',
+    'all'     => 'All',
+    'user'    => 'User',
+    'actions' => 'Actions',
+    'no_data' => 'No data',
+    'per_page'=> 'Per Page',
+
+    // Confirm / Alerts
+    'confirm_delete_title'      => 'Warning',
+    'confirm_delete_text'       => '⚠️ Are you sure you want to delete this record? This cannot be undone.',
+    'confirm_delete_row_text'   => '⚠️ Are you sure you want to delete this row?',
+    'confirm'                   => 'Yes, Confirm',
+    'cancel'                    => 'Cancel',
+    'deleted'                   => 'Deleted',
+    'deleted_ok'                => '✅ Deleted successfully.',
+    'row_deleted_ok'            => '✅ Row deleted successfully.',
+
+    // Status
+    'status'           => 'Status',
+    'status_draft'     => 'Draft',
+    'status_posted'    => 'Posted',
+    'status_cancelled' => 'Cancelled',
+
+    // Types
+    'type'                => 'Type',
+    'trx_type'            => 'Movement Type',
+    'trx_type_in'         => 'In',
+    'trx_type_out'        => 'Out',
+    'trx_type_transfer'   => 'Transfer',
+    'trx_type_direct_add' => 'Direct Add',
+
+    // Date filters
+    'date_from' => 'Date From',
+    'date_to'   => 'Date To',
+
+    // General fields
+    'notes'           => 'Notes',
+    'hint_notes_json' => 'You may type plain text or multi-language JSON like {"ar":"ملاحظة","en":"Note"}.',
+
+    // Warehouses
+    'warehouse_any'       => 'Warehouse (Any)',
+    'from_warehouse'      => 'From Warehouse',
+    'to_warehouse'        => 'To Warehouse',
+    'hint_from_warehouse' => 'Used for Out/Transfer types.',
+    'hint_to_warehouse'   => 'Used for In/Transfer/Direct Add types.',
+
+    // Products / Units
+    'product'        => 'Product',
+    'choose_product' => '— Choose product —',
+    'hint_product'   => 'Pick the product to move.',
+
+    'unit'        => 'Unit',
+    'choose_unit' => '— Choose unit —',
+    'hint_unit'   => 'Select package/measure unit (large/medium/small) if applicable.',
+
+    'uom_text'      => 'UOM (Text)',
+    'hint_uom_text' => 'Type a short label like PCS / BOX if needed.',
+
+    // Quantities & balance
+    'qty'      => 'Qty',
+    'hint_qty' => 'Enter quantity with 4 decimal places.',
+    'onhand'   => 'On hand',
+
+    // Batch / Expiry / Reason
+    'expiry_date' => 'Expiry Date',
+    'hint_expiry' => 'Optional, for perishable items.',
+    'batch_no'    => 'Batch No.',
+    'hint_batch'  => 'Optional: batch/lot number.',
+    'reason'      => 'Reason',
+    'reason_ph'   => 'Movement reason (optional)',
+    'hint_reason' => 'Add a short reason for future reference.',
+
+    // Lines table
+    'trx_items_title' => 'Movement Details',
+    'add_row'         => 'Add row',
+    'remove_row'      => 'Remove row',
+
+    // Movement form
+    'trx_form_title'  => 'Add Stock Movement',
+    'trx_edit_title'  => 'Edit Stock Movement',
+    'trx_date'        => 'Movement Date',
+    'hint_trx_date'   => 'Select the movement day.',
+    'hint_trx_type'   => 'Choose the movement type.',
+
+    // Movements index
+    'trx_index_title'    => 'Stock Movements',
+    'trx_index_subtitle' => 'Browse, filter and report movements',
+    'trx_new'            => 'New Movement',
+    'search_ph_trx'      => 'Search by number/notes/type',
+    'trx_no'             => 'Movement No.',
+    'warehouse'          => 'Warehouse',
+    'from'               => 'From',
+    'to'                 => 'To',
 ];

@@ -124,14 +124,7 @@ Route::group(
             Route::post('warehouses/{id}/delete', [warehousescontroller::class, 'destroy'])->name('inventory.warehouses.destroy');
             Route::get('warehouses/{warehouse}', [warehousescontroller::class, 'show'])->name('inventory.warehouses.show');
 
-            // 🔄 Transactions
-            Route::get('transactions', [transactionscontroller::class, 'index'])->name('inventory.transactions.index');
-            Route::get('transactions/create', [transactionscontroller::class, 'create'])->name('inventory.transactions.create');
-            Route::get('transactions/{id}/edit', [transactionscontroller::class, 'edit'])->name('inventory.transactions.edit');
-            Route::post('transactions/{id}/update', [transactionscontroller::class, 'update'])->name('inventory.transactions.update');
-            Route::post('transactions/store', [transactionscontroller::class, 'store'])->name('inventory.transactions.store');
-            Route::post('transactions/{id}/delete', [transactionscontroller::class, 'destroy'])->name('inventory.transactions.destroy');
-
+           
             // 📋 Counts
             Route::get('counts', [countscontroller::class, 'index'])->name('inventory.counts.index');
             Route::post('counts/filter', [countscontroller::class, 'filter'])->name('inventory.counts.filter');
@@ -185,6 +178,10 @@ Route::group(
             // إنشاء/ترحيل حركة: يعرض Blade فيه @livewire('inventory.transactions.manage')
             Route::get('transactions/create', [transactionscontroller::class, 'create'])
                 ->name('trx.create');
+
+            // تعديل حركة موجودة
+            Route::get('transactions/{id}/edit', [transactionscontroller::class, 'edit'])
+                ->name('trx.edit'); 
         });
         Route::get('/{page}', 'AdminController@index');
 

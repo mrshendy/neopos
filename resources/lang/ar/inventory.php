@@ -52,6 +52,17 @@ return [
     'ds_remove_row'    => 'حذف الصف',
     'module_stock_balance' => 'رصيد المخزون',
     // اختيارات
+     // صفحة إدارة المخزون (الكروت)
+    'manage_title'     => 'إدارة المخزون',
+    'manage_subtitle'  => 'وحدات وأدوات سريعة لإدارة المخزون',
+    'route_missing'    => 'المسار غير متاح بعد',
+    'open'             => 'فتح',
+    'soon'             => 'قريباً',
+
+    // أسماء الوحدات/الكروت
+    'module_stock_balance'      => 'رصيد المخزن',
+    'module_direct_store'       => 'إضافة مباشرة إلى المخزن',
+    'module_stock_transactions' => 'حركات المخزون',
     'choose'           => '— اختر —',
     'optional'         => '— اختياري —',
     'choose_product'   => '— اختر الصنف —',

@@ -24,18 +24,24 @@
         </div>
     </div>
 
-    {{-- تحضير الكروت (يضيف "رصيد المخزن" + "إضافة مباشرة إلى المخزن" إن لم يكونا موجودين) --}}
+    {{-- تحضير الكروت (يضيف "رصيد المخزن" + "إضافة مباشرة" + "حركات المخزون" إن لم تكن موجودة) --}}
     @php
         $stockBalanceCard = [
-            'key'   => 'stock_balance',              // يظهر كنص: inventory.module_stock_balance
+            'key'   => 'stock_balance',
             'icon'  => 'mdi-clipboard-list-outline',
-            'route' => 'inv.balance',               // عدّلها لاسم الراوت الفعلي لصفحة الرصيد إن لزم
+            'route' => 'inv.balance',
         ];
 
         $directStoreCard = [
             'key'   => 'direct_store',
-            'icon'  => 'mdi-database-plus-outline', // أو 'mdi-warehouse' حسب مكتبة الأيقونات لديك
-            'route' => 'inv.ds',                    // الراوت المختصر للإضافة المباشرة
+            'icon'  => 'mdi-database-plus-outline',
+            'route' => 'inv.ds',
+        ];
+
+        $stockTransactionsCard = [
+            'key'   => 'stock_transactions',        // سيظهر كنص: inventory.module_stock_transactions
+            'icon'  => 'mdi-swap-horizontal-bold',
+            'route' => 'inv.trx.index',             // صفحة قائمة الحركات
         ];
 
         if (!isset($modules) || !is_array($modules)) {
@@ -44,9 +50,11 @@
 
         $hasBalance = collect($modules)->contains(fn($m) => ($m['key'] ?? null) === 'stock_balance');
         $hasDirect  = collect($modules)->contains(fn($m) => ($m['key'] ?? null) === 'direct_store');
+        $hasTrx     = collect($modules)->contains(fn($m) => ($m['key'] ?? null) === 'stock_transactions');
 
-        // اجعل "رصيد المخزن" أول كارد
-        if (!$hasBalance) array_unshift($modules, $stockBalanceCard);
+        // ترتيب الظهور: إضافة مباشرة ← حركات المخزون ← رصيد المخزن
+        if (!$hasBalance) array_push($modules, $stockBalanceCard);
+        if (!$hasTrx)     array_unshift($modules, $stockTransactionsCard);
         if (!$hasDirect)  array_unshift($modules, $directStoreCard);
     @endphp
 
@@ -56,7 +64,7 @@
             <div class="row g-4">
                 @foreach($modules as $m)
                     @php
-                        $exists = \Illuminate\Support\Facades\Route::has($m['route']);
+                        $exists = \Illuminate\Support\Facades\Route::has($m['route'] ?? '');
                         $href   = $exists ? route($m['route']) : 'javascript:void(0)';
                     @endphp
 
@@ -65,10 +73,10 @@
                            class="hub-card {{ $exists ? '' : 'is-disabled' }}"
                            @unless($exists) aria-disabled="true" title="{{ __('inventory.route_missing') }}" @endunless>
                             <div class="hub-card__icon">
-                                <i class="mdi {{ $m['icon'] }}"></i>
+                                <i class="mdi {{ $m['icon'] ?? 'mdi-view-grid-outline' }}"></i>
                             </div>
                             <div class="hub-card__title">
-                                {{ __('inventory.module_'.$m['key']) }}
+                                {{ __('inventory.module_'.($m['key'] ?? 'unknown')) }}
                             </div>
                             <div class="hub-card__subtitle">
                                 {{ $exists ? __('inventory.open') : __('inventory.soon') }}

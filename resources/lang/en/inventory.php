@@ -54,7 +54,17 @@ return [
     'ds_save'          => 'Save',
     'ds_reset'         => 'Reset',
     'ds_remove_row'    => 'Remove Row',
+  // Inventory Manage (cards)
+    'manage_title'     => 'Inventory Management',
+    'manage_subtitle'  => 'Quick modules and tools for inventory',
+    'route_missing'    => 'Route is not available yet',
+    'open'             => 'Open',
+    'soon'             => 'Coming Soon',
 
+    // Module names
+    'module_stock_balance'      => 'Stock Balance',
+    'module_direct_store'       => 'Direct Store Add',
+    'module_stock_transactions' => 'Stock Movements',
     // Choices
     'choose'           => '— Choose —',
     'optional'         => '— Optional —',
