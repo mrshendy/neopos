@@ -2370,4 +2370,21 @@ return [
     'void' => 'Voided',
     'direction' => 'Direction',
 
+    'handover_title_index' => 'Cashbox Handover',
+    'handover_title_manage' => 'Manage Cashbox Handover',
+    'amount_expected' => 'Expected Amount',
+    'amount_counted' => 'Counted Amount',
+    'difference' => 'Difference',
+    'submitted' => 'Submitted',
+    'received' => 'Received',
+    'rejected' => 'Rejected',
+    'handover_help_cashbox' => 'Select the cashbox.',
+    'handover_help_date' => 'Handover date & time.',
+    'handover_help_docno' => 'Optional document number.',
+    'handover_help_expected' => 'Expected amount from system.',
+    'handover_help_counted' => 'Actual counted amount.',
+    'handover_help_status' => 'Current handover status.',
+    'handover_help_delivered_by' => 'User who delivered.',
+    'handover_help_received_by' => 'User who received.',
+
 ];

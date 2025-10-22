@@ -2403,7 +2403,26 @@ return [
 'mov_help_reference'=> 'مرجع اختياري مرتبط بوثيقة خارجية.',
 'mov_help_status'   => 'الحالة الحالية للحركة.',
 'void'              => 'ملغاة',
-'direction'         => 'الاتجاه'
+'direction'         => 'الاتجاه',
 
+'handover_title_index' => 'استلام/تسليم الخزينة',
+'handover_title_manage'=> 'إدارة استلام/تسليم الخزينة',
+'amount_expected'      => 'المبلغ المتوقّع',
+'amount_counted'       => 'المبلغ المحصّل',
+'difference'           => 'الفرق',
+'submitted'            => 'مُرسلة',
+'received'             => 'مستلمة',
+'rejected'             => 'مرفوضة',
+'handover_help_cashbox'=> 'اختر الخزينة محل التسليم.',
+'handover_help_date'   => 'تاريخ ووقت التسليم/الاستلام.',
+'handover_help_docno'  => 'رقم المستند اختياري.',
+'handover_help_expected'=> 'المبلغ المتوقع حسب العمليات.',
+'handover_help_counted'=> 'المبلغ الفعلي المُسلّم.',
+'handover_help_status' => 'الحالة الحالية للتسليم.',
+'handover_help_delivered_by'=> 'المستخدم الذي قام بالتسليم.',
+'handover_help_received_by' => 'المستخدم الذي استلم.',
+
+'delivered_by' => 'المستخدم الذي قام بالتسليم.',
+'received_by'  => 'المستخدم الذي استلم.',
 
 ];

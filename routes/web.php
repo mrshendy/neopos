@@ -3,6 +3,7 @@
 use App\Http\Controllers\customer\customercontroller;
 use App\Http\Controllers\finance_settingscontroller;
 use App\Http\Controllers\financecontroller;
+use App\Http\Controllers\financehandovercontroller;
 use App\Http\Controllers\financemovementscontroller;
 use App\Http\Controllers\general\branchcontroller;
 use App\Http\Controllers\inventory\alertscontroller;
@@ -215,7 +216,6 @@ Route::group(
 
         Route::get('/finance', [financecontroller::class, 'index'])->name('finance.index');
 
-
         Route::resource('finance_settings', finance_settingscontroller::class)->names([
             'index' => 'finance_settings.index',
             'create' => 'finance_settings.create',
@@ -231,6 +231,9 @@ Route::group(
             Route::get('/movements/manage/{id?}', [financemovementscontroller::class, 'manage'])->name('finance.movements.manage');
 
         });
+
+        Route::get('/finance/handovers', [financehandovercontroller::class, 'index'])->name('finance.handovers');
+        Route::get('/finance/handovers/manage/{id?}', [financehandovercontroller::class, 'manage'])->name('finance.handovers.manage');
 
         Route::get('/{page}', 'AdminController@index');
 
