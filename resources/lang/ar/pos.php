@@ -2358,4 +2358,52 @@ return [
     'finset_ul_active'           => 'نشط',
     'finset_ul_no_rows'          => 'لا توجد حدود مضافة بعد.',
 
+
+    'finset_cashbox_type' => 'نوع الخزينة',
+    'trashed' => 'محذوفة',
+    'active_only' => 'نشط فقط',
+    'with_trashed' => 'مع المحذوفات',
+    'only_trashed' => 'المحذوف فقط',
+    'finset_cashbox_type_main' => 'الخزينة الرئيسية',
+    'finset_cashbox_type_sub' => 'خزينة فرعية',
+    'finset_help_cashbox_type' => 'اختر نوع الخزينة: رئيسية أو فرعية.',
+
+    // Movements
+'mov_title_index'   => 'حركات الخزائن',
+'mov_title_manage'  => 'إدارة حركة خزينة',
+'mov_in'            => 'قبض',
+'mov_out'           => 'صرف',
+'date'              => 'التاريخ',
+'amount'            => 'المبلغ',
+'currency'          => 'العملة',
+'method'            => 'طريقة الدفع',
+'method_cash'       => 'نقدي',
+'method_bank'       => 'بنكي',
+'method_pos'        => 'نقطة بيع',
+'method_transfer'   => 'تحويل',
+'doc_no'            => 'رقم المستند',
+'reference'         => 'المرجع',
+'status'            => 'الحالة',
+'cashbox'           => 'الخزينة',
+'search'            => 'بحث',
+'date_range'        => 'الفترة',
+'amount_range'      => 'نطاق المبلغ',
+'active_only'       => 'النشطة فقط',
+'with_trashed'      => 'مع المحذوف',
+'only_trashed'      => 'المحذوف فقط',
+'per_page'          => 'لكل صفحة',
+'choose'            => 'اختر...',
+// helps
+'mov_help_cashbox'  => 'اختر الخزينة التي ستتم عليها الحركة.',
+'mov_help_date'     => 'اختر تاريخ الحركة.',
+'mov_help_direction'=> 'حدد إن كانت قبضًا أم صرفًا.',
+'mov_help_amount'   => 'أدخل المبلغ بشكل صحيح.',
+'mov_help_method'   => 'اختر وسيلة/طريقة الدفع.',
+'mov_help_docno'    => 'يمكن تركه فارغًا/إدخاله لاحقًا.',
+'mov_help_reference'=> 'مرجع اختياري مرتبط بوثيقة خارجية.',
+'mov_help_status'   => 'الحالة الحالية للحركة.',
+'void'              => 'ملغاة',
+'direction'         => 'الاتجاه'
+
+
 ];

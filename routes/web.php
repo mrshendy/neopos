@@ -3,6 +3,7 @@
 use App\Http\Controllers\customer\customercontroller;
 use App\Http\Controllers\finance_settingscontroller;
 use App\Http\Controllers\financecontroller;
+use App\Http\Controllers\financemovementscontroller;
 use App\Http\Controllers\general\branchcontroller;
 use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
@@ -212,15 +213,8 @@ Route::group(
                     ->name('show');
             });
 
-        Route::resource('finance', financecontroller::class)->names([
-            'index' => 'finance.index',
-            'create' => 'finance.create',
-            'store' => 'finance.store',
-            'edit' => 'finance.edit',
-            'update' => 'finance.update',
-            'destroy' => 'finance.destroy',
-            'show' => 'finance.show',
-        ]);
+        Route::get('/finance', [financecontroller::class, 'index'])->name('finance.index');
+
 
         Route::resource('finance_settings', finance_settingscontroller::class)->names([
             'index' => 'finance_settings.index',
@@ -231,10 +225,13 @@ Route::group(
             'destroy' => 'finance_settings.destroy',
             'show' => 'finance_settings.show',
         ]);
-        Route::get('/finance/movements', [financecontroller::class, 'movements'])->name('finance.movements'); // تقرير الحركات
-        Route::get('/finance/shifts', [financecontroller::class, 'shifts'])->name('finance.shifts');       // استلام/تسليم
-        Route::get('/finance/receipts', [financecontroller::class, 'receipts'])->name('finance.receipts');   // الإيصالات
-        Route::get('/finance/receipts/void', [financecontroller::class, 'receiptsVoid'])->name('finance.receipts.void'); // إلغاء إيصال
+        // حركات الخزائن
+        Route::prefix('finance')->group(function () {
+            Route::get('/movements', [financemovementscontroller::class, 'index'])->name('finance.movements');
+            Route::get('/movements/manage/{id?}', [financemovementscontroller::class, 'manage'])->name('finance.movements.manage');
+
+        });
+
         Route::get('/{page}', 'AdminController@index');
 
     });

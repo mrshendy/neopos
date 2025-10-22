@@ -26,7 +26,6 @@
     </style>
 
     <form wire:submit.prevent="save" class="row g-3">
-
         <div class="col-12">
             <div class="card rounded-4 shadow-sm stylish-card">
                 <div class="card-header bg-light fw-bold d-flex align-items-center justify-content-between">
@@ -55,24 +54,23 @@
 
                     <div class="divider my-3"></div>
 
-                    {{-- ====== ربطات أساسية ====== --}}
+                    {{-- ====== إعدادات أساسية ====== --}}
                     <div class="row g-3">
+                        {{-- نوع الخزينة: رئيسية / فرعية --}}
                         <div class="col-lg-4 field-block">
-                            <label class="form-label"><i class="mdi mdi-office-building me-1"></i> {{ __('pos.finset_branch') }}</label>
-                            <input type="number" class="form-control" wire:model.defer="branch_id" placeholder="{{ __('pos.finset_ph_branch') }}">
-                            <small class="help">{{ __('pos.finset_help_branch') }}</small>
-                            <div class="preview-chip"><i class="mdi mdi-office-building"></i> {{ $branch_id ?: '—' }}</div>
-                            @error('branch_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            <label class="form-label"><i class="mdi mdi-home-group me-1"></i> {{ __('pos.finset_cashbox_type') }}</label>
+                            <select class="form-select" wire:model.defer="cashbox_type">
+                                <option value="main">{{ __('pos.finset_cashbox_type_main') }}</option>
+                                <option value="sub">{{ __('pos.finset_cashbox_type_sub') }}</option>
+                            </select>
+                            <small class="help">{{ __('pos.finset_help_cashbox_type') }}</small>
+                            <div class="preview-chip"><i class="mdi mdi-eye-outline"></i>
+                                {{ $cashbox_type === 'main' ? __('pos.finset_cashbox_type_main') : __('pos.finset_cashbox_type_sub') }}
+                            </div>
+                            @error('cashbox_type') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-lg-4 field-block">
-                            <label class="form-label"><i class="mdi mdi-warehouse me-1"></i> {{ __('pos.finset_warehouse') }}</label>
-                            <input type="number" class="form-control" wire:model.defer="warehouse_id" placeholder="{{ __('pos.finset_ph_warehouse') }}">
-                            <small class="help">{{ __('pos.finset_help_warehouse') }}</small>
-                            <div class="preview-chip"><i class="mdi mdi-warehouse"></i> {{ $warehouse_id ?: '—' }}</div>
-                            @error('warehouse_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                        </div>
-
+                        {{-- العملة --}}
                         <div class="col-lg-4 field-block">
                             <label class="form-label"><i class="mdi mdi-cash-multiple me-1"></i> {{ __('pos.finset_currency') }}</label>
                             <input type="number" class="form-control" wire:model.defer="currency_id" placeholder="{{ __('pos.finset_ph_currency') }}">
@@ -210,16 +208,14 @@
                                         </td>
                                         <td>
                                             <input type="number" min="0" class="form-control"
-                                                   wire:model.defer="userLimits.{{ $idx }}.daily_count_limit"
-                                                   placeholder="0">
+                                                   wire:model.defer="userLimits.{{ $idx }}.daily_count_limit" placeholder="0">
                                             <small class="help">{{ __('pos.finset_ul_help_daily_count') }}</small>
                                             <div class="preview-chip"><i class="mdi mdi-counter"></i> {{ $ul['daily_count_limit'] ?? '—' }}</div>
                                             @error("userLimits.$idx.daily_count_limit") <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                         </td>
                                         <td>
                                             <input type="number" min="0" step="0.01" class="form-control"
-                                                   wire:model.defer="userLimits.{{ $idx }}.daily_amount_limit"
-                                                   placeholder="0.00">
+                                                   wire:model.defer="userLimits.{{ $idx }}.daily_amount_limit" placeholder="0.00">
                                             <small class="help">{{ __('pos.finset_ul_help_daily_amount') }}</small>
                                             <div class="preview-chip"><i class="mdi mdi-cash"></i> {{ $ul['daily_amount_limit'] ?? '—' }}</div>
                                             @error("userLimits.$idx.daily_amount_limit") <div class="text-danger small mt-1">{{ $message }}</div> @enderror
@@ -273,7 +269,7 @@
         </div>
     </form>
 
-    {{-- ✅ SweetAlert2 confirm remove user-limit row --}}
+    {{-- SweetAlert2: تأكيد حذف صف حد المستخدم --}}
     <script>
         function confirmRemoveLimit(idx){
             Swal.fire({
@@ -287,7 +283,6 @@
                 cancelButtonText: '{{ __('pos.alert_cancel') }}'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Call Livewire method on this component instance
                     Livewire.find('{{ $_instance->id }}').call('removeUserLimit', idx);
                     Swal.fire('{{ __('pos.alert_deleted_title') }}', '{{ __('pos.alert_deleted_text') }}', 'success');
                 }
