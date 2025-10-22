@@ -17,7 +17,7 @@ class Manage extends Component
     public $pos_id = null;
 
     public $pos_date;
-    public $delivery_date;
+    public $delivery_date; // للواجهة فقط حالياً (غير محفوظة بجدول pos)
     public $warehouse_id;
     public $customer_id;
     public $notes_ar = '';
@@ -48,9 +48,9 @@ class Manage extends Component
             $this->notes_en = $t['en'] ?? '';
 
             $this->pos_date      = $pos->pos_date;
-            $this->delivery_date = $pos->delivery_date;
+            $this->delivery_date = $pos->delivery_date ?? null; // لو غير موجودة ترجع null
             $this->warehouse_id  = $pos->warehouse_id;
-            $this->customer_id   = $pos->customer_id;
+            $this->customer_id   = $pos->customer_id ?? '';
 
             $this->rows = $pos->lines->map(function ($l) {
                 return [
@@ -58,7 +58,7 @@ class Manage extends Component
                     'unit_id'     => $l->unit_id,
                     'qty'         => (float) $l->qty,
                     'unit_price'  => (float) $l->unit_price,
-                    'onhand'      => 0, // عرض فقط
+                    'onhand'      => 0, // للعرض
                     'uom_text'    => $l->uom_text ?? null,
                     'has_expiry'  => !empty($l->expiry_date),
                     'expiry_date' => $l->expiry_date,
@@ -103,7 +103,6 @@ class Manage extends Component
 
     public function updated($field): void
     {
-        // أي تغيير في صفوف البنود أو الخصم/الضريبة يعيد الحساب
         if (str_starts_with($field, 'rows.') || in_array($field, ['discount', 'tax'])) {
             $this->recalcTotals();
         }
@@ -117,7 +116,7 @@ class Manage extends Component
             if ($p) {
                 $this->rows[$i]['unit_id'] = $p->unit_id ?? null;
 
-                // حساب اسم الوحدة من جدول الوحدات (مع دعم JSON name)
+                // اسم الوحدة (يدعم تخزين JSON بالاسم)
                 $uom = null;
                 if ($p->unit_id) {
                     $u = Unit::find($p->unit_id);
@@ -131,7 +130,7 @@ class Manage extends Component
                     }
                 }
                 $this->rows[$i]['uom_text'] = $uom;
-                $this->rows[$i]['onhand']   = 0; // TODO: استبدلها بدالة الرصيد لو متاحة
+                $this->rows[$i]['onhand']   = 0; // TODO: اربط برصيد المخزون إن توفر
             }
         }
         $this->recalcTotals();
@@ -141,16 +140,16 @@ class Manage extends Component
     {
         return [
             'pos_date'      => 'required|date',
-            'delivery_date' => 'nullable|date',
-            'warehouse_id'  => 'required|exists:warehouses,id', // غيّرها لو جدولك مختلف
-            'customer_id'   => 'nullable|exists:customer,id',   // أو customers,id حسب جدولك
+            // delivery_date غير محفوظة الآن
+            'warehouse_id'  => 'required|exists:warehouses,id',
+            'customer_id'   => 'nullable|exists:customer,id', // ← اسم الجدول الصحيح عندك
 
             'discount' => 'nullable|numeric|min:0',
             'tax'      => 'nullable|numeric|min:0',
 
             'rows'                 => 'required|array|min:1',
             'rows.*.product_id'    => 'required|exists:products,id',
-            'rows.*.unit_id'       => 'nullable|exists:unit,id', // لو جدولك units غيّرها
+            'rows.*.unit_id'       => 'nullable|exists:unit,id', // ← اسم الجدول الصحيح عندك
             'rows.*.qty'           => 'required|numeric|min:0.0001',
             'rows.*.unit_price'    => 'required|numeric|min:0',
             'rows.*.expiry_date'   => 'nullable|date',
@@ -191,14 +190,17 @@ class Manage extends Component
             } else {
                 $pos = new Pos();
                 $next = (int) ((Pos::max('id') ?? 0) + 1);
-                $pos->pos_no  = 'SO-'.now()->format('Ymd').'-'.str_pad((string)$next, 4, '0', STR_PAD_LEFT);
+                $pos->pos_no = 'SO-'.now()->format('Ymd').'-'.str_pad((string)$next, 4, '0', STR_PAD_LEFT);
                 $pos->status  = 'draft';
             }
 
+            // طبّع القيم الاختيارية إلى NULL
+            $customerId = $this->customer_id ?: null;
+
             $pos->pos_date      = $this->pos_date;
-            $pos->delivery_date = $this->delivery_date;
+            // لا نحفظ delivery_date حالياً
             $pos->warehouse_id  = $this->warehouse_id;
-            $pos->customer_id   = $this->customer_id;
+            $pos->customer_id   = $customerId; // NULL أو id صحيح من جدول customer
             $pos->notes         = ['ar' => $this->notes_ar, 'en' => $this->notes_en];
             $pos->subtotal      = $this->subtotal;
             $pos->discount      = $this->discount;
@@ -216,27 +218,18 @@ class Manage extends Component
                     $r['expiry_date'] = null;
                 }
 
-                // product code إن وُجد
-                $code = null;
-                if (!empty($r['product_id'])) {
-                    $prod = Product::find($r['product_id']);
-                    if ($prod && isset($prod->code)) {
-                        $code = $prod->code;
-                    }
-                }
-
                 $line = new PosLine([
-                    'product_id'  => $r['product_id'],
-                    'unit_id'     => $r['unit_id'],
-                    'warehouse_id'=> $this->warehouse_id, // موجود في pos_lines عندك
-                    'code'        => $code,
-                    'uom_text'    => $r['uom_text'],
-                    'qty'         => (float) $r['qty'],
-                    'unit_price'  => (float) $r['unit_price'],
-                    'line_total'  => round((float)$r['qty'] * (float)$r['unit_price'], 4),
-                    'expiry_date' => $r['expiry_date'],
-                    'batch_no'    => $r['batch_no'],
-                    'notes'       => null,
+                    'product_id'   => $r['product_id'],
+                    'unit_id'      => $r['unit_id'] ?: null,
+                    'warehouse_id' => $this->warehouse_id,
+                    'code'         => null, // لا يوجد code بالمنتجات حالياً
+                    'uom_text'     => $r['uom_text'],
+                    'qty'          => (float) $r['qty'],
+                    'unit_price'   => (float) $r['unit_price'],
+                    'line_total'   => round((float)$r['qty'] * (float)$r['unit_price'], 4),
+                    'expiry_date'  => $r['expiry_date'],
+                    'batch_no'     => $r['batch_no'],
+                    'notes'        => null,
                 ]);
                 $pos->lines()->save($line);
             }
@@ -252,8 +245,8 @@ class Manage extends Component
     {
         return view('livewire.pos.manage', [
             'warehouses' => Warehouse::orderBy('name')->get(['id','name']),
-            'customers'  => Customer::orderBy('name')->get(['id','name']),
-            'products'   => Product::orderBy('name')->get(['id','name','unit_id','code']),
+            'customers'  => Customer::orderBy('name')->get(['id','name']), // يستخدم موديلك الذي يشير لجدول customer
+            'products'   => Product::orderBy('name')->get(['id','name','unit_id']),
             'units'      => Unit::orderBy('name')->get(['id','name']),
         ]);
     }

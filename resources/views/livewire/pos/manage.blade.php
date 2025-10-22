@@ -152,7 +152,7 @@
                                             </button>
                                         </td>
 
-                                        {{-- Product (بدون تصنيف) --}}
+                                        {{-- Product --}}
                                         <td>
                                             <select class="form-select"
                                                     wire:model="rows.{{ $i }}.product_id"
@@ -166,9 +166,7 @@
                                                             $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $p->name;
                                                         }
                                                     @endphp
-                                                    <option value="{{ $p->id }}">
-                                                        {{ $pname }}{{ isset($p->code) && $p->code ? ' — '.$p->code : '' }}
-                                                    </option>
+                                                    <option value="{{ $p->id }}">{{ $pname }}</option>
                                                 @endforeach
                                             </select>
                                             @error("rows.$i.product_id") <small class="text-danger">{{ $message }}</small> @enderror
@@ -177,7 +175,7 @@
                                         {{-- Unit --}}
                                         <td>
                                             <select class="form-select" wire:model="rows.{{ $i }}.unit_id">
-                                                <option value="">{{ __('pos.choose_unit') }}</option>
+                            <option value="">{{ __('pos.choose_unit') }}</option>
                                                 @foreach($units as $u)
                                                     @php
                                                         $uname = $u->name;
@@ -241,7 +239,7 @@
                     </div>
                 </div>
 
-                {{-- Discount & Tax inputs --}}
+                {{-- خصم وضريبة --}}
                 <div class="col-md-3">
                     <label class="form-label">{{ __('pos.discount') }}</label>
                     <input type="number" step="0.01" class="form-control" wire:model.lazy="discount">
@@ -271,7 +269,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="text-muted small">{{ __('pos.grand_total') }}</div>
-                                <div class="fw-bold text-primary">{{ number_format((float)$grand, 2) }}</div>
+                                <div class="fw-bold text-black">{{ number_format((float)$grand, 2) }}</div>
                             </div>
                         </div>
                     </div>

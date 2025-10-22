@@ -21,6 +21,7 @@
         .badge-status.approved{background:#f0fdf4;color:#166534;border:1px solid rgba(22,101,52,.15)}
         .badge-status.posted{background:#eff6ff;color:#1e40af;border:1px solid rgba(30,64,175,.15)}
         .badge-status.cancelled{background:#fef2f2;color:#991b1b;border:1px solid rgba(153,27,27,.15)}
+        .toolbar .btn{border-radius:9999px}
     </style>
 
     <div class="card shadow-sm rounded-4 stylish-card">
@@ -29,12 +30,13 @@
                 <h5 class="mb-0 fw-bold"><i class="mdi mdi-cash-register me-1"></i> {{ __('pos.pos_index_title') }}</h5>
                 <div class="text-muted small">{{ __('pos.pos_index_subtitle') }}</div>
             </div>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 align-items-center">
                 @if (Route::has('pos.create'))
-                <a href="{{ route('pos.create') }}" class="btn btn-primary rounded-pill px-3 shadow-sm">
-                    <i class="mdi mdi-plus-circle-outline me-1"></i> {{ __('pos.pos_new') }}
-                </a>
+                    <a href="{{ route('pos.create') }}" class="btn btn-success rounded-pill px-4 shadow-sm">
+                        <i class="mdi mdi-plus-circle-outline me-1"></i> {{ __('pos.pos_new') }}
+                    </a>
                 @endif
+
                 <div class="d-flex align-items-center gap-2">
                     <div class="text-muted small">{{ __('pos.per_page') }}</div>
                     <select class="form-select form-select-sm" style="width:auto" wire:model="perPage">
@@ -77,7 +79,14 @@
                     <select class="form-select" wire:model="warehouse_id">
                         <option value="">{{ __('pos.all') }}</option>
                         @foreach($warehouses as $w)
-                            <option value="{{ $w['id'] }}">{{ $w['name'] }}</option>
+                            @php
+                                $wname = $w->name;
+                                if (is_string($wname) && str_starts_with(trim($wname), '{')) {
+                                    $a = json_decode($wname,true)?:[];
+                                    $wname = $a[app()->getLocale()] ?? $a['ar'] ?? $w->name;
+                                }
+                            @endphp
+                            <option value="{{ $w->id }}">{{ $wname }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -87,7 +96,14 @@
                     <select class="form-select" wire:model="customer_id">
                         <option value="">{{ __('pos.all') }}</option>
                         @foreach($customers as $c)
-                            <option value="{{ $c['id'] }}">{{ $c['name'] }}</option>
+                            @php
+                                $cname = $c->name;
+                                if (is_string($cname) && str_starts_with(trim($cname), '{')) {
+                                    $a = json_decode($cname,true)?:[];
+                                    $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $c->name;
+                                }
+                            @endphp
+                            <option value="{{ $c->id }}">{{ $cname }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -97,91 +113,90 @@
             <div class="table-responsive">
                 <table class="table table-bordered align-middle">
                     <thead>
-                    <tr>
-                        <th style="width:140px">{{ __('pos.sale_no') }}</th>
-                        <th style="width:120px">{{ __('pos.sale_date') }}</th>
-                        <th>{{ __('pos.customer') }}</th>
-                        <th>{{ __('pos.warehouse') }}</th>
-                        <th class="text-center" style="width:110px">{{ __('pos.items_count') }}</th>
-                        <th class="text-end" style="width:150px">{{ __('pos.grand_total') }}</th>
-                        <th class="text-center" style="width:120px">{{ __('pos.status') }}</th>
-                        <th style="width:240px">{{ __('pos.actions') }}</th>
-                    </tr>
+                        <tr>
+                            <th style="width:140px">{{ __('pos.sale_no') }}</th>
+                            <th style="width:120px">{{ __('pos.sale_date') }}</th>
+                            <th>{{ __('pos.customer') }}</th>
+                            <th>{{ __('pos.warehouse') }}</th>
+                            <th class="text-center" style="width:110px">{{ __('pos.items_count') }}</th>
+                            <th class="text-end" style="width:150px">{{ __('pos.grand_total') }}</th>
+                            <th class="text-center" style="width:120px">{{ __('pos.status') }}</th>
+                            <th style="width:240px">{{ __('pos.actions') }}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @forelse($rows as $r)
-                        @php
-                            $noCol     = $columns['no'];
-                            $dateCol   = $columns['date'] ?: 'created_at';
-                            $totalCol  = $columns['total'];
-                            $statusCol = $columns['status'];
+                        @forelse($rows as $r)
+                            @php
+                                $saleNo   = $r->pos_no ?: ('#'.$r->id);
+                                $saleDate = $r->pos_date ? \Illuminate\Support\Carbon::parse($r->pos_date)->format('Y-m-d') : '—';
 
-                            $saleNo    = $noCol ? ($r->{$noCol} ?? ('#'.$r->id)) : ('#'.$r->id);
-                            $saleDate  = $r->{$dateCol} ?? $r->created_at;
-                            $grand     = $totalCol ? (float)($r->{$totalCol} ?? 0) : 0;
-                            $statusVal = $statusCol ? ($r->{$statusCol} ?? 'draft') : 'draft';
+                                $wn = $r->warehouse->name ?? '—';
+                                if (is_string($wn) && \Illuminate\Support\Str::startsWith(trim($wn), '{')) {
+                                    $a = json_decode($wn,true)?:[];
+                                    $wn = $a[app()->getLocale()] ?? $a['ar'] ?? '—';
+                                }
 
-                            // أسماء آمنة مترجمة
-                            $wn = $r->warehouse->name ?? ($r->warehouse->title ?? '—') ?? '—';
-                            if (is_string($wn) && \Illuminate\Support\Str::startsWith(trim($wn), '{')) {
-                                $a = json_decode($wn,true)?:[];
-                                $wn = $a[app()->getLocale()] ?? $a['ar'] ?? '—';
-                            }
-                            $cn = $r->customer->name ?? ($r->customer->title ?? '—') ?? '—';
-                            if (is_string($cn) && \Illuminate\Support\Str::startsWith(trim($cn), '{')) {
-                                $a = json_decode($cn,true)?:[];
-                                $cn = $a[app()->getLocale()] ?? $a['ar'] ?? '—';
-                            }
+                                $cn = $r->customer->name ?? '—';
+                                if (is_string($cn) && \Illuminate\Support\Str::startsWith(trim($cn), '{')) {
+                                    $a = json_decode($cn,true)?:[];
+                                    $cn = $a[app()->getLocale()] ?? $a['ar'] ?? '—';
+                                }
 
-                            $itemsCount = $r->lines_count ?? ($r->items_count ?? 0);
-                        @endphp
-                        <tr>
-                            <td class="fw-semibold">{{ $saleNo }}</td>
-                            <td>{{ $saleDate ? \Illuminate\Support\Carbon::parse($saleDate)->format('Y-m-d') : '—' }}</td>
-                            <td>{{ $cn }}</td>
-                            <td>{{ $wn }}</td>
-                            <td class="text-center">
-                                <span class="badge bg-light text-dark border">{{ $itemsCount }}</span>
-                            </td>
-                            <td class="text-end fw-semibold">{{ number_format($grand, 2) }}</td>
-                            <td class="text-center">
-                                <span class="badge badge-status {{ $statusVal }}">
-                                    {{ \Illuminate\Support\Facades\Lang::has('pos.status_'.$statusVal) ? __('pos.status_'.$statusVal) : strtoupper($statusVal) }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    @if (Route::has('pos.show'))
-                                        <a href="{{ route('pos.show',$r->id) }}" class="btn btn-sm btn-outline-secondary" title="{{ __('pos.show') }}">
-                                            <i class="mdi mdi-eye-outline"></i>
-                                        </a>
-                                    @endif
-                                    @if (Route::has('pos.edit'))
-                                        <a href="{{ route('pos.edit',$r->id) }}" class="btn btn-sm btn-outline-primary" title="{{ __('pos.edit') }}">
-                                            <i class="mdi mdi-pencil-outline"></i>
-                                        </a>
-                                    @endif
-                                    <button class="btn btn-sm btn-outline-success"
-                                            title="{{ __('pos.status_approved') }}"
-                                            onclick="Livewire.emit('statusChange', {{ $r->id }}, 'approved')">
-                                        <i class="mdi mdi-check-bold"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning"
-                                            title="{{ __('pos.status_posted') }}"
-                                            onclick="Livewire.emit('statusChange', {{ $r->id }}, 'posted')">
-                                        <i class="mdi mdi-upload"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger"
-                                            title="{{ __('pos.delete') }}"
-                                            onclick="confirmDelete({{ $r->id }})">
-                                        <i class="mdi mdi-trash-can-outline"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="8" class="text-center text-muted py-4">{{ __('pos.no_data') }}</td></tr>
-                    @endforelse
+                                $itemsCount = $r->lines_count ?? 0;
+                                $grand      = (float)($r->grand_total ?? 0);
+                                $statusVal  = $r->status ?: 'draft';
+                            @endphp
+                            <tr>
+                                <td class="fw-semibold">{{ $saleNo }}</td>
+                                <td>{{ $saleDate }}</td>
+                                <td>{{ $cn }}</td>
+                                <td>{{ $wn }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border">{{ $itemsCount }}</span>
+                                </td>
+                                <td class="text-end fw-semibold">{{ number_format($grand, 2) }}</td>
+                                <td class="text-center">
+                                    <span class="badge badge-status {{ $statusVal }}">
+                                        {{ \Illuminate\Support\Facades\Lang::has('pos.status_'.$statusVal) ? __('pos.status_'.$statusVal) : strtoupper($statusVal) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        @if (Route::has('pos.show'))
+                                            <a href="{{ route('pos.show',$r->id) }}"
+                                               class="btn btn-sm btn-outline-secondary" title="{{ __('pos.show') }}">
+                                                <i class="mdi mdi-eye-outline"></i>
+                                            </a>
+                                        @endif
+                                        @if (Route::has('pos.edit'))
+                                            <a href="{{ route('pos.edit',$r->id) }}"
+                                               class="btn btn-sm btn-outline-primary" title="{{ __('pos.edit') }}">
+                                                <i class="mdi mdi-pencil-outline"></i>
+                                            </a>
+                                        @endif
+                                        <button class="btn btn-sm btn-outline-success"
+                                                title="{{ __('pos.status_approved') }}"
+                                                onclick="Livewire.emit('statusChange', {{ $r->id }}, 'approved')">
+                                            <i class="mdi mdi-check-bold"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning"
+                                                title="{{ __('pos.status_posted') }}"
+                                                onclick="Livewire.emit('statusChange', {{ $r->id }}, 'posted')">
+                                            <i class="mdi mdi-upload"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                title="{{ __('pos.delete') }}"
+                                                onclick="confirmDelete({{ $r->id }})">
+                                            <i class="mdi mdi-trash-can-outline"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">{{ __('pos.no_data') }}</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
