@@ -4,8 +4,9 @@ namespace App\Http\Livewire\FinanceHandovers;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use App\models\finance\finance_handover as Handover;
-use App\models\finance\finance_settings as Settings;
+use Illuminate\Support\Facades\DB;
+use App\models\finance\finance_handover as Handover;   // عدّل لو اسم موديلك مختلف
+use App\models\finance\finance_settings as Settings;   // عدّل لو اسم موديلك مختلف
 use App\User;
 use Carbon\Carbon;
 
@@ -21,7 +22,7 @@ class Manage extends Component
     public $handover_date;
 
     // مبالغ
-    public $amount_expected = 0; // هنسيبه داخلي للتوافق (مش ظاهر في الواجهة)
+    public $amount_expected = 0; // داخلي/اختياري
     public $amount_counted  = 0;
 
     // حالة + رقم + ملاحظات
@@ -29,12 +30,8 @@ class Manage extends Component
     public $doc_no;
     public $notes = ['ar' => '', 'en' => ''];
 
-    // توافق قديم إن وجد
+    // توافق قديم لو عمود finance_settings_id موجود
     public $finance_settings_id;
-
-    // المستخدمون
-    public $delivered_by_user_id; // الذي قام بالتسليم
-    public $received_by_user_id;  // الذي استلم
 
     // القوائم
     public $cashboxes; // Collection
@@ -67,28 +64,54 @@ class Manage extends Component
         'status.required'                   => 'حالة التسليم مطلوبة.',
     ];
 
-    /** فرق معلوماتي (لو احتجته لاحقًا) */
+    /** الفرق (معلوماتي) */
     public function getDifferenceProperty()
     {
         return (float)($this->amount_counted - ($this->amount_expected ?? 0));
     }
 
-    /** العملة الخاصة بخزنة "من" */
-    public function getFromCurrencyIdProperty()
+    /** رصيد خزنة "من" الحالي محسوب من الإيصالات غير الملغاة والتحويلات الداخل/الخارج */
+    public function getFromBalanceProperty()
     {
-        if (!$this->cashboxes) return null;
-        $cb = $this->cashboxes->firstWhere('id', (int) $this->from_finance_settings_id);
-        return $cb ? $cb->currency_id : null;
+        $cbId = (int) $this->from_finance_settings_id;
+        if (!$cbId) return 0.0;
+
+        // إيصالات نشطة: amount_total - return_amount
+        $sumReceipts = (float) DB::table('finance_receipts')
+            ->whereNull('deleted_at')
+            ->where('finance_settings_id', $cbId)
+            ->where('status', '!=', 'canceled')
+            ->selectRaw('COALESCE(SUM(amount_total - COALESCE(return_amount,0)),0) as s')
+            ->value('s');
+
+        // تحويلات داخلة
+        $sumIn = (float) DB::table('finance_handovers')
+            ->whereNull('deleted_at')
+            ->where('target_finance_settings_id', $cbId)
+            ->whereIn('status', ['submitted','received'])
+            ->selectRaw('COALESCE(SUM(amount_counted),0) as s')
+            ->value('s');
+
+        // تحويلات خارجة
+        $sumOut = (float) DB::table('finance_handovers')
+            ->whereNull('deleted_at')
+            ->where('source_finance_settings_id', $cbId)
+            ->whereIn('status', ['submitted','received'])
+            ->selectRaw('COALESCE(SUM(amount_counted),0) as s')
+            ->value('s');
+
+        return round($sumReceipts + $sumIn - $sumOut, 2);
     }
 
     public function mount($id = null)
     {
-        // اجلب كل الخزائن (id, name, currency_id) بدون أي اعتماد على is_main
+        // كل الخزائن (id, name, currency_id)
         $this->cashboxes = Settings::query()
             ->select('id', 'name', 'currency_id')
             ->orderBy('id')
             ->get();
 
+        // المستخدمون
         $this->users = User::orderBy('name')->get();
 
         // تاريخ اليوم افتراضي
@@ -112,7 +135,7 @@ class Manage extends Component
             $this->delivered_by_user_id = $row->delivered_by_user_id;
             $this->received_by_user_id  = $row->received_by_user_id;
 
-            $this->finance_settings_id  = $row->finance_settings_id; // لو كان موجود في الجدول
+            $this->finance_settings_id  = $row->finance_settings_id ?? $this->to_finance_settings_id;
         } else {
             $this->finance_settings_id = $this->to_finance_settings_id;
         }
@@ -142,7 +165,6 @@ class Manage extends Component
             'target_finance_settings_id' => $this->to_finance_settings_id,
             'handover_date'              => $this->handover_date ? Carbon::parse($this->handover_date)->startOfDay() : null,
 
-            // المبلغ المتوقع غير ظاهر في الواجهة حالياً - نحتفظ به إن وجد
             'amount_expected' => $this->amount_expected ?: 0,
             'amount_counted'  => $this->amount_counted,
 
@@ -150,7 +172,7 @@ class Manage extends Component
             'doc_no' => $this->doc_no,
             'notes'  => $this->notes,
 
-            // توافق قديم (لو عمود finance_settings_id موجود)
+            // توافق قديم لو العمود موجود
             'finance_settings_id' => $this->to_finance_settings_id,
 
             'delivered_by_user_id' => $this->delivered_by_user_id,
@@ -173,10 +195,14 @@ class Manage extends Component
     public function render()
     {
         return view('livewire.finance-handovers.manage', [
-            'cashboxes'      => $this->cashboxes,
-            'users'          => $this->users,
-            'difference'     => $this->difference,
-            'fromCurrencyId' => $this->fromCurrencyId,
+            'cashboxes'            => $this->cashboxes,
+            'users'                => $this->users,
+            'difference'           => $this->difference,
+            'fromBalance'          => $this->fromBalance,
+            // تمرير صريح لتفادي أي Undefined في Blade
+            'from_finance_settings_id' => $this->from_finance_settings_id,
+            'to_finance_settings_id'   => $this->to_finance_settings_id,
+            'status'               => $this->status,
         ]);
     }
 }

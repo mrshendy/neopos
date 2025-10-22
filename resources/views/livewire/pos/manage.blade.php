@@ -1,934 +1,470 @@
-<div class="container" style="max-width:1600px;margin:0 auto" x-data>
+{{-- resources/views/livewire/pos/manage.blade.php --}}
+<div class="container-fluid px-3" x-data>
     {{-- Alerts --}}
     @if (session()->has('success'))
-        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-2 small">
             <i class="fa-solid fa-circle-check me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
     @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-2 small">
             <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>{{ __('pos.input_errors') }}</strong>
-            <ul class="mb-0 mt-2">
-                @foreach ($errors->all() as $e)
-                    <li>{{ $e }}</li>
-                @endforeach
-            </ul>
+            <ul class="mb-0 mt-1 small">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    {{-- Fonts & Icons --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.rtl.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
-        rel="stylesheet">
+    {{-- Icons / Font --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.rtl.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --primary: #0ea5e9;
-            --primary-light: #38bdf8;
-            --primary-dark: #0284c7;
-            --secondary: #06b6d4;
-            --accent: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --light: #f8fafc;
-            --dark: #0f172a;
-            --gray: #64748b;
-            --gray-light: #cbd5e1;
+        :root{
+            /* ألوان محايدة + هيرو أزرق سماوي */
+            --bg: #f7fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
             --border: #e2e8f0;
-            --card-bg: #ffffff;
-            --sidebar-bg: #0f172a;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, .1), 0 4px 6px -2px rgba(0, 0, 0, .05);
             --radius: 12px;
             --radius-sm: 8px;
-            --transition: all .25s ease;
+            --shadow: 0 1px 3px rgba(0,0,0,.08);
+            --shadow-md: 0 6px 16px rgba(0,0,0,.08);
+
+            --sky: #0ea5e9;
+            --sky-600:#0284c7;
+            --sky-300:#7dd3fc;
+            --sky-200:#bae6fd;
+            --accent: #8b5cf6;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif
-        }
+        *{box-sizing:border-box; font-family:'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif}
+        body{background:var(--bg); color:var(--text)}
 
-        body {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            color: var(--dark)
-        }
-
-        .pos-system {
-            display: grid;
-            grid-template-columns: 280px 1fr 380px;
-            gap: 20px;
-            min-height: calc(100vh - 40px)
-        }
-
-        @media (max-width: 1200px) {
-            .pos-system {
-                grid-template-columns: 250px 1fr 350px
-            }
-        }
-
-        @media (max-width: 992px) {
-            .pos-system {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 1fr auto
-            }
-        }
-
-        .header {
-            grid-column: 1/-1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: #fff;
-            border-radius: var(--radius);
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-            margin: 20px 0 10px
-        }
-
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin: 0 0 4px
-        }
-
-        .header p {
-            opacity: .92;
-            font-size: .95rem
-        }
-
-        .btn {
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid transparent;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: var(--transition)
-        }
-
-        .btn-primary {
-            background: rgba(255, 255, 255, .18);
-            color: #fff
-        }
-
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, .28)
-        }
-
-        .btn-light {
-            background: #fff;
-            color: var(--primary);
-            border-color: #fff
-        }
-
-        .btn-light:hover {
-            background: var(--light)
-        }
-
-        .btn-grad {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: #fff;
-            border: none
-        }
-
-        .btn-grad:hover {
-            opacity: .95
-        }
-
-        .sidebar {
-            background: var(--sidebar-bg);
-            border-radius: var(--radius);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            box-shadow: var(--shadow);
-            overflow: auto
-        }
-
-        .section-title {
-            color: #fff;
-            font-size: 1.05rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px
-        }
-
-        .categories-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px
-        }
-
-        .category-card {
-            background: rgba(255, 255, 255, .08);
-            border-radius: var(--radius-sm);
-            padding: 14px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, .1)
-        }
-
-        .category-card:hover {
-            background: rgba(255, 255, 255, .14);
-            transform: translateY(-2px)
-        }
-
-        .category-card.active {
-            background: var(--primary);
-            box-shadow: 0 4px 12px rgba(14, 165, 233, .4)
-        }
-
-        .category-icon {
-            font-size: 1.4rem;
-            margin-bottom: 6px;
-            color: var(--primary-light)
-        }
-
-        .category-card.active .category-icon {
-            color: #fff
-        }
-
-        .category-name {
-            color: #fff;
-            font-size: .95rem;
-            font-weight: 700
-        }
-
-        .filters-section {
-            background: rgba(255, 255, 255, .06);
-            border-radius: var(--radius-sm);
-            padding: 16px
-        }
-
-        .filter-group {
-            margin-bottom: 12px
-        }
-
-        .filter-label {
-            color: var(--gray-light);
-            font-size: .85rem;
-            margin-bottom: 6px;
-            display: block
-        }
-
-        .filter-select,
-        .filter-input {
-            width: 100%;
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, .16);
-            background: rgba(255, 255, 255, .1);
-            color: #fff;
-            font-size: .95rem
-        }
-
-        .filter-select:focus,
-        .filter-input:focus {
-            outline: none;
-            border-color: var(--primary-light)
-        }
-
-        .products-section {
-            background: #fff;
-            border-radius: var(--radius);
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow);
-            overflow: hidden
-        }
-
-        .search-box {
+        /* HERO HEADER */
+        .hero{
             position: relative;
-            margin-bottom: 12px
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 10px 0 14px;
+            border:1px solid var(--border);
+            background:
+                radial-gradient(800px 400px at 100% -20%, rgba(255,255,255,.35) 0%, transparent 70%),
+                linear-gradient(135deg, var(--sky) 0%, var(--sky-600) 100%);
+            color:#fff;
+            box-shadow: var(--shadow-md);
+        }
+        .hero-inner{display:flex; align-items:center; justify-content:space-between; padding:16px 18px}
+        .hero-title{
+            display:flex; align-items:center; gap:12px;
+        }
+        .hero-title i{
+            background: rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.25);
+            width:40px; height:40px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
+        }
+        .hero h1{margin:0; font-size:1.15rem; font-weight:800; letter-spacing:.2px}
+        .hero-sub{opacity:.95; font-size:.85rem; margin-top:2px}
+        .hero-actions{display:flex; gap:8px; align-items:center}
+        .hero .btn-ghost{
+            background: rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.25);
+            padding:.45rem .8rem; border-radius:10px; font-size:.85rem; font-weight:600;
+            backdrop-filter: blur(6px);
+        }
+        .hero .btn-ghost:hover{background: rgba(255,255,255,.22)}
+        .hero .stat{
+            display:flex; gap:10px; align-items:center; padding:.35rem .6rem; border-radius:999px;
+            background: rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); font-size:.8rem
         }
 
-        .search-input {
-            width: 100%;
-            padding: 12px 46px 12px 14px;
-            border-radius: var(--radius-sm);
+        /* Toolbar */
+        .toolbar{
+            background: var(--card);
             border: 1px solid var(--border);
-            background: var(--light)
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray)
-        }
-
-        .products-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 6px 0 12px
-        }
-
-        .products-title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--dark)
-        }
-
-        .view-btn {
-            padding: 8px 10px;
-            border-radius: 10px;
-            background: var(--light);
-            border: 1px solid var(--border);
-            cursor: pointer
-        }
-
-        .view-btn.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary)
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 14px;
-            overflow: auto;
-            padding: 4px;
-            flex: 1
-        }
-
-        .product-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 14px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg)
-        }
-
-        .product-image {
-            height: 110px;
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            color: var(--primary);
-            font-size: 1.8rem
-        }
-
-        .product-name {
-            font-weight: 800;
-            margin-bottom: 6px;
-            font-size: 1rem
-        }
-
-        .product-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: auto
-        }
-
-        .product-price {
-            font-weight: 900;
-            color: var(--primary)
-        }
-
-        .product-stock {
-            font-size: .82rem;
-            color: var(--gray)
-        }
-
-        .cart-section {
-            background: #fff;
             border-radius: var(--radius);
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
             box-shadow: var(--shadow);
-            overflow: hidden
-        }
-
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 12px 14px;
             margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border)
         }
-
-        .cart-title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--dark)
+        .toolbar .form-control,.toolbar .form-select{
+            height: 36px; padding: 0.35rem .7rem; font-size: .9rem; border: 1px solid var(--border); border-radius: 10px;
         }
-
-        .cart-items {
-            flex: 1;
-            overflow: auto;
-            margin-bottom: 10px
+        .toolbar .form-control:focus,.toolbar .form-select:focus{
+            border-color: var(--sky); box-shadow: 0 0 0 3px rgba(14, 165, 233, .15); outline:none;
         }
+        .toolbar .input-group-text{font-size:.85rem; background:#f8fafc; border:1px solid var(--border); color:var(--muted)}
+        .small-note{font-size:.75rem; color:var(--muted); margin-top:4px}
 
-        .cart-item {
-            display: flex;
-            gap: 10px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border)
+        /* Layout */
+        .pos-grid{display:grid; grid-template-columns: 1fr 360px; gap:14px}
+        @media(min-width:1200px){ .pos-grid{grid-template-columns: 1.2fr 420px} }
+        @media(max-width:992px){ .pos-grid{grid-template-columns: 1fr} }
+
+        /* Panels */
+        .panel{background:var(--card); border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow)}
+        .panel-body{padding:14px}
+
+        /* Category chips */
+        .chips{display:flex; gap:8px; overflow:auto; padding:4px 0 10px; margin-bottom:4px}
+        .chip{
+            border:1px solid var(--border); background:var(--card); border-radius:999px;
+            padding:.35rem .8rem; font-size:.8rem; white-space:nowrap; cursor:pointer; transition:.18s;
         }
+        .chip:hover{background:#f8fafc; border-color: var(--sky-300)}
+        .chip.active{background: var(--sky); color:#fff; border-color: var(--sky)}
 
-        .cart-item-image {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary)
-        }
+        /* Products */
+        .products-grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap:10px; max-height:55vh; overflow:auto; padding:4px}
+        .product-card{border:1px solid var(--border); border-radius:12px; background:var(--card); padding:12px; cursor:pointer; transition:.18s; display:flex; flex-direction:column; position:relative; overflow:hidden}
+        .product-card:hover{transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--sky-300)}
+        .product-card::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--sky), var(--accent))}
+        .product-thumb{height:88px; border-radius:10px; background: linear-gradient(135deg, #eef7ff, #e6f6ff); display:flex; align-items:center; justify-content:center; color:var(--sky-600); font-size:1.5rem; margin-bottom:8px}
+        .product-name{font-size:.92rem; font-weight:700; color:var(--text); margin-bottom:4px; line-height:1.25}
+        .product-meta{display:flex; justify-content:space-between; font-size:.8rem; color:var(--muted); margin-top:auto}
+        .product-price{font-weight:800; color:var(--sky-600)}
 
-        .cart-item-details {
-            flex: 1
-        }
+        /* Cart */
+        .cart-items{max-height:52vh; overflow:auto; padding-right:4px}
+        .cart-item{display:flex; gap:10px; border-bottom:1px dashed var(--border); padding:10px 0; transition:.18s}
+        .cart-item:hover{background:#f8fafc; margin:0 -8px; padding:10px 8px; border-radius:10px}
+        .cart-thumb{width:46px; height:46px; border-radius:10px; background: linear-gradient(135deg,#eef7ff,#e6f6ff); display:flex; align-items:center; justify-content:center; color:var(--sky-600)}
+        .cart-name{font-weight:700; font-size:.9rem; margin-bottom:2px}
+        .price-badge{border:1px solid var(--border); border-radius:999px; padding:.18rem .6rem; font-size:.8rem; background:var(--card); color:var(--sky-600); font-weight:700}
+        .qty-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--card); color:var(--text); display:flex; align-items:center; justify-content:center}
+        .qty-btn:hover{background:var(--sky); color:#fff; border-color:var(--sky)}
+        .summary{background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border:1px solid var(--border); border-radius:12px; padding:14px; margin-top:12px}
+        .summary-row{display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed var(--border)}
+        .summary-total{font-weight:900; font-size:1.08rem; color:var(--sky-600); border-bottom:none; padding-top:8px; margin-top:8px; border-top:1px solid var(--border)}
 
-        .cart-item-name {
-            font-weight: 800;
-            margin-bottom: 2px
-        }
+        /* Buttons */
+        .btn-primary{background:var(--sky); color:#fff; border:none; border-radius:10px; padding:.5rem 1rem; font-weight:700}
+        .btn-primary:hover{background:var(--sky-600)}
+        .btn-outline{border:1px solid var(--border); background:#fff; color:var(--text); border-radius:10px; padding:.45rem .9rem; font-weight:600}
+        .btn-outline:hover{border-color: var(--sky-300)}
 
-        .cart-item-price {
-            color: var(--primary);
-            font-weight: 900
-        }
-
-        .cart-item-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px
-        }
-
-        .quantity-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: var(--light);
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer
-        }
-
-        .quantity-btn:hover {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary)
-        }
-
-        .cart-item-quantity {
-            font-weight: 800;
-            min-width: 26px;
-            text-align: center
-        }
-
-        .cart-summary {
-            background: var(--light);
-            border-radius: 10px;
-            padding: 14px;
-            margin-top: auto
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px
-        }
-
-        .summary-total {
-            font-weight: 900;
-            font-size: 1.15rem;
-            color: var(--primary);
-            border-top: 1px solid var(--border);
-            padding-top: 10px;
-            margin-top: 4px
-        }
-
-        .checkout-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: 900;
-            font-size: 1.05rem;
-            cursor: pointer;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px
-        }
-
-        .checkout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(14, 165, 233, .3)
-        }
-
-        .badge-soft {
-            background: #f8fafc;
-            border: 1px solid rgba(0, 0, 0, .06);
-            color: #334155;
-            border-radius: 999px;
-            padding: .15rem .5rem;
-            display: inline-block
-        }
-
-        .price-badge {
-            background: #ecfeff;
-            border: 1px solid #a5f3fc;
-            color: #155e75;
-            border-radius: 999px;
-            padding: .2rem .55rem;
-            display: inline-block;
-            min-width: 80px;
-            text-align: center;
-            font-weight: 800
-        }
-
-        .fade-in {
-            animation: fadeIn .3s ease
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
+        /* Small */
+        .table-sm td,.table-sm th{padding:.5rem .75rem}
+        ::-webkit-scrollbar{width:6px;height:6px}
+        ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+        ::-webkit-scrollbar-thumb:hover{background:#94a3b8}
     </style>
 
-    {{-- Header --}}
-    <div class="header">
-        <div>
-            <h1><i class="fa-solid fa-cash-register"></i> {{ __('إدارة المبيعات') }}</h1>
-            <p>{{ __('إدارة فواتير البيع الخاصة بك') }}</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-light" href="{{ route('pos.index') }}"><i class="fa-solid fa-list"></i>
-                {{ __('قائمة المبيعات') }}</a>
+    {{-- HERO HEADER (Title bar) --}}
+    <div class="hero">
+        <div class="hero-inner">
+            <div class="hero-title">
+                <i class="fa-solid fa-cash-register"></i>
+                <div>
+                    <h1>{{ __('نقطة بيع احترافية') }}</h1>
+                    <div class="hero-sub">{{ __('واجهة حديثة سريعة مع بحث ذكي وفاتورة فورية') }}</div>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <div class="stat">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span class="small">{{ __('اليوم') }}: {{ $pos_date }}</span>
+                </div>
+                <a class="btn-ghost" href="{{ route('pos.index') }}"><i class="fa-solid fa-list"></i> {{ __('قائمة المبيعات') }}</a>
+                <button class="btn-ghost" type="button" data-bs-toggle="modal" data-bs-target="#orderPreviewModal" {{ empty($rows) || !$warehouse_id ? 'disabled' : '' }}>
+                    <i class="fa-regular fa-eye"></i> {{ __('عرض الطلب') }}
+                </button>
+                <button class="btn-ghost" type="button" onclick="printOrder()" {{ empty($rows) || !$warehouse_id ? 'disabled' : '' }}>
+                    <i class="fa-solid fa-print"></i> {{ __('طباعة') }}
+                </button>
+            </div>
         </div>
     </div>
 
-    <form wire:submit.prevent="save" class="pos-system">
-        {{-- Sidebar --}}
-        <aside class="sidebar">
-            <div>
-                <div class="section-title"><i class="fa-solid fa-th-large"></i> {{ __('الأقسام') }}</div>
-                <div class="categories-grid">
-                    @foreach ($categories as $cat)
-                        @php
-                            $raw = $cat->name;
-                            $cname = is_array($raw)
-                                ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
-                                : (is_string($raw) &&
-                                (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
-                                    ? json_decode($raw, true)[app()->getLocale()] ??
-                                        (json_decode($raw, true)['ar'] ?? $raw)
-                                    : $raw);
-                        @endphp
-                        <div class="category-card {{ isset($activeCategoryId) && (int) $activeCategoryId === (int) $cat->id ? 'active' : '' }}"
-                            wire:click="selectCategory({{ $cat->id }})">
-                            <div class="category-icon"><i class="fa-solid fa-folder-tree"></i></div>
-                            <div class="category-name">{{ $cname }}</div>
-                        </div>
+    {{-- TOP FILTERS --}}
+    <div class="toolbar">
+        <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-barcode"></i></span>
+                    <input type="text" class="form-control" placeholder="{{ __('البحث بالباركود وإدخال لإضافة للسلة') }}"
+                           wire:model.defer="barcode" wire:keydown.enter.prevent="addByBarcode">
+                </div>
+                <div class="small-note">{{ __('اكتب الباركود ثم Enter ليضاف المنتج مباشرة للسلة') }}</div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control" placeholder="{{ __('بحث اسم المنتج / SKU') }}"
+                           wire:model.debounce.350ms="filterProductText">
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <input class="form-control" list="dl-customers" placeholder="{{ __('بحث بالعميل') }}"
+                       wire:model.lazy="customerSearch" wire:change="selectCustomerBySearch">
+                <datalist id="dl-customers">
+                    @foreach($customers as $c)
+                        @php $raw=$c->name; $name=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):(string)$raw; @endphp
+                        <option value="{{ $name }}"></option>
+                    @endforeach
+                </datalist>
+            </div>
+            <div class="col-6 col-md-2">
+                <input class="form-control" list="dl-warehouses" placeholder="{{ __('بحث بالمخزن') }}"
+                       wire:model.lazy="warehouseSearch" wire:change="selectWarehouseBySearch">
+                <datalist id="dl-warehouses">
+                    @foreach($warehouses as $w)
+                        @php $raw=$w->name; $name=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):(string)$raw; @endphp
+                        <option value="{{ $name }}"></option>
+                    @endforeach
+                </datalist>
+            </div>
+            <div class="col-12 col-md-2">
+                <input class="form-control" list="dl-cats" placeholder="{{ __('بحث بالقسم') }}"
+                       wire:model.lazy="categorySearch" wire:change="selectCategoryBySearch">
+                <datalist id="dl-cats">
+                    @foreach($categories as $cat)
+                        @php $raw=$cat->name; $name=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):(string)$raw; @endphp
+                        <option value="{{ $name }}"></option>
+                    @endforeach
+                </datalist>
+            </div>
+        </div>
+    </div>
+
+    {{-- MAIN --}}
+    <form wire:submit.prevent="save" class="pos-grid">
+        {{-- LEFT: Products --}}
+        <section class="panel">
+            <div class="panel-body">
+                {{-- Category chips --}}
+                <div class="chips">
+                    <div class="chip {{ empty($activeCategoryId) ? 'active' : '' }}" wire:click="selectCategory(null)">{{ __('الكل') }}</div>
+                    @foreach($categories as $cat)
+                        @php $raw=$cat->name; $name=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):(string)$raw; @endphp
+                        <div class="chip {{ (int)$activeCategoryId === (int)$cat->id ? 'active' : '' }}" wire:click="selectCategory({{ $cat->id }})">{{ $name }}</div>
                     @endforeach
                 </div>
-            </div>
 
-            <div class="filters-section">
-                <div class="section-title"><i class="fa-solid fa-filter"></i> {{ __('الفلاتر والبحث') }}</div>
-
-                <div class="filter-group">
-                    <label class="filter-label">{{ __('بحث بالمنتج / الباركود / SKU') }}</label>
-                    <input type="text" class="filter-input" placeholder="{{ __('اكتب للبحث') }}"
-                        wire:model.debounce.400ms="filterProductText">
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">{{ __('المخزن') }}</label>
-                    <select class="filter-select" wire:model="warehouse_id">
-                        <option value="">{{ __('اختر') }}</option>
-                        @foreach ($warehouses as $w)
-                            @php
-                                $raw = $w->name;
-                                $wname = is_array($raw)
-                                    ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
-                                    : (is_string($raw) &&
-                                    (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
-                                        ? json_decode($raw, true)[app()->getLocale()] ??
-                                            (json_decode($raw, true)['ar'] ?? $raw)
-                                        : $raw);
-                            @endphp
-                            <option value="{{ $w->id }}">{{ $wname }}</option>
-                        @endforeach
-                    </select>
-                    @error('warehouse_id')
-                        <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">{{ __('العميل (اختياري)') }}</label>
-                    <select class="filter-select" wire:model="customer_id">
-                        <option value="">{{ __('اختيار') }}</option>
-                        @foreach ($customers as $c)
-                            @php
-                                $raw = $c->name;
-                                $cname = is_array($raw)
-                                    ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
-                                    : (is_string($raw) &&
-                                    (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
-                                        ? json_decode($raw, true)[app()->getLocale()] ??
-                                            (json_decode($raw, true)['ar'] ?? $raw)
-                                        : $raw);
-                            @endphp
-                            <option value="{{ $c->id }}">{{ $cname }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">{{ __('تاريخ الفاتورة') }}</label>
-                    <input type="date" class="filter-input" wire:model="pos_date">
-                    @error('pos_date')
-                        <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">{{ __('ملاحظات (اختياري)') }}</label>
-                    <input type="text" class="filter-input" placeholder="{{ __('ملاحظات تظهر في الطباعة') }}"
-                        wire:model.defer="notes_ar">
-                </div>
-            </div>
-        </aside>
-
-        {{-- Products --}}
-        <section class="products-section">
-            <div class="search-box">
-                <input type="text" class="search-input" placeholder="{{ __('ابحث عن منتج...') }}"
-                    wire:model.debounce.300ms="filterProductText">
-                <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-            </div>
-
-            <div class="products-header">
-                <div class="products-title">{{ __('المنتجات المتاحة') }}</div>
-                <div class="view-options">
-                    <button class="view-btn active" type="button"><i class="fa-solid fa-grip"></i></button>
-                    <button class="view-btn" type="button"><i class="fa-solid fa-list"></i></button>
-                </div>
-            </div>
-
-            <div class="products-grid">
-                @php $grid = ($catalogProducts ?? $products); @endphp
-                @forelse($grid as $p)
-                    @php
-                        $passCat = empty($activeCategoryId) || (int) $p->category_id === (int) $activeCategoryId;
-                        $txt = trim((string) $filterProductText);
-                        $rawName = $p->name;
-                        $pname = is_array($rawName)
-                            ? $rawName[app()->getLocale()] ?? ($rawName['ar'] ?? (reset($rawName) ?? ''))
-                            : (is_string($rawName) &&
-                            (str_starts_with(trim($rawName), '{') || str_starts_with(trim($rawName), '['))
-                                ? json_decode($rawName, true)[app()->getLocale()] ??
-                                    (json_decode($rawName, true)['ar'] ?? $rawName)
-                                : $rawName);
-                        $haystack = mb_strtolower(trim($pname . ' ' . ($p->sku ?? '') . ' ' . ($p->barcode ?? '')));
-                        $match = !$txt || str_contains($haystack, mb_strtolower($txt));
-                        $minP = isset($p->min_price) ? (float) $p->min_price : 0.0;
-                    @endphp
-                    @if ($passCat && $match)
-                        <div class="product-card fade-in" wire:click="addProductToCart({{ $p->id }})"
-                            title="{{ __('إضافة للسلة') }}">
-                            <div class="product-image"><i class="fa-solid fa-box-open"></i></div>
-                            <div class="product-name">{{ $pname }}</div>
-                            <div class="product-info">
-                                <div class="product-price">{{ number_format($minP, 2) }} <span
-                                        style="color:#64748b;font-weight:600">{{ __('ر.س') }}</span></div>
-                                <div class="product-stock">{{ __('متاح') }}</div>
+                {{-- Products grid --}}
+                <div class="products-grid">
+                    @php $grid = ($catalogProducts ?? $products); @endphp
+                    @forelse($grid as $p)
+                        @php
+                            $passCat = empty($activeCategoryId) || (int)$p->category_id === (int)$activeCategoryId;
+                            $txt = trim((string)$filterProductText);
+                            $rawName=$p->name;
+                            $pname=is_array($rawName)?($rawName[app()->getLocale()] ?? ($rawName['ar'] ?? (reset($rawName)??''))):(string)$rawName;
+                            $hay = mb_strtolower($pname.' '.($p->sku??'').' '.($p->barcode??''));
+                            $match=!$txt || str_contains($hay, mb_strtolower($txt));
+                            $minP = isset($p->min_price) ? (float)$p->min_price : 0.0;
+                        @endphp
+                        @if($passCat && $match)
+                            <div class="product-card" wire:click="addProductToCart({{ $p->id }})" title="{{ __('إضافة للسلة') }}">
+                                <div class="product-thumb"><i class="fa-solid fa-box-open"></i></div>
+                                <div class="product-name">{{ $pname }}</div>
+                                <div class="product-meta">
+                                    <span class="product-price">{{ number_format($minP,2) }}</span>
+                                    <span class="text-muted">{{ __('متاح') }}</span>
+                                </div>
                             </div>
-                        </div>
-                    @endif
-                @empty
-                    <div class="text-muted">{{ __('لا توجد منتجات') }}</div>
-                @endforelse
+                        @endif
+                    @empty
+                        <div class="text-muted small">{{ __('لا توجد منتجات') }}</div>
+                    @endforelse
+                </div>
             </div>
         </section>
 
-        {{-- Cart --}}
-        <aside class="cart-section">
-            <div class="cart-header">
-                <div class="cart-title"><i class="fa-solid fa-bag-shopping me-1"></i> {{ __('سلة المشتريات') }}</div>
-                <div class="cart-actions d-flex gap-2">
-                    <button class="btn btn-light" type="button" wire:click="clearCart"><i
-                            class="fa-solid fa-trash"></i> {{ __('إفراغ السلة') }}</button>
-                    <button class="btn btn-light" type="button" data-bs-toggle="modal"
-                        data-bs-target="#orderPreviewModal" {{ empty($rows) || !$warehouse_id ? 'disabled' : '' }}>
-                        <i class="fa-solid fa-eye"></i> {{ __('عرض الطلب') }}
-                    </button>
-                    <button class="btn btn-light" type="button" onclick="printOrder()"
-                        {{ empty($rows) || !$warehouse_id ? 'disabled' : '' }}>
-                        <i class="fa-solid fa-print"></i> {{ __('طباعة') }}
-                    </button>
-                </div>
-            </div>
-
-            <div class="cart-items">
-                @forelse($rows as $i => $r)
-                    @php $pname = $r['preview']['name'] ?? '—'; @endphp
-                    <div class="cart-item fade-in" wire:key="row-{{ $i }}">
-                        <div class="cart-item-image"><i class="fa-solid fa-box"></i></div>
-
-                        <div class="cart-item-details">
-                            <div class="cart-item-name">{{ $pname }}</div>
-
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                {{-- Unit select --}}
-                                <select class="form-select form-select-sm" style="width:auto"
-                                    wire:model="rows.{{ $i }}.unit_id"
-                                    wire:change="rowUnitChanged({{ $i }})">
-                                    @if (!empty($r['unit_options']))
-                                        @foreach ($r['unit_options'] as $uid => $uname)
-                                            <option value="{{ $uid }}">{{ $uname }}</option>
-                                        @endforeach
-                                    @else
-                                        <option value="">{{ __('الوحدة') }}</option>
-                                    @endif
-                                </select>
-
-                                {{-- Price (readonly) --}}
-                                <span class="price-badge">{{ number_format((float) ($r['unit_price'] ?? 0), 2) }}</span>
-                            </div>
-
-                            {{-- Line total --}}
-                            <div class="cart-item-price">{{ __('الإجمالي:') }}
-                                <strong>{{ number_format((float) ($r['qty'] ?? 0) * (float) ($r['unit_price'] ?? 0), 2) }}</strong>
-                                {{ __('ر.س') }}
-                            </div>
-                        </div>
-
-                        <div class="cart-item-controls">
-                            <button class="quantity-btn" type="button"
-                                wire:click="decQty({{ $i }})">-</button>
-                            <div class="cart-item-quantity">{{ (float) ($r['qty'] ?? 0) }}</div>
-                            <button class="quantity-btn" type="button"
-                                wire:click="incQty({{ $i }})">+</button>
-
-                            <button class="btn btn-light" type="button" title="{{ __('حذف السطر') }}"
-                                wire:click="removeRow({{ $i }})">
-                                <i class="fa-solid fa-trash-can" style="color:#ef4444"></i>
-                            </button>
-                        </div>
+        {{-- RIGHT: Cart --}}
+        <aside class="panel">
+            <div class="panel-body">
+                {{-- Selections --}}
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <select class="form-select form-select-sm" wire:model="warehouse_id">
+                            <option value="">{{ __('المخزن') }}</option>
+                            @foreach($warehouses as $w)
+                                @php $raw=$w->name; $name=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):(string)$raw; @endphp
+                                <option value="{{ $w->id }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                        @error('warehouse_id') <div class="small text-danger mt-1">{{ $message }}</div> @enderror
                     </div>
-                @empty
-                    <div class="text-muted">{{ __('السلة فارغة - اختر منتجًا من الوسط') }}</div>
-                @endforelse
-            </div>
-
-            {{-- Totals --}}
-            <div class="cart-summary">
-                <div class="summary-row">
-                    <span>{{ __('الإجمالي الفرعي') }}</span><span>{{ number_format((float) $subtotal, 2) }}
-                        {{ __('ر.س') }}</span></div>
-                <div class="summary-row align-items-center gap-2">
-                    <span>{{ __('الخصم') }}</span>
-                    <input type="number" step="0.01" class="form-control form-control-sm" style="width:120px"
-                        wire:model.lazy="discount">
+                    <div class="col-6">
+                        <select class="form-select form-select-sm" wire:model="customer_id">
+                            <option value="">{{ __('العميل (اختياري)') }}</option>
+                            @foreach($customers as $c)
+                                @php $raw=$c->name; $name=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):(string)$raw; @endphp
+                                <option value="{{ $c->id }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <input type="date" class="form-control form-control-sm" wire:model="pos_date">
+                        @error('pos_date') <div class="small text-danger mt-1">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control form-control-sm" placeholder="{{ __('ملاحظة') }}" wire:model.defer="notes_ar">
+                    </div>
                 </div>
-                <div class="summary-row align-items-center gap-2">
-                    <span>{{ __('الضريبة') }}</span>
-                    <input type="number" step="0.01" class="form-control form-control-sm" style="width:120px"
-                        wire:model.lazy="tax">
-                </div>
-                <div class="summary-row summary-total">
-                    <span>{{ __('الإجمالي النهائي') }}</span><span>{{ number_format((float) $grand, 2) }}
-                        {{ __('ر.س') }}</span></div>
 
-                <button class="checkout-btn" type="submit" wire:loading.attr="disabled">
-                    <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-1"></span>
-                    <i class="fa-solid fa-credit-card"></i>
-                    {{ $pos_id ? __('تحديث') : __('إتمام عملية الدفع / الحفظ') }}
-                </button>
+                {{-- Cart items --}}
+                <div class="cart-items">
+                    @forelse($rows as $i=>$r)
+                        <div class="cart-item" wire:key="row-{{ $i }}">
+                            <div class="cart-thumb"><i class="fa-solid fa-box"></i></div>
+                            <div class="flex-fill">
+                                <div class="cart-name">{{ $r['preview']['name'] ?? '—' }}</div>
+                                <div class="d-flex align-items-center gap-2 mt-1">
+                                    <select class="form-select form-select-sm" style="width:auto"
+                                            wire:model="rows.{{ $i }}.unit_id" wire:change="rowUnitChanged({{ $i }})">
+                                        @if(!empty($r['unit_options']))
+                                            @foreach($r['unit_options'] as $uid=>$uname)
+                                                <option value="{{ $uid }}">{{ $uname }}</option>
+                                            @endforeach
+                                        @else
+                                            <option value="">{{ __('الوحدة') }}</option>
+                                        @endif
+                                    </select>
+                                    <span class="price-badge">{{ number_format((float)($r['unit_price'] ?? 0),2) }}</span>
+                                </div>
+                                <div class="small text-muted mt-1">
+                                    {{ __('الإجمالي') }}:
+                                    <strong>{{ number_format((float)($r['qty']??0) * (float)($r['unit_price']??0),2) }}</strong>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <button type="button" class="qty-btn" wire:click="decQty({{ $i }})">-</button>
+                                <div class="px-2" style="min-width:32px;text-align:center">{{ (float)($r['qty']??0) }}</div>
+                                <button type="button" class="qty-btn" wire:click="incQty({{ $i }})">+</button>
+                                <button class="btn-outline btn btn-sm" type="button" wire:click="removeRow({{ $i }})">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-muted small text-center py-3">{{ __('السلة فارغة - اختر منتجًا من القائمة') }}</div>
+                    @endforelse
+                </div>
+
+                {{-- Summary --}}
+                <div class="summary">
+                    <div class="summary-row"><span>{{ __('الإجمالي الفرعي') }}</span><span>{{ number_format((float)$subtotal,2) }}</span></div>
+                    <div class="summary-row align-items-center">
+                        <span>{{ __('الخصم') }}</span>
+                        <input type="number" step="0.01" class="form-control form-control-sm" style="width:120px" wire:model.lazy="discount">
+                    </div>
+                    <div class="summary-row align-items-center">
+                        <span>{{ __('الضريبة') }}</span>
+                        <input type="number" step="0.01" class="form-control form-control-sm" style="width:120px" wire:model.lazy="tax">
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>{{ __('الإجمالي النهائي') }}</span><span>{{ number_format((float)$grand,2) }}</span>
+                    </div>
+                    <div class="d-grid mt-3">
+                        <button class="btn btn-primary" type="submit" wire:loading.attr="disabled">
+                            <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-1"></span>
+                            <i class="fa-regular fa-floppy-disk me-1"></i>{{ $pos_id ? __('تحديث') : __('حفظ / إنهاء') }}
+                        </button>
+                    </div>
+                    <div class="d-grid mt-2">
+                        <button class="btn-outline" type="button" wire:click="clearCart">
+                            <i class="fa-solid fa-trash me-1"></i>{{ __('إفراغ السلة') }}
+                        </button>
+                    </div>
+                </div>
             </div>
         </aside>
     </form>
 
-    {{-- Order Preview Modal --}}
+    {{-- Order Preview Modal (Printable) --}}
     <div class="modal fade" id="orderPreviewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content" id="printArea">
                 <div class="modal-header">
-                    <h6 class="modal-title"><i class="fa-solid fa-receipt me-1"></i> {{ __('معاينة الطلب') }}</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="{{ __('إغلاق') }}"></button>
+                    <h6 class="modal-title"><i class="fa-solid fa-receipt me-1"></i>{{ __('معاينة الطلب') }}</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('إغلاق') }}"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between small">
                         <div>
                             <div class="fw-bold">{{ __('فاتورة بيع') }}</div>
-                            <div class="small text-muted">{{ __('التاريخ') }}: {{ $pos_date }}</div>
-                            <div class="small text-muted">{{ __('المخزن') }}:
+                            <div class="text-muted">{{ __('التاريخ') }}: {{ $pos_date }}</div>
+                            <div class="text-muted">{{ __('المخزن') }}:
                                 @php
-                                    $w = $warehouses->firstWhere('id', $warehouse_id);
-                                    $raw = $w->name ?? null;
-                                    $wname = is_array($raw)
-                                        ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
-                                        : (is_string($raw) &&
-                                        (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
-                                            ? json_decode($raw, true)[app()->getLocale()] ??
-                                                (json_decode($raw, true)['ar'] ?? $raw)
-                                            : $raw);
+                                    $w=$warehouses->firstWhere('id',$warehouse_id);
+                                    $raw=$w->name ?? null; $wname=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):$raw;
                                 @endphp
                                 {{ $wname ?? '—' }}
                             </div>
-                            <div class="small text-muted">{{ __('العميل') }}:
+                            <div class="text-muted">{{ __('العميل') }}:
                                 @php
-                                    $c = $customers->firstWhere('id', $customer_id);
-                                    $raw = $c->name ?? null;
-                                    $cname = is_array($raw)
-                                        ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
-                                        : (is_string($raw) &&
-                                        (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
-                                            ? json_decode($raw, true)[app()->getLocale()] ??
-                                                (json_decode($raw, true)['ar'] ?? $raw)
-                                            : $raw);
+                                    $c=$customers->firstWhere('id',$customer_id);
+                                    $raw=$c->name ?? null; $cname=is_array($raw)?($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw)??''))):$raw;
                                 @endphp
                                 {{ $cname ?? '—' }}
                             </div>
                         </div>
                         <div class="text-end">
-                            <div class="fw-bold">{{ $pos_id ? '#' . $pos_id : __('(غير محفوظ)') }}</div>
-                            @if (!empty($notes_ar))
-                                <div class="small">{{ $notes_ar }}</div>
-                            @endif
+                            <div class="fw-bold">{{ $pos_id ? '#'.$pos_id : __('(غير محفوظ)') }}</div>
+                            @if(!empty($notes_ar))<div>{{ $notes_ar }}</div>@endif
                         </div>
                     </div>
 
-                    <hr>
+                    <hr class="my-2">
 
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered">
                             <thead class="table-light">
-                                <tr>
-                                    <th>{{ __('المنتج') }}</th>
-                                    <th class="text-center">{{ __('الوحدة') }}</th>
-                                    <th class="text-center">{{ __('الكمية') }}</th>
-                                    <th class="text-center">{{ __('سعر الوحدة') }}</th>
-                                    <th class="text-end">{{ __('الإجمالي') }}</th>
-                                </tr>
+                            <tr>
+                                <th>{{ __('المنتج') }}</th>
+                                <th class="text-center">{{ __('الوحدة') }}</th>
+                                <th class="text-center">{{ __('الكمية') }}</th>
+                                <th class="text-center">{{ __('سعر الوحدة') }}</th>
+                                <th class="text-end">{{ __('الإجمالي') }}</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @foreach ($rows as $r)
-                                    <tr>
-                                        <td>{{ $r['preview']['name'] ?? '—' }}</td>
-                                        <td class="text-center">{{ $r['preview']['uom'] ?? ($r['uom_text'] ?? '—') }}
-                                        </td>
-                                        <td class="text-center">{{ (float) ($r['qty'] ?? 0) }}</td>
-                                        <td class="text-center">{{ number_format((float) ($r['unit_price'] ?? 0), 2) }}
-                                        </td>
-                                        <td class="text-end">
-                                            {{ number_format((float) ($r['qty'] ?? 0) * (float) ($r['unit_price'] ?? 0), 2) }}
-                                        </td>
-                                    </tr>
-                                @endforeach
+                            @foreach($rows as $r)
+                                <tr>
+                                    <td>{{ $r['preview']['name'] ?? '—' }}</td>
+                                    <td class="text-center">{{ $r['preview']['uom'] ?? ($r['uom_text'] ?? '—') }}</td>
+                                    <td class="text-center">{{ (float)($r['qty'] ?? 0) }}</td>
+                                    <td class="text-center">{{ number_format((float)($r['unit_price'] ?? 0),2) }}</td>
+                                    <td class="text-end">{{ number_format((float)($r['qty']??0)*(float)($r['unit_price']??0),2) }}</td>
+                                </tr>
+                            @endforeach
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <th colspan="4" class="text-end">{{ __('الإجمالي الفرعي') }}</th>
-                                    <th class="text-end">{{ number_format((float) $subtotal, 2) }}</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="4" class="text-end">{{ __('الخصم') }}</th>
-                                    <th class="text-end">{{ number_format((float) $discount, 2) }}</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="4" class="text-end">{{ __('الضريبة') }}</th>
-                                    <th class="text-end">{{ number_format((float) $tax, 2) }}</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="4" class="text-end">{{ __('الإجمالي النهائي') }}</th>
-                                    <th class="text-end">{{ number_format((float) $grand, 2) }}</th>
-                                </tr>
+                            <tr><th colspan="4" class="text-end">{{ __('الإجمالي الفرعي') }}</th><th class="text-end">{{ number_format((float)$subtotal,2) }}</th></tr>
+                            <tr><th colspan="4" class="text-end">{{ __('الخصم') }}</th><th class="text-end">{{ number_format((float)$discount,2) }}</th></tr>
+                            <tr><th colspan="4" class="text-end">{{ __('الضريبة') }}</th><th class="text-end">{{ number_format((float)$tax,2) }}</th></tr>
+                            <tr><th colspan="4" class="text-end">{{ __('الإجمالي النهائي') }}</th><th class="text-end">{{ number_format((float)$grand,2) }}</th></tr>
                             </tfoot>
                         </table>
                     </div>
-
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" data-bs-dismiss="modal">{{ __('إغلاق') }}</button>
-                    <button class="btn btn-grad" onclick="printOrder()"><i class="fa-solid fa-print"></i>
-                        {{ __('طباعة') }}</button>
+                    <button class="btn-outline" data-bs-dismiss="modal">{{ __('إغلاق') }}</button>
+                    <button class="btn btn-primary" onclick="printOrder()"><i class="fa-solid fa-print me-1"></i>{{ __('طباعة') }}</button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Print helper --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- Print --}}
     <script>
-        function printOrder() {
-            const node = document.getElementById('printArea');
-            if (!node) {
-                return window.print();
-            }
-            const w = window.open('', '_blank', 'width=900,height=700');
+        function printOrder(){
+            const node=document.getElementById('printArea');
+            const w=window.open('','_blank','width=900,height=700');
             w.document.open();
             w.document.write(`
-                <html dir="rtl" lang="ar">
-                <head>
-                    <meta charset="utf-8" />
-                    <title>{{ __('فاتورة بيع') }}</title>
-                    <style>
-                        body{font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans"; padding:16px}
-                        table{width:100%;border-collapse:collapse}
-                        th,td{border:1px solid #ddd;padding:6px}
-                        .text-end{text-align:right}
-                        .text-center{text-align:center}
-                        .table-light th{background:#f5f5f5}
-                    </style>
-                </head>
-                <body>${node.innerHTML}</body>
-                </html>
+                <html dir="rtl" lang="ar"><head><meta charset="utf-8" />
+                <title>{{ __('فاتورة بيع') }}</title>
+                <style>
+                    body{font-family:'Inter', system-ui, sans-serif; padding:16px; color:#0f172a}
+                    table{width:100%;border-collapse:collapse;font-size:12px}
+                    th,td{border:1px solid #e2e8f0;padding:6px}
+                    .text-end{text-align:right}.text-center{text-align:center}
+                    .table-light th{background:#f5f5f5}
+                </style></head><body>${node.innerHTML}</body></html>
             `);
-            w.document.close();
-            w.focus();
-            w.print();
-            setTimeout(() => w.close(), 300);
+            w.document.close(); w.focus(); w.print(); setTimeout(()=>w.close(),300);
         }
     </script>
 </div>

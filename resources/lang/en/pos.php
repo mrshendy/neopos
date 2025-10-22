@@ -2413,4 +2413,52 @@ return [
     'rec_help_reference' => 'Optional external reference.',
     'rec_help_status' => 'Receipt status.',
 
+    'handover_title_manage' => 'Cashbox Handover / Receipt',
+    'editing'   => 'Editing',
+    'creating'  => 'Creating',
+
+    'from_cashbox' => 'From Cashbox',
+    'to_cashbox'   => 'To Cashbox',
+    'choose'       => 'Select...',
+    'help_from_cashbox' => 'Select the source cashbox.',
+    'help_to_cashbox'   => 'Select the target cashbox.',
+
+    'swap' => 'Swap',
+
+    'handover_date'      => 'Handover Date',
+    'help_handover_date' => 'Date only (defaults to today).',
+
+    // balance
+    'cashbox_balance'       => 'Current Cashbox Balance (From)',
+    'handover_help_balance' => 'Calculated from non-canceled receipts and in/out handovers.',
+
+    'amount_counted'       => 'Counted Amount',
+    'handover_help_counted'=> 'Actual amount handed over.',
+
+    'difference' => 'Difference',
+
+    'status'    => 'Status',
+    'draft'     => 'Draft',
+    'submitted' => 'Submitted',
+    'received'  => 'Received',
+    'rejected'  => 'Rejected',
+    'handover_help_status' => 'Choose the current status.',
+
+    'delivered_by' => 'Delivered By',
+    'handover_help_delivered_by' => 'User who delivered.',
+    'received_by'  => 'Received By',
+    'handover_help_received_by'  => 'User who received.',
+
+    'doc_no' => 'Document No.',
+    'handover_help_docno' => 'Optional; can be generated later.',
+
+    'notes_ar' => 'Notes (AR)',
+    'notes_en' => 'Notes (EN)',
+    'finset_ph_notes_ar' => 'Write Arabic notes...',
+    'finset_ph_notes_en' => 'Write notes in English...',
+
+    'btn_back' => 'Back',
+    'btn_save' => 'Save',
+
+    'msg_saved' => 'Saved successfully.',
 ];

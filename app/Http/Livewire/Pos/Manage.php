@@ -9,34 +9,35 @@ use App\models\pos\pos as Pos;
 use App\models\pos\posLine as PosLine;
 use App\models\product\product as Product;
 use App\models\unit\unit as Unit;
-use App\models\product\category as Category;
 use App\models\inventory\warehouse as Warehouse;
 use App\models\customer\customer as Customer;
+use App\models\product\category as Category;
 
 class Manage extends Component
 {
+    /** رأس الفاتورة */
     public $pos_id = null;
-
     public $pos_date;
-    public $warehouse_id;
-    public $customer_id;
+    public $warehouse_id = null;
+    public $customer_id  = null;
     public $notes_ar = '';
-    public $notes_en = '';
-
-    public $activeCategoryId = null;
     public $filterProductText = '';
+    public $activeCategoryId = null;
 
-    /** @var array<int,array> */
-    public $rows = [];
+    /** السلة/السطور */
+    public $rows = []; // كل عنصر: product_id, unit_id, qty, unit_price, unit_options[], preview[]
 
+    /** المجاميع */
     public $subtotal = 0.0;
     public $discount = 0.0;
     public $tax      = 0.0;
     public $grand    = 0.0;
 
+    /** كاش أسماء الوحدات */
+    protected $unitNameCache = [];
+
     protected $listeners = [
         'deleteConfirmed' => 'removeRow',
-        'openHistory'     => 'noop',
     ];
 
     public function mount($id = null): void
@@ -44,306 +45,196 @@ class Manage extends Component
         $this->pos_date = now()->toDateString();
 
         if ($id) {
+            // تحميل فاتورة موجودة + سطورها
             $this->pos_id = (int) $id;
-            $pos = Pos::with('lines.product')->findOrFail($id);
+            $pos = Pos::with('lines')->findOrFail($id);
 
-            $t = (array) ($pos->getTranslations('notes') ?? []);
-            $this->notes_ar = $t['ar'] ?? '';
-            $this->notes_en = $t['en'] ?? '';
+            $trans = (array) ($pos->getTranslations('notes') ?? []);
+            $this->notes_ar = $trans['ar'] ?? ($trans['en'] ?? '');
 
             $this->pos_date     = $pos->pos_date;
             $this->warehouse_id = $pos->warehouse_id;
             $this->customer_id  = $pos->customer_id;
 
             $this->rows = $pos->lines->map(function ($l) {
-                $p = $l->product;
-                $uomText = $l->uom_text ?: ($p?->unit?->name ?? null);
+                $p = Product::find($l->product_id);
+                [$opts, $prices, $uomById] = $this->unitOptionsForProduct($p);
+
                 return [
-                    'category_id'  => $p?->category_id,
                     'product_id'   => $l->product_id,
                     'unit_id'      => $l->unit_id,
                     'qty'          => (float) $l->qty,
                     'unit_price'   => (float) $l->unit_price,
-                    'uom_text'     => $this->safeTransName($uomText),
-                    'has_expiry'   => !empty($l->expiry_date),
-                    'expiry_date'  => $l->expiry_date,
-                    'onhand'       => 0,
+                    'unit_options' => $opts,
                     'preview'      => [
-                        'name'        => $this->safeTransName($p?->name),
-                        'sku'         => $p?->sku,
-                        'barcode'     => $p?->barcode,
-                        'description' => $this->safeTransName($p?->description),
-                        'uom'         => $this->safeTransName($uomText),
-                        'price'       => (float) $l->unit_price,
+                        'name'  => $this->safeTransName($p->name ?? null),
+                        'sku'   => $p->sku ?? null,
+                        'barcode' => $p->barcode ?? null,
+                        'uom'   => $uomById[$l->unit_id] ?? $this->getUnitName($l->unit_id),
                     ],
-                    // ↓↓↓ كانت سبب الخطأ — الدالة أضفناها أسفل
-                    'unit_options' => $this->unitOptionsForProduct($l->product_id),
                 ];
             })->toArray();
-        } else {
-            $this->rows = [$this->blankRow()];
         }
 
         $this->recalcTotals();
     }
 
-    /* ======================== Helpers ======================== */
+    /* =========================
+     *  Helpers (names / units)
+     * ========================= */
 
-    private function isJsonString($v): bool
+    /** اسم آمن (قد يكون string أو JSON أو Array) */
+    protected function safeTransName($raw): string
     {
-        if (!is_string($v)) return false;
-        $t = ltrim($v);
-        return str_starts_with($t, '{') || str_starts_with($t, '[');
+        if (is_array($raw)) {
+            return (string) ($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?: '')));
+        }
+        if (is_string($raw)) {
+            $t = trim($raw);
+            if ($t !== '' && ($t[0] === '{' || $t[0] === '[')) {
+                $arr = json_decode($t, true);
+                if (is_array($arr)) {
+                    return (string) ($arr[app()->getLocale()] ?? ($arr['ar'] ?? (reset($arr) ?: $raw)));
+                }
+            }
+            return $raw;
+        }
+        return '';
     }
 
-    private function ensureArray($value): array
-    {
-        if (is_array($value)) return $value;
-        if ($this->isJsonString($value)) {
-            $d = json_decode($value, true);
-            return is_array($d) ? $d : [];
-        }
-        return [];
-    }
-
-    private function safeTransName($value)
-    {
-        if (is_array($value)) {
-            return $value[app()->getLocale()] ?? ($value['ar'] ?? reset($value) ?? '');
-        }
-        if ($this->isJsonString($value)) {
-            $a = json_decode($value, true) ?: [];
-            return $a[app()->getLocale()] ?? ($a['ar'] ?? ($a['en'] ?? $value));
-        }
-        return $value ?: null;
-    }
-
-    private function getUnitName(?int $unitId): ?string
+    /** اسم الوحدة من كاش واحد */
+    protected function getUnitName($unitId): ?string
     {
         if (!$unitId) return null;
-        $u = Unit::find($unitId);
-        return $u ? $this->safeTransName($u->name) : null;
+        if (!isset($this->unitNameCache[$unitId])) {
+            $u = Unit::find($unitId);
+            $this->unitNameCache[$unitId] = $u ? $this->safeTransName($u->name) : null;
+        }
+        return $this->unitNameCache[$unitId];
     }
 
     /**
-     * إرجاع لائحة الوحدات + خريطة الأسعار من units_matrix (array أو JSON)
-     * @return array{0: array<int,string>, 1: array<int,float>}
+     * قراءة units_matrix وتكوين:
+     *  - $options [unit_id => unit_name]
+     *  - $prices  [unit_id => price]
+     *  - $uomById [unit_id => unit_name]
+     * تختار الوحدة الافتراضية من sale_unit_key إن توفرت
      */
-    private function parseUnitMatrix($matrix): array
+    protected function unitOptionsForProduct(?Product $p): array
     {
-        $unitOptions = [];
-        $priceMap    = [];
+        $options = [];
+        $prices  = [];
+        $uomById = [];
 
-        $data = $this->ensureArray($matrix);
-        if (empty($data)) return [$unitOptions, $priceMap];
+        if (!$p) return [$options, $prices, $uomById];
 
-        // مصفوفة؟
-        if (array_keys($data) === range(0, count($data) - 1)) {
-            foreach ($data as $row) {
-                if (!is_array($row)) continue;
-                $uid   = (int) ($row['unit_id'] ?? $row['id'] ?? 0);
-                if (!$uid) continue;
-                $uname = $row['name'] ?? $this->getUnitName($uid);
-                $price = $row['price'] ?? $row['sale_price'] ?? $row['selling_price'] ?? 0;
-                $unitOptions[$uid] = $this->safeTransName($uname);
-                $priceMap[$uid]    = (float) $price;
+        $raw = $p->units_matrix ?? null;
+        $matrix = null;
+
+        if (is_array($raw)) {
+            $matrix = $raw;
+        } elseif (is_string($raw) && trim($raw) !== '') {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) $matrix = $decoded;
+        }
+
+        // دعم شكلين شائعين:
+        // 1) keyed (minor/middle/major)  2) list of rows
+        if (is_array($matrix)) {
+            if ($this->isAssoc($matrix)) {
+                foreach ($matrix as $key => $row) {
+                    $uid   = (int)($row['unit_id'] ?? 0);
+                    if (!$uid) continue;
+                    $uname = $this->getUnitName($uid);
+                    $price = (float)($row['price'] ?? ($row['sale_price'] ?? 0));
+                    if ($uname) {
+                        $options[$uid] = $uname;
+                        $prices[$uid]  = $price;
+                        $uomById[$uid] = $uname;
+                    }
+                }
+            } else {
+                foreach ($matrix as $row) {
+                    if (!is_array($row)) continue;
+                    $uid = (int)($row['unit_id'] ?? 0);
+                    if (!$uid) continue;
+                    $uname = $this->getUnitName($uid);
+                    $price = (float)($row['price'] ?? ($row['sale_price'] ?? 0));
+                    if ($uname) {
+                        $options[$uid] = $uname;
+                        $prices[$uid]  = $price;
+                        $uomById[$uid] = $uname;
+                    }
+                }
             }
+        }
+
+        // fallback: لو مفيش matrix خالص – استخدم وحدة المنتج الأساسية
+        if (!$options && $p->unit_id) {
+            $uname = $this->getUnitName($p->unit_id);
+            if ($uname) {
+                $options[$p->unit_id] = $uname;
+                $prices[$p->unit_id]  = (float)($p->price ?? 0);
+                $uomById[$p->unit_id] = $uname;
+            }
+        }
+
+        return [$options, $prices, $uomById];
+    }
+
+    protected function isAssoc(array $arr): bool
+    {
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
+    /* =============
+     *   UI Actions
+     * ============= */
+
+    public function selectCategory($catId): void
+    {
+        $this->activeCategoryId = (int) $catId ?: null;
+    }
+
+    public function addProductToCart(int $product_id): void
+    {
+        $p = Product::find($product_id);
+        if (!$p) return;
+
+        [$options, $prices, $uomById] = $this->unitOptionsForProduct($p);
+
+        // اختيار وحدة افتراضيًا: sale_unit_key -> unit_id منصوص بالماتريكس
+        $defaultUnitId = null;
+        if (is_array($p->units_matrix)) {
+            $m = $p->units_matrix;
         } else {
-            // كائن {}
-            foreach ($data as $uid => $row) {
-                $uid   = (int) $uid;
-                $uname = is_array($row) ? ($row['name'] ?? null) : null;
-                $price = is_array($row) ? ($row['price'] ?? $row['sale_price'] ?? $row['selling_price'] ?? 0) : 0;
-                $unitOptions[$uid] = $this->safeTransName($uname) ?: $this->getUnitName($uid);
-                $priceMap[$uid]    = (float) $price;
+            $m = is_string($p->units_matrix) ? (json_decode($p->units_matrix, true) ?: []) : [];
+        }
+        if (is_array($m) && $this->isAssoc($m)) {
+            $key = $p->sale_unit_key ?? null; // minor / middle / major
+            if ($key && !empty($m[$key]['unit_id'])) {
+                $defaultUnitId = (int) $m[$key]['unit_id'];
             }
         }
-
-        return [$unitOptions, $priceMap];
-    }
-
-    private function priceForProductUnit(?int $productId, ?int $unitId): float
-    {
-        if (!$productId || !$unitId) return 0.0;
-        $p = Product::find($productId);
-        if (!$p) return 0.0;
-        [, $priceMap] = $this->parseUnitMatrix($p->units_matrix);
-        return (float)($priceMap[$unitId] ?? 0.0);
-    }
-
-    private function minPriceFromMatrix($matrix): float
-    {
-        [, $priceMap] = $this->parseUnitMatrix($matrix);
-        return $priceMap ? (float) min($priceMap) : 0.0;
-    }
-
-    /** ✅ الدالة الناقصة التي تسببت بالخطأ */
-    private function unitOptionsForProduct(?int $productId): array
-    {
-        if (!$productId) return [];
-        $p = Product::find($productId);
-        if (!$p) return [];
-        [$unitOptions, ] = $this->parseUnitMatrix($p->units_matrix);
-
-        // تأكد أن الوحدة الأساسية للمنتج موجودة ضمن الخيارات
-        if ($p->unit_id && !array_key_exists((int)$p->unit_id, $unitOptions)) {
-            $unitOptions[(int)$p->unit_id] = $this->getUnitName((int)$p->unit_id);
+        if (!$defaultUnitId) {
+            // أول وحدة متاحة
+            $defaultUnitId = (int) array_key_first($options);
         }
 
-        return $unitOptions;
-    }
+        $unitPrice = (float) ($prices[$defaultUnitId] ?? 0);
 
-    public function blankRow(): array
-    {
-        return [
-            'category_id'  => null,
-            'product_id'   => null,
-            'unit_id'      => null,
+        $this->rows[] = [
+            'product_id'   => $p->id,
+            'unit_id'      => $defaultUnitId,
             'qty'          => 1,
-            'unit_price'   => 0,
-            'uom_text'     => null,
-            'has_expiry'   => false,
-            'expiry_date'  => null,
-            'onhand'       => 0,
-            'preview'      => null,
-            'unit_options' => [],
-        ];
-    }
-
-    /* ======================== Actions ======================== */
-
-    public function selectCategory($categoryId): void
-    {
-        $this->activeCategoryId = (int) $categoryId;
-    }
-
-    public function addProductToCart(int $productId): void
-    {
-        $p = Product::find($productId);
-        if (!$p) return;
-
-        [$unitOptions, ] = $this->parseUnitMatrix($p->units_matrix);
-        $chosenUnit = $p->unit_id ?: (int) array_key_first($unitOptions);
-        if ($chosenUnit && !array_key_exists((int)$chosenUnit, $unitOptions)) {
-            $unitOptions[(int)$chosenUnit] = $this->getUnitName((int)$chosenUnit);
-        }
-        $price = $this->priceForProductUnit($p->id, $chosenUnit);
-
-        foreach ($this->rows as $idx => $row) {
-            if ((int)($row['product_id'] ?? 0) === (int)$p->id && (int)($row['unit_id'] ?? 0) === (int)$chosenUnit) {
-                $this->rows[$idx]['qty'] = (float)($this->rows[$idx]['qty'] ?? 0) + 1;
-                $this->recalcTotals();
-                return;
-            }
-        }
-
-        $row = $this->blankRow();
-        $row['category_id']  = $p->category_id;
-        $row['product_id']   = $p->id;
-        $row['unit_id']      = $chosenUnit;
-        $row['unit_price']   = (float) $price;
-        $row['uom_text']     = $unitOptions[$chosenUnit] ?? $this->getUnitName($chosenUnit);
-        $row['unit_options'] = $unitOptions;
-        $row['preview'] = [
-            'name'        => $this->safeTransName($p->name),
-            'sku'         => $p->sku,
-            'barcode'     => $p->barcode,
-            'description' => $this->safeTransName($p->description),
-            'uom'         => $row['uom_text'],
-            'price'       => (float) $row['unit_price'],
-        ];
-        $this->rows[] = $row;
-
-        $this->recalcTotals();
-    }
-
-    public function incQty(int $i): void
-    {
-        $this->rows[$i]['qty'] = max(0.0001, (float)($this->rows[$i]['qty'] ?? 0) + 1);
-        $this->recalcTotals();
-    }
-
-    public function decQty(int $i): void
-    {
-        $q = (float)($this->rows[$i]['qty'] ?? 0);
-        $q = $q - 1;
-        $this->rows[$i]['qty'] = $q > 0 ? $q : 1;
-        $this->recalcTotals();
-    }
-
-    public function clearCart(): void
-    {
-        $this->rows = [$this->blankRow()];
-        $this->recalcTotals();
-    }
-
-    public function addRow(): void
-    {
-        $this->rows[] = $this->blankRow();
-    }
-
-    public function removeRow($idx): void
-    {
-        array_splice($this->rows, (int) $idx, 1);
-        if (!$this->rows) {
-            $this->rows[] = $this->blankRow();
-        }
-        $this->recalcTotals();
-    }
-
-    public function updated($field): void
-    {
-        if (str_starts_with($field, 'rows.') || in_array($field, ['discount','tax'], true)) {
-            $this->recalcTotals();
-        }
-    }
-
-    public function rowCategoryChanged(int $i): void
-    {
-        $this->rows[$i]['product_id']   = null;
-        $this->rows[$i]['unit_id']      = null;
-        $this->rows[$i]['unit_price']   = 0;
-        $this->rows[$i]['uom_text']     = null;
-        $this->rows[$i]['preview']      = null;
-        $this->rows[$i]['unit_options'] = [];
-        $this->recalcTotals();
-    }
-
-    public function rowProductChanged(int $i): void
-    {
-        $pid = $this->rows[$i]['product_id'] ?? null;
-        if (!$pid) {
-            $this->rowCategoryChanged($i);
-            return;
-        }
-
-        $p = Product::find($pid);
-        if (!$p) return;
-
-        [$unitOptions, ] = $this->parseUnitMatrix($p->units_matrix);
-
-        $chosenUnit = $this->rows[$i]['unit_id'] ?: ($p->unit_id ?? null);
-        if ($chosenUnit && !array_key_exists((int)$chosenUnit, $unitOptions)) {
-            $unitOptions[(int)$chosenUnit] = $this->getUnitName((int)$chosenUnit);
-        }
-        if (!$chosenUnit && !empty($unitOptions)) {
-            $chosenUnit = (int) array_key_first($unitOptions);
-        }
-
-        $price = $this->priceForProductUnit($pid, $chosenUnit);
-
-        $this->rows[$i]['unit_id']      = $chosenUnit;
-        $this->rows[$i]['unit_price']   = (float) $price;
-        $this->rows[$i]['uom_text']     = $unitOptions[$chosenUnit] ?? $this->getUnitName($chosenUnit);
-        $this->rows[$i]['unit_options'] = $unitOptions;
-
-        $this->rows[$i]['preview'] = [
-            'name'        => $this->safeTransName($p->name),
-            'sku'         => $p->sku,
-            'barcode'     => $p->barcode,
-            'description' => $this->safeTransName($p->description),
-            'uom'         => $this->rows[$i]['uom_text'],
-            'price'       => (float) $this->rows[$i]['unit_price'],
+            'unit_price'   => $unitPrice,
+            'unit_options' => $options,
+            'preview'      => [
+                'name'     => $this->safeTransName($p->name),
+                'sku'      => $p->sku ?? null,
+                'barcode'  => $p->barcode ?? null,
+                'uom'      => $uomById[$defaultUnitId] ?? $this->getUnitName($defaultUnitId),
+            ],
         ];
 
         $this->recalcTotals();
@@ -351,65 +242,83 @@ class Manage extends Component
 
     public function rowUnitChanged(int $i): void
     {
-        $pid = $this->rows[$i]['product_id'] ?? null;
-        $uid = $this->rows[$i]['unit_id'] ?? null;
-        if (!$pid || !$uid) return;
+        $row = $this->rows[$i] ?? null;
+        if (!$row) return;
 
-        $price = $this->priceForProductUnit($pid, $uid);
-        $this->rows[$i]['unit_price'] = (float) $price;
-        $this->rows[$i]['uom_text']   = $this->getUnitName((int) $uid);
+        $p = Product::find($row['product_id']);
+        if (!$p) return;
 
-        if (!empty($this->rows[$i]['preview'])) {
-            $this->rows[$i]['preview']['uom']   = $this->rows[$i]['uom_text'];
-            $this->rows[$i]['preview']['price'] = (float) $price;
-        }
+        [, $prices, $uomById] = $this->unitOptionsForProduct($p);
+        $uid = (int) ($row['unit_id'] ?? 0);
+        $this->rows[$i]['unit_price'] = (float) ($prices[$uid] ?? 0);
+        $this->rows[$i]['preview']['uom'] = $uomById[$uid] ?? $this->getUnitName($uid);
 
         $this->recalcTotals();
     }
 
-    /* ======================== Validation ======================== */
+    public function incQty(int $i): void
+    {
+        if (!isset($this->rows[$i])) return;
+        $this->rows[$i]['qty'] = (float) ($this->rows[$i]['qty'] ?? 0) + 1;
+        $this->recalcTotals();
+    }
+
+    public function decQty(int $i): void
+    {
+        if (!isset($this->rows[$i])) return;
+        $q = (float) ($this->rows[$i]['qty'] ?? 0);
+        $q = max(0, $q - 1);
+        $this->rows[$i]['qty'] = $q;
+        $this->recalcTotals();
+    }
+
+    public function removeRow($idx): void
+    {
+        array_splice($this->rows, (int) $idx, 1);
+        $this->recalcTotals();
+    }
+
+    public function clearCart(): void
+    {
+        $this->rows = [];
+        $this->recalcTotals();
+    }
 
     protected function rules(): array
     {
         return [
-            'pos_date'      => 'required|date',
-            'warehouse_id'  => 'required|exists:warehouses,id',
-            'customer_id'   => 'nullable|exists:customers,id',
+            'pos_date'     => 'required|date',
+            'warehouse_id' => 'required|exists:warehouses,id',
+            'customer_id'  => 'nullable|exists:customers,id',
 
-            'discount'      => 'nullable|numeric|min:0',
-            'tax'           => 'nullable|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0',
+            'tax'      => 'nullable|numeric|min:0',
 
-            'rows'                 => 'required|array|min:1',
-            'rows.*.category_id'   => 'nullable|integer',
-            'rows.*.product_id'    => 'required|exists:products,id',
-            'rows.*.unit_id'       => 'nullable|exists:unit,id',
-            'rows.*.qty'           => 'required|numeric|min:0.0001',
-            'rows.*.unit_price'    => 'nullable|numeric|min:0',
-            'rows.*.expiry_date'   => 'nullable|date',
+            'rows'              => 'required|array|min:1',
+            'rows.*.product_id' => 'required|exists:products,id',
+            'rows.*.unit_id'    => 'required|exists:unit,id',
+            'rows.*.qty'        => 'required|numeric|min:0.0001',
+            'rows.*.unit_price' => 'required|numeric|min:0',
         ];
     }
 
     protected $messages = [
-        'pos_date.required'           => 'تاريخ البيع مطلوب',
-        'warehouse_id.required'       => 'المخزن مطلوب',
-        'rows.required'               => 'تفاصيل الفاتورة مطلوبة',
-        'rows.*.product_id.required'  => 'يرجى اختيار الصنف',
-        'rows.*.qty.min'              => 'الكمية لابد أن تكون أكبر من صفر',
-        'rows.*.unit_price.min'       => 'السعر لا يمكن أن يكون سالب',
+        'pos_date.required'         => 'تاريخ الفاتورة مطلوب',
+        'warehouse_id.required'     => 'المخزن مطلوب',
+        'rows.required'             => 'السلة فارغة',
+        'rows.*.product_id.required'=> 'يرجى اختيار منتج',
+        'rows.*.unit_id.required'   => 'اختر وحدة',
+        'rows.*.qty.min'            => 'الكمية يجب أن تكون أكبر من صفر',
     ];
-
-    /* ======================== Totals & Save ======================== */
 
     private function recalcTotals(): void
     {
-        $subtotal = 0.0;
+        $sum = 0.0;
         foreach ($this->rows as $r) {
-            $q  = (float) ($r['qty'] ?? 0);
-            $up = (float) ($r['unit_price'] ?? 0);
-            $subtotal += $q * $up;
+            $sum += (float) ($r['qty'] ?? 0) * (float) ($r['unit_price'] ?? 0);
         }
-        $this->subtotal = round($subtotal, 4);
-        $this->grand    = round($this->subtotal - (float) $this->discount + (float) $this->tax, 4);
+        $this->subtotal = round($sum, 4);
+        $this->grand    = round($this->subtotal - (float)$this->discount + (float)$this->tax, 4);
     }
 
     public function save()
@@ -417,21 +326,19 @@ class Manage extends Component
         $this->validate();
 
         DB::transaction(function () {
-            $this->recalcTotals();
-
             if ($this->pos_id) {
                 $pos = Pos::lockForUpdate()->findOrFail($this->pos_id);
             } else {
                 $pos = new Pos();
-                $next = (int)((Pos::max('id') ?? 0) + 1);
-                $pos->pos_no = 'SO-' . now()->format('Ymd') . '-' . str_pad((string)$next, 4, '0', STR_PAD_LEFT);
+                $next = (int) ((Pos::max('id') ?? 0) + 1);
+                $pos->pos_no = 'SO-'.now()->format('Ymd').'-'.str_pad((string)$next, 4, '0', STR_PAD_LEFT);
                 $pos->status = 'draft';
             }
 
             $pos->pos_date     = $this->pos_date;
             $pos->warehouse_id = $this->warehouse_id;
             $pos->customer_id  = $this->customer_id;
-            $pos->notes        = ['ar' => $this->notes_ar, 'en' => $this->notes_en];
+            $pos->notes        = ['ar' => $this->notes_ar];
             $pos->subtotal     = $this->subtotal;
             $pos->discount     = $this->discount;
             $pos->tax          = $this->tax;
@@ -440,22 +347,18 @@ class Manage extends Component
 
             $pos->save();
 
+            // أعادة بناء السطور
             $pos->lines()->delete();
 
             foreach ($this->rows as $r) {
-                if (empty($r['has_expiry'])) $r['expiry_date'] = null;
-
                 $line = new PosLine([
                     'product_id'   => $r['product_id'],
                     'unit_id'      => $r['unit_id'],
                     'warehouse_id' => $this->warehouse_id,
                     'qty'          => (float) $r['qty'],
                     'unit_price'   => (float) $r['unit_price'],
-                    'uom_text'     => $r['uom_text'],
-                    'expiry_date'  => $r['expiry_date'],
                     'line_total'   => round((float)$r['qty'] * (float)$r['unit_price'], 4),
-                    'notes'        => null,
-                    'code'         => null,
+                    'uom_text'     => $r['preview']['uom'] ?? null,
                 ]);
                 $pos->lines()->save($line);
             }
@@ -464,33 +367,40 @@ class Manage extends Component
         });
 
         session()->flash('success', __('pos.saved_ok'));
-        return redirect()->route('pos.index');
+        // لا نعيد التوجيه هنا حتى لا نفقد تجربة الـ POS
     }
 
-    public function noop() {}
+    /* =============
+     *    Render
+     * ============= */
 
     public function render()
     {
-        $warehouses = Warehouse::orderBy('name')->get(['id','name']);
-        $customers  = Customer::orderBy('name')->get(['id','name']);
         $categories = Category::orderBy('name')->get(['id','name']);
 
-        $products = Product::orderBy('name')
-            ->get(['id','name','category_id','unit_id','sku','barcode','description','units_matrix']);
-
-        $catalogProducts = $products->when($this->activeCategoryId, function ($q) {
-            return $q->where('category_id', (int)$this->activeCategoryId);
-        })->map(function ($p) {
-            $p->min_price = $this->minPriceFromMatrix($p->units_matrix);
-            return $p;
-        });
+        // نجلب منتجات بحد أدنى من الأعمدة
+        $products = Product::select('id','name','sku','barcode','category_id','unit_id','units_matrix','sale_unit_key')
+            ->when($this->activeCategoryId, fn($q) => $q->where('category_id', $this->activeCategoryId))
+            ->get()
+            ->map(function ($p) {
+                // حساب أقل سعر لعرضه على كرت المنتج
+                [$opts, $prices] = $this->unitOptionsForProduct($p);
+                $minPrice = 0.0;
+                if ($prices) {
+                    $minPrice = (float) min($prices);
+                }
+                $p->min_price = $minPrice;
+                // تنظيف الاسم
+                $p->name = $this->safeTransName($p->name);
+                return $p;
+            });
 
         return view('livewire.pos.manage', [
-            'warehouses'      => $warehouses,
-            'customers'       => $customers,
-            'categories'      => $categories,
-            'products'        => $products,
-            'catalogProducts' => $catalogProducts,
+            'categories' => $categories,
+            'warehouses' => Warehouse::orderBy('name')->get(['id','name']),
+            'customers'  => Customer::orderBy('name')->get(['id','name']),
+            'products'   => $products,
+            'catalogProducts' => $products, // لاستخدامه في الفيو
         ]);
     }
 }

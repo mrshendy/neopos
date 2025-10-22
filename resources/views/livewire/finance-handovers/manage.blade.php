@@ -87,9 +87,7 @@
 
                         {{-- تاريخ التسليم (تاريخ فقط) --}}
                         <div class="col-lg-4 field-block mt-2">
-                            <label class="form-label">
-                                <i class="mdi mdi-calendar-check-outline me-1"></i> {{ __('pos.handover_date') ?? 'تاريخ التسليم' }}
-                            </label>
+                            <label class="form-label"><i class="mdi mdi-calendar-check-outline me-1"></i> {{ __('pos.handover_date') ?? 'تاريخ التسليم' }}</label>
                             <input type="date" class="form-control" wire:model.defer="handover_date">
                             <small class="help">{{ __('pos.help_handover_date') ?? 'تاريخ فقط (الافتراضي: اليوم).' }}</small>
                             <div class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $handover_date }}</div>
@@ -99,28 +97,23 @@
 
                     <div class="divider my-3"></div>
 
-                    {{-- العملة + المبلغ المحصّل + الفرق --}}
+                    {{-- رصيد الخزينة (حسب من) + المبلغ المحصّل + الفرق --}}
                     <div class="row g-3">
-                        {{-- عملة خزنة "من" بدلاً من "المبلغ المتوقع" --}}
                         <div class="col-lg-4 field-block">
-                            <label class="form-label">
-                                <i class="mdi mdi-currency-usd me-1"></i> {{ __('pos.currency') ?? 'العملة (حسب خزنة من)' }}
-                            </label>
-                            <input type="text" class="form-control" value="{{ $fromCurrencyId ?? '—' }}" readonly>
-                            <small class="help">{{ __('pos.handover_help_currency') ?? 'العملة مأخوذة من إعدادات خزنة (من).' }}</small>
-                            <div class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $fromCurrencyId ?? '—' }}</div>
+                            <label class="form-label"><i class="mdi mdi-currency-usd me-1"></i> {{ __('pos.cashbox_balance') ?? 'رصيد الخزينة الحالي' }}</label>
+                            <input type="text" class="form-control" value="{{ number_format($fromBalance ?? 0, 2) }}" readonly>
+                            <small class="help">{{ __('pos.handover_help_balance') ?? 'الرقم محسوب من الإيصالات والتحويلات.' }}</small>
+                            <div class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ number_format($fromBalance ?? 0, 2) }}</div>
                         </div>
 
-                        {{-- المبلغ المحصّل --}}
                         <div class="col-lg-4 field-block">
-                            <label class="form-label"><i class="mdi mdi-cash me-1"></i> {{ __('pos.amount_counted') ?? 'المحصّل' }}</label>
+                            <label class="form-label"><i class="mdi mdi-cash me-1"></i> {{ __('pos.amount_counted') ?? 'المبلغ المحصّل' }}</label>
                             <input type="number" step="0.01" min="0" class="form-control" wire:model.defer="amount_counted">
                             <small class="help">{{ __('pos.handover_help_counted') ?? 'المبلغ الفعلي المُسلّم.' }}</small>
                             <div class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ $amount_counted }}</div>
                             @error('amount_counted') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
-                        {{-- الفرق (على أساس amount_expected الداخلي إن وُجد) --}}
                         <div class="col-lg-4">
                             <label class="form-label d-block"><i class="mdi mdi-scale-balance me-1"></i> {{ __('pos.difference') ?? 'الفرق' }}</label>
                             @php $diff = (float)($difference ?? 0); @endphp
@@ -146,7 +139,10 @@
                                 <option value="rejected">{{ __('pos.rejected') ?? 'مرفوضة' }}</option>
                             </select>
                             <small class="help">{{ __('pos.handover_help_status') ?? 'اختر الحالة الحالية.' }}</small>
-                            <div class="preview-chip"><i class="mdi mdi-eye-outline"></i> {{ __('pos.'.$status) ?? $status }}</div>
+                            <div class="preview-chip">
+                                <i class="mdi mdi-eye-outline"></i>
+                                {{ __('pos.'.$this->status) ?? $this->status }}
+                            </div>
                             @error('status') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
@@ -162,8 +158,10 @@
                             <small class="help">{{ __('pos.handover_help_delivered_by') ?? 'المستخدم الذي قام بالتسليم.' }}</small>
                             <div class="preview-chip">
                                 <i class="mdi mdi-eye-outline"></i>
-                                @php $dUser = $users->firstWhere('id', (int)$delivered_by_user_id); @endphp
-                                {{ $dUser? $dUser->name : '—' }}
+                                @php
+                                    $dUser = $users->firstWhere('id', (int)($this->delivered_by_user_id ?? 0));
+                                @endphp
+                                {{ $dUser ? $dUser->name : '—' }}
                             </div>
                             @error('delivered_by_user_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
@@ -180,8 +178,10 @@
                             <small class="help">{{ __('pos.handover_help_received_by') ?? 'المستخدم الذي استلم.' }}</small>
                             <div class="preview-chip">
                                 <i class="mdi mdi-eye-outline"></i>
-                                @php $rUser = $users->firstWhere('id', (int)$received_by_user_id); @endphp
-                                {{ $rUser? $rUser->name : '—' }}
+                                @php
+                                    $rUser = $users->firstWhere('id', (int)($this->received_by_user_id ?? 0));
+                                @endphp
+                                {{ $rUser ? $rUser->name : '—' }}
                             </div>
                             @error('received_by_user_id') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
@@ -218,10 +218,10 @@
 
                 <div class="card-footer d-flex gap-2">
                     <a href="{{ route('finance.handovers') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
-                        <i class="mdi mdi-arrow-left"></i> {{ __('pos.btn_back') }}
+                        <i class="mdi mdi-arrow-left"></i> {{ __('pos.btn_back') ?? 'رجوع' }}
                     </a>
                     <button class="btn btn-success rounded-pill px-4 shadow-sm">
-                        <i class="mdi mdi-content-save-outline"></i> {{ __('pos.btn_save') }}
+                        <i class="mdi mdi-content-save-outline"></i> {{ __('pos.btn_save') ?? 'حفظ' }}
                     </button>
                 </div>
             </div>

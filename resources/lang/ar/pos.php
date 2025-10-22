@@ -2424,7 +2424,54 @@ return [
 
 'delivered_by' => 'المستخدم الذي قام بالتسليم.',
 'received_by'  => 'المستخدم الذي استلم.',
+  'handover_title_manage' => 'إدارة استلام/تسليم الخزينة',
+    'editing'   => 'تعديل',
+    'creating'  => 'إنشاء',
 
+    'from_cashbox' => 'من خزنة',
+    'to_cashbox'   => 'إلى خزنة',
+    'choose'       => 'اختر...',
+    'help_from_cashbox' => 'اختر الخزينة المرسِلة.',
+    'help_to_cashbox'   => 'اختر الخزينة المستلِمة.',
+
+    'swap' => 'تبديل',
+
+    'handover_date'       => 'تاريخ التسليم',
+    'help_handover_date'  => 'تاريخ فقط (الافتراضي: اليوم).',
+
+    // الرصيد
+    'cashbox_balance'     => 'رصيد الخزينة الحالي (حسب خزنة "من")',
+    'handover_help_balance' => 'الرقم محسوب من الإيصالات غير الملغاة والتحويلات الداخلة/الخارجة.',
+
+    'amount_counted'      => 'المبلغ المحصّل',
+    'handover_help_counted' => 'المبلغ الفعلي المُسلّم.',
+
+    'difference' => 'الفرق',
+
+    'status'    => 'الحالة',
+    'draft'     => 'مسودة',
+    'submitted' => 'مُرسلة',
+    'received'  => 'مستلمة',
+    'rejected'  => 'مرفوضة',
+    'handover_help_status' => 'اختر الحالة الحالية.',
+
+    'delivered_by' => 'قام بالتسليم',
+    'handover_help_delivered_by' => 'المستخدم الذي قام بالتسليم.',
+    'received_by'  => 'المُستلم',
+    'handover_help_received_by'  => 'المستخدم الذي استلم.',
+
+    'doc_no' => 'رقم المستند',
+    'handover_help_docno' => 'اختياري؛ يمكن توليده لاحقًا.',
+
+    'notes_ar' => 'ملاحظات (عربي)',
+    'notes_en' => 'Notes (EN)',
+    'finset_ph_notes_ar' => 'اكتب ملاحظات بالعربية...',
+    'finset_ph_notes_en' => 'Write notes in English...',
+
+    'btn_back' => 'رجوع',
+    'btn_save' => 'حفظ',
+
+    'msg_saved' => 'تم الحفظ بنجاح.',
 'receipts_title_index' => 'الإيصالات',
 'receipts_title_manage'=> 'إدارة إيصال',
 'total_cash'           => 'إجمالي النقدي',
