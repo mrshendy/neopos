@@ -17,6 +17,6 @@ class PosLine extends Model
     ];
 
     public function pos()     { return $this->belongsTo(Pos::class, 'pos_id'); }
-    public function product() { return $this->belongsTo(\App\Models\Product::class, 'product_id'); }
-    public function unit()    { return $this->belongsTo(\App\Models\Unit::class, 'unit_id'); }
+    public function product() { return $this->belongsTo(\App\Models\product\product::class, 'product_id'); }
+    public function unit()    { return $this->belongsTo(\App\Models\unit\unit::class, 'unit_id'); }
 }

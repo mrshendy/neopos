@@ -1,385 +1,934 @@
-<div class="page-wrap">
+<div class="container" style="max-width:1600px;margin:0 auto" x-data>
     {{-- Alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
-            <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
+            <i class="fa-solid fa-circle-check me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
     @if ($errors->any())
         <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-3">
-            <i class="mdi mdi-alert-circle-outline me-2"></i><strong>{{ __('pos.input_errors') }}</strong>
-            <ul class="mb-0 mt-2">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+            <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>{{ __('pos.input_errors') }}</strong>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $e)
+                    <li>{{ $e }}</li>
+                @endforeach
+            </ul>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
+    {{-- Fonts & Icons --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.rtl.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+
     <style>
-        :root{
-            --pos-primary:#2563eb;  /* أزرق حديث */
-            --pos-accent:#10b981;   /* أخضر */
-            --pos-soft:#f8fafc;
-            --pos-border:rgba(0,0,0,.06);
-            --pos-muted:#64748b;
+        :root {
+            --primary: #0ea5e9;
+            --primary-light: #38bdf8;
+            --primary-dark: #0284c7;
+            --secondary: #06b6d4;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --gray-light: #cbd5e1;
+            --border: #e2e8f0;
+            --card-bg: #ffffff;
+            --sidebar-bg: #0f172a;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, .1), 0 4px 6px -2px rgba(0, 0, 0, .05);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all .25s ease;
         }
-        .stylish-card{border:1px solid var(--pos-border)}
-        .toolbar .btn{border-radius:9999px}
-        .form-hint{color:var(--pos-muted);font-size:.8rem;margin-top:.2rem}
 
-        .table thead th{background:#f8f9fc;white-space:nowrap;position:sticky;top:0;z-index:1}
-        .table td,.table th{vertical-align:middle}
-        .totals-box{background:#fafafa;border:1px dashed rgba(0,0,0,.08);border-radius:12px;padding:14px}
-        .totals-box .row>div{margin-bottom:6px}
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif
+        }
 
-        /* Chips للأقسام */
-        .chipbar{display:flex;flex-wrap:wrap;gap:.5rem}
-        .chip{
-            display:inline-flex;align-items:center;gap:.4rem;
-            background:var(--pos-soft);border:1px solid var(--pos-border);
-            padding:.35rem .7rem;border-radius:999px;cursor:pointer;
-            transition:.15s; user-select:none;
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--dark)
         }
-        .chip.active{background:#e0f2fe;border-color:#93c5fd}
-        .chip .dot{width:8px;height:8px;border-radius:999px;background:var(--pos-primary)}
-        .preview-card{
-            background:#ffffff;border:1px solid var(--pos-border);border-radius:12px;padding:10px;margin-top:6px
+
+        .pos-system {
+            display: grid;
+            grid-template-columns: 280px 1fr 380px;
+            gap: 20px;
+            min-height: calc(100vh - 40px)
         }
-        .preview-card .title{font-weight:700}
-        .preview-card .meta{color:var(--pos-muted);font-size:.85rem}
-        .badge-soft{background:#f8fafc;border:1px solid rgba(0,0,0,.05);color:#334155}
+
+        @media (max-width: 1200px) {
+            .pos-system {
+                grid-template-columns: 250px 1fr 350px
+            }
+        }
+
+        @media (max-width: 992px) {
+            .pos-system {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto
+            }
+        }
+
+        .header {
+            grid-column: 1/-1;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            border-radius: var(--radius);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            margin: 20px 0 10px
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0 0 4px
+        }
+
+        .header p {
+            opacity: .92;
+            font-size: .95rem
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition)
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, .18);
+            color: #fff
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, .28)
+        }
+
+        .btn-light {
+            background: #fff;
+            color: var(--primary);
+            border-color: #fff
+        }
+
+        .btn-light:hover {
+            background: var(--light)
+        }
+
+        .btn-grad {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            border: none
+        }
+
+        .btn-grad:hover {
+            opacity: .95
+        }
+
+        .sidebar {
+            background: var(--sidebar-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-shadow: var(--shadow);
+            overflow: auto
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, .08);
+            border-radius: var(--radius-sm);
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, .1)
+        }
+
+        .category-card:hover {
+            background: rgba(255, 255, 255, .14);
+            transform: translateY(-2px)
+        }
+
+        .category-card.active {
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, .4)
+        }
+
+        .category-icon {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            color: var(--primary-light)
+        }
+
+        .category-card.active .category-icon {
+            color: #fff
+        }
+
+        .category-name {
+            color: #fff;
+            font-size: .95rem;
+            font-weight: 700
+        }
+
+        .filters-section {
+            background: rgba(255, 255, 255, .06);
+            border-radius: var(--radius-sm);
+            padding: 16px
+        }
+
+        .filter-group {
+            margin-bottom: 12px
+        }
+
+        .filter-label {
+            color: var(--gray-light);
+            font-size: .85rem;
+            margin-bottom: 6px;
+            display: block
+        }
+
+        .filter-select,
+        .filter-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+            font-size: .95rem
+        }
+
+        .filter-select:focus,
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary-light)
+        }
+
+        .products-section {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            overflow: hidden
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 12px
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 46px 12px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--light)
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray)
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 6px 0 12px
+        }
+
+        .products-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--dark)
+        }
+
+        .view-btn {
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: var(--light);
+            border: 1px solid var(--border);
+            cursor: pointer
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary)
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+            overflow: auto;
+            padding: 4px;
+            flex: 1
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg)
+        }
+
+        .product-image {
+            height: 110px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 1.8rem
+        }
+
+        .product-name {
+            font-weight: 800;
+            margin-bottom: 6px;
+            font-size: 1rem
+        }
+
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto
+        }
+
+        .product-price {
+            font-weight: 900;
+            color: var(--primary)
+        }
+
+        .product-stock {
+            font-size: .82rem;
+            color: var(--gray)
+        }
+
+        .cart-section {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            overflow: hidden
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .cart-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--dark)
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow: auto;
+            margin-bottom: 10px
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .cart-item-image {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary)
+        }
+
+        .cart-item-details {
+            flex: 1
+        }
+
+        .cart-item-name {
+            font-weight: 800;
+            margin-bottom: 2px
+        }
+
+        .cart-item-price {
+            color: var(--primary);
+            font-weight: 900
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--light);
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary)
+        }
+
+        .cart-item-quantity {
+            font-weight: 800;
+            min-width: 26px;
+            text-align: center
+        }
+
+        .cart-summary {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: auto
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px
+        }
+
+        .summary-total {
+            font-weight: 900;
+            font-size: 1.15rem;
+            color: var(--primary);
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            margin-top: 4px
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.05rem;
+            cursor: pointer;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(14, 165, 233, .3)
+        }
+
+        .badge-soft {
+            background: #f8fafc;
+            border: 1px solid rgba(0, 0, 0, .06);
+            color: #334155;
+            border-radius: 999px;
+            padding: .15rem .5rem;
+            display: inline-block
+        }
+
+        .price-badge {
+            background: #ecfeff;
+            border: 1px solid #a5f3fc;
+            color: #155e75;
+            border-radius: 999px;
+            padding: .2rem .55rem;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+            font-weight: 800
+        }
+
+        .fade-in {
+            animation: fadeIn .3s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
     </style>
 
-    <div class="card shadow-sm rounded-4 stylish-card mb-4">
-        <div class="card-header bg-light fw-bold d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
-                <i class="mdi mdi-receipt-text-outline me-1"></i>
-                <span>{{ $pos_id ? __('pos.pos_title_edit') : __('pos.pos_title_new') }}</span>
-                @if($pos_id)
-                    <span class="badge bg-light text-dark border">#{{ $pos_id }}</span>
-                @endif
-            </div>
-            <div class="toolbar">
-                <a href="{{ route('pos.index') }}" class="btn btn-outline-secondary btn-sm px-3">
-                    <i class="mdi mdi-arrow-left"></i> {{ __('pos.back') }}
-                </a>
-                <button type="button" class="btn btn-outline-primary btn-sm px-3" wire:click="$refresh">
-                    <i class="mdi mdi-refresh"></i> {{ __('pos.refresh') }}
-                </button>
-            </div>
+    {{-- Header --}}
+    <div class="header">
+        <div>
+            <h1><i class="fa-solid fa-cash-register"></i> {{ __('إدارة المبيعات') }}</h1>
+            <p>{{ __('إدارة فواتير البيع الخاصة بك') }}</p>
         </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-light" href="{{ route('pos.index') }}"><i class="fa-solid fa-list"></i>
+                {{ __('قائمة المبيعات') }}</a>
+        </div>
+    </div>
 
-        <div class="card-body">
-            <form wire:submit.prevent="save" class="row g-3">
-                {{-- Header --}}
-                <div class="col-lg-3">
-                    <label class="form-label mb-1">{{ __('pos.sale_date') }}</label>
-                    <input type="date" class="form-control" wire:model="pos_date">
-                    @error('pos_date') <small class="text-danger">{{ $message }}</small> @enderror
+    <form wire:submit.prevent="save" class="pos-system">
+        {{-- Sidebar --}}
+        <aside class="sidebar">
+            <div>
+                <div class="section-title"><i class="fa-solid fa-th-large"></i> {{ __('الأقسام') }}</div>
+                <div class="categories-grid">
+                    @foreach ($categories as $cat)
+                        @php
+                            $raw = $cat->name;
+                            $cname = is_array($raw)
+                                ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                : (is_string($raw) &&
+                                (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
+                                    ? json_decode($raw, true)[app()->getLocale()] ??
+                                        (json_decode($raw, true)['ar'] ?? $raw)
+                                    : $raw);
+                        @endphp
+                        <div class="category-card {{ isset($activeCategoryId) && (int) $activeCategoryId === (int) $cat->id ? 'active' : '' }}"
+                            wire:click="selectCategory({{ $cat->id }})">
+                            <div class="category-icon"><i class="fa-solid fa-folder-tree"></i></div>
+                            <div class="category-name">{{ $cname }}</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="section-title"><i class="fa-solid fa-filter"></i> {{ __('الفلاتر والبحث') }}</div>
+
+                <div class="filter-group">
+                    <label class="filter-label">{{ __('بحث بالمنتج / الباركود / SKU') }}</label>
+                    <input type="text" class="filter-input" placeholder="{{ __('اكتب للبحث') }}"
+                        wire:model.debounce.400ms="filterProductText">
                 </div>
 
-                <div class="col-lg-3">
-                    <label class="form-label mb-1">{{ __('pos.delivery_date') }}</label>
-                    <input type="date" class="form-control" wire:model="delivery_date">
-                    <div class="form-hint">{{ __('pos.hint_delivery_date') }}</div>
-                </div>
-
-                <div class="col-lg-3">
-                    <label class="form-label mb-1">{{ __('pos.warehouse') }}</label>
-                    <select class="form-select" wire:model="warehouse_id">
-                        <option value="">{{ __('pos.choose') }}</option>
-                        @foreach($warehouses as $w)
+                <div class="filter-group">
+                    <label class="filter-label">{{ __('المخزن') }}</label>
+                    <select class="filter-select" wire:model="warehouse_id">
+                        <option value="">{{ __('اختر') }}</option>
+                        @foreach ($warehouses as $w)
                             @php
-                                $wname = $w->name;
-                                if (is_string($wname) && str_starts_with(trim($wname), '{')) {
-                                    $a = json_decode($wname,true)?:[];
-                                    $wname = $a[app()->getLocale()] ?? $a['ar'] ?? $w->name;
-                                }
+                                $raw = $w->name;
+                                $wname = is_array($raw)
+                                    ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                    : (is_string($raw) &&
+                                    (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
+                                        ? json_decode($raw, true)[app()->getLocale()] ??
+                                            (json_decode($raw, true)['ar'] ?? $raw)
+                                        : $raw);
                             @endphp
                             <option value="{{ $w->id }}">{{ $wname }}</option>
                         @endforeach
                     </select>
-                    @error('warehouse_id') <small class="text-danger">{{ $message }}</small> @enderror
+                    @error('warehouse_id')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <div class="col-lg-3">
-                    <label class="form-label mb-1">{{ __('pos.customer') }}</label>
-                    <select class="form-select" wire:model="customer_id">
-                        <option value="">{{ __('pos.choose') }}</option>
-                        @foreach($customers as $s)
+                <div class="filter-group">
+                    <label class="filter-label">{{ __('العميل (اختياري)') }}</label>
+                    <select class="filter-select" wire:model="customer_id">
+                        <option value="">{{ __('اختيار') }}</option>
+                        @foreach ($customers as $c)
                             @php
-                                $sname = $s->name;
-                                if (is_string($sname) && str_starts_with(trim($sname), '{')) {
-                                    $a = json_decode($sname,true)?:[];
-                                    $sname = $a[app()->getLocale()] ?? $a['ar'] ?? $s->name;
-                                }
+                                $raw = $c->name;
+                                $cname = is_array($raw)
+                                    ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                    : (is_string($raw) &&
+                                    (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
+                                        ? json_decode($raw, true)[app()->getLocale()] ??
+                                            (json_decode($raw, true)['ar'] ?? $raw)
+                                        : $raw);
                             @endphp
-                            <option value="{{ $s->id }}">{{ $sname }}</option>
+                            <option value="{{ $c->id }}">{{ $cname }}</option>
                         @endforeach
                     </select>
-                    @error('customer_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
-                {{-- Notes --}}
-                <div class="col-lg-6">
-                    <label class="form-label mb-1">{{ __('pos.notes_ar') }}</label>
-                    <textarea class="form-control" rows="2" wire:model="notes_ar" placeholder="{{ __('pos.notes_ph') }}"></textarea>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label mb-1">{{ __('pos.notes_en') }}</label>
-                    <textarea class="form-control" rows="2" wire:model="notes_en" placeholder="{{ __('pos.notes_ph') }}"></textarea>
+                <div class="filter-group">
+                    <label class="filter-label">{{ __('تاريخ الفاتورة') }}</label>
+                    <input type="date" class="filter-input" wire:model="pos_date">
+                    @error('pos_date')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                {{-- Fast Category Chipbar (فلتر بصري للأقسام) --}}
-                <div class="col-12">
-                    <div class="chipbar mb-2">
-                        <span class="chip active">
-                            <span class="dot"></span><span>{{ __('pos.all_categories') ?? 'كل الأقسام' }}</span>
-                        </span>
-                        @foreach($categories as $cat)
-                            @php
-                                $cname = $cat->name;
-                                if (is_string($cname) && str_starts_with(trim($cname), '{')) {
-                                    $a = json_decode($cname,true)?:[];
-                                    $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $cat->name;
-                                }
-                            @endphp
-                            <span class="chip"><span class="dot"></span><span>{{ $cname }}</span></span>
-                        @endforeach
-                    </div>
+                <div class="filter-group">
+                    <label class="filter-label">{{ __('ملاحظات (اختياري)') }}</label>
+                    <input type="text" class="filter-input" placeholder="{{ __('ملاحظات تظهر في الطباعة') }}"
+                        wire:model.defer="notes_ar">
                 </div>
+            </div>
+        </aside>
 
-                {{-- Lines --}}
-                <div class="col-12">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <div class="fw-bold"><i class="mdi mdi-format-list-bulleted"></i> {{ __('pos.items_details') }}</div>
-                        <div class="toolbar">
-                            <button type="button" class="btn btn-outline-primary rounded-pill px-3 shadow-sm" wire:click="addRow">
-                                <i class="mdi mdi-plus"></i> {{ __('pos.add_row') }}
+        {{-- Products --}}
+        <section class="products-section">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="{{ __('ابحث عن منتج...') }}"
+                    wire:model.debounce.300ms="filterProductText">
+                <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+            </div>
+
+            <div class="products-header">
+                <div class="products-title">{{ __('المنتجات المتاحة') }}</div>
+                <div class="view-options">
+                    <button class="view-btn active" type="button"><i class="fa-solid fa-grip"></i></button>
+                    <button class="view-btn" type="button"><i class="fa-solid fa-list"></i></button>
+                </div>
+            </div>
+
+            <div class="products-grid">
+                @php $grid = ($catalogProducts ?? $products); @endphp
+                @forelse($grid as $p)
+                    @php
+                        $passCat = empty($activeCategoryId) || (int) $p->category_id === (int) $activeCategoryId;
+                        $txt = trim((string) $filterProductText);
+                        $rawName = $p->name;
+                        $pname = is_array($rawName)
+                            ? $rawName[app()->getLocale()] ?? ($rawName['ar'] ?? (reset($rawName) ?? ''))
+                            : (is_string($rawName) &&
+                            (str_starts_with(trim($rawName), '{') || str_starts_with(trim($rawName), '['))
+                                ? json_decode($rawName, true)[app()->getLocale()] ??
+                                    (json_decode($rawName, true)['ar'] ?? $rawName)
+                                : $rawName);
+                        $haystack = mb_strtolower(trim($pname . ' ' . ($p->sku ?? '') . ' ' . ($p->barcode ?? '')));
+                        $match = !$txt || str_contains($haystack, mb_strtolower($txt));
+                        $minP = isset($p->min_price) ? (float) $p->min_price : 0.0;
+                    @endphp
+                    @if ($passCat && $match)
+                        <div class="product-card fade-in" wire:click="addProductToCart({{ $p->id }})"
+                            title="{{ __('إضافة للسلة') }}">
+                            <div class="product-image"><i class="fa-solid fa-box-open"></i></div>
+                            <div class="product-name">{{ $pname }}</div>
+                            <div class="product-info">
+                                <div class="product-price">{{ number_format($minP, 2) }} <span
+                                        style="color:#64748b;font-weight:600">{{ __('ر.س') }}</span></div>
+                                <div class="product-stock">{{ __('متاح') }}</div>
+                            </div>
+                        </div>
+                    @endif
+                @empty
+                    <div class="text-muted">{{ __('لا توجد منتجات') }}</div>
+                @endforelse
+            </div>
+        </section>
+
+        {{-- Cart --}}
+        <aside class="cart-section">
+            <div class="cart-header">
+                <div class="cart-title"><i class="fa-solid fa-bag-shopping me-1"></i> {{ __('سلة المشتريات') }}</div>
+                <div class="cart-actions d-flex gap-2">
+                    <button class="btn btn-light" type="button" wire:click="clearCart"><i
+                            class="fa-solid fa-trash"></i> {{ __('إفراغ السلة') }}</button>
+                    <button class="btn btn-light" type="button" data-bs-toggle="modal"
+                        data-bs-target="#orderPreviewModal" {{ empty($rows) || !$warehouse_id ? 'disabled' : '' }}>
+                        <i class="fa-solid fa-eye"></i> {{ __('عرض الطلب') }}
+                    </button>
+                    <button class="btn btn-light" type="button" onclick="printOrder()"
+                        {{ empty($rows) || !$warehouse_id ? 'disabled' : '' }}>
+                        <i class="fa-solid fa-print"></i> {{ __('طباعة') }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="cart-items">
+                @forelse($rows as $i => $r)
+                    @php $pname = $r['preview']['name'] ?? '—'; @endphp
+                    <div class="cart-item fade-in" wire:key="row-{{ $i }}">
+                        <div class="cart-item-image"><i class="fa-solid fa-box"></i></div>
+
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">{{ $pname }}</div>
+
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                {{-- Unit select --}}
+                                <select class="form-select form-select-sm" style="width:auto"
+                                    wire:model="rows.{{ $i }}.unit_id"
+                                    wire:change="rowUnitChanged({{ $i }})">
+                                    @if (!empty($r['unit_options']))
+                                        @foreach ($r['unit_options'] as $uid => $uname)
+                                            <option value="{{ $uid }}">{{ $uname }}</option>
+                                        @endforeach
+                                    @else
+                                        <option value="">{{ __('الوحدة') }}</option>
+                                    @endif
+                                </select>
+
+                                {{-- Price (readonly) --}}
+                                <span class="price-badge">{{ number_format((float) ($r['unit_price'] ?? 0), 2) }}</span>
+                            </div>
+
+                            {{-- Line total --}}
+                            <div class="cart-item-price">{{ __('الإجمالي:') }}
+                                <strong>{{ number_format((float) ($r['qty'] ?? 0) * (float) ($r['unit_price'] ?? 0), 2) }}</strong>
+                                {{ __('ر.س') }}
+                            </div>
+                        </div>
+
+                        <div class="cart-item-controls">
+                            <button class="quantity-btn" type="button"
+                                wire:click="decQty({{ $i }})">-</button>
+                            <div class="cart-item-quantity">{{ (float) ($r['qty'] ?? 0) }}</div>
+                            <button class="quantity-btn" type="button"
+                                wire:click="incQty({{ $i }})">+</button>
+
+                            <button class="btn btn-light" type="button" title="{{ __('حذف السطر') }}"
+                                wire:click="removeRow({{ $i }})">
+                                <i class="fa-solid fa-trash-can" style="color:#ef4444"></i>
                             </button>
                         </div>
                     </div>
+                @empty
+                    <div class="text-muted">{{ __('السلة فارغة - اختر منتجًا من الوسط') }}</div>
+                @endforelse
+            </div>
+
+            {{-- Totals --}}
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>{{ __('الإجمالي الفرعي') }}</span><span>{{ number_format((float) $subtotal, 2) }}
+                        {{ __('ر.س') }}</span></div>
+                <div class="summary-row align-items-center gap-2">
+                    <span>{{ __('الخصم') }}</span>
+                    <input type="number" step="0.01" class="form-control form-control-sm" style="width:120px"
+                        wire:model.lazy="discount">
+                </div>
+                <div class="summary-row align-items-center gap-2">
+                    <span>{{ __('الضريبة') }}</span>
+                    <input type="number" step="0.01" class="form-control form-control-sm" style="width:120px"
+                        wire:model.lazy="tax">
+                </div>
+                <div class="summary-row summary-total">
+                    <span>{{ __('الإجمالي النهائي') }}</span><span>{{ number_format((float) $grand, 2) }}
+                        {{ __('ر.س') }}</span></div>
+
+                <button class="checkout-btn" type="submit" wire:loading.attr="disabled">
+                    <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-1"></span>
+                    <i class="fa-solid fa-credit-card"></i>
+                    {{ $pos_id ? __('تحديث') : __('إتمام عملية الدفع / الحفظ') }}
+                </button>
+            </div>
+        </aside>
+    </form>
+
+    {{-- Order Preview Modal --}}
+    <div class="modal fade" id="orderPreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content" id="printArea">
+                <div class="modal-header">
+                    <h6 class="modal-title"><i class="fa-solid fa-receipt me-1"></i> {{ __('معاينة الطلب') }}</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="{{ __('إغلاق') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="fw-bold">{{ __('فاتورة بيع') }}</div>
+                            <div class="small text-muted">{{ __('التاريخ') }}: {{ $pos_date }}</div>
+                            <div class="small text-muted">{{ __('المخزن') }}:
+                                @php
+                                    $w = $warehouses->firstWhere('id', $warehouse_id);
+                                    $raw = $w->name ?? null;
+                                    $wname = is_array($raw)
+                                        ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                        : (is_string($raw) &&
+                                        (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
+                                            ? json_decode($raw, true)[app()->getLocale()] ??
+                                                (json_decode($raw, true)['ar'] ?? $raw)
+                                            : $raw);
+                                @endphp
+                                {{ $wname ?? '—' }}
+                            </div>
+                            <div class="small text-muted">{{ __('العميل') }}:
+                                @php
+                                    $c = $customers->firstWhere('id', $customer_id);
+                                    $raw = $c->name ?? null;
+                                    $cname = is_array($raw)
+                                        ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                        : (is_string($raw) &&
+                                        (str_starts_with(trim($raw), '{') || str_starts_with(trim($raw), '['))
+                                            ? json_decode($raw, true)[app()->getLocale()] ??
+                                                (json_decode($raw, true)['ar'] ?? $raw)
+                                            : $raw);
+                                @endphp
+                                {{ $cname ?? '—' }}
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold">{{ $pos_id ? '#' . $pos_id : __('(غير محفوظ)') }}</div>
+                            @if (!empty($notes_ar))
+                                <div class="small">{{ $notes_ar }}</div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <hr>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered align-middle">
-                            <thead>
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
                                 <tr>
-                                    <th style="width:40px"></th>
-                                    <th style="width:200px">{{ __('pos.category') }}</th>
-                                    <th style="width:320px">{{ __('pos.product') }}</th>
-                                    <th style="width:140px">{{ __('pos.unit') }}</th>
-                                    <th class="text-center" style="width:120px">{{ __('pos.qty') }}</th>
-                                    <th class="text-center" style="width:140px">{{ __('pos.unit_price') }}</th>
-                                    <th class="text-center" style="width:140px">{{ __('pos.line_total') }}</th>
-                                    <th style="width:180px">{{ __('pos.expiry_date') }}</th>
-                                    <th style="width:160px">{{ __('pos.batch_no') }}</th>
+                                    <th>{{ __('المنتج') }}</th>
+                                    <th class="text-center">{{ __('الوحدة') }}</th>
+                                    <th class="text-center">{{ __('الكمية') }}</th>
+                                    <th class="text-center">{{ __('سعر الوحدة') }}</th>
+                                    <th class="text-end">{{ __('الإجمالي') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($rows as $i => $r)
-                                    @php
-                                        $lineTotal = (float)($r['qty'] ?? 0) * (float)($r['unit_price'] ?? 0);
-                                    @endphp
-                                    <tr wire:key="row-{{ $i }}">
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-light btn-sm" onclick="confirmDeleteRow({{ $i }})" title="{{ __('pos.remove_row') }}">
-                                                <i class="mdi mdi-trash-can-outline text-danger"></i>
-                                            </button>
+                                @foreach ($rows as $r)
+                                    <tr>
+                                        <td>{{ $r['preview']['name'] ?? '—' }}</td>
+                                        <td class="text-center">{{ $r['preview']['uom'] ?? ($r['uom_text'] ?? '—') }}
                                         </td>
-
-                                        {{-- Category --}}
-                                        <td>
-                                            <select class="form-select" wire:model="rows.{{ $i }}.category_id" wire:change="rowCategoryChanged({{ $i }})">
-                                                <option value="">{{ __('pos.select_category') ?? '— اختر القسم —' }}</option>
-                                                @foreach($categories as $cat)
-                                                    @php
-                                                        $cname = $cat->name;
-                                                        if (is_string($cname) && str_starts_with(trim($cname), '{')) {
-                                                            $a = json_decode($cname,true)?:[];
-                                                            $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $cat->name;
-                                                        }
-                                                    @endphp
-                                                    <option value="{{ $cat->id }}">{{ $cname }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error("rows.$i.category_id") <small class="text-danger">{{ $message }}</small> @enderror
+                                        <td class="text-center">{{ (float) ($r['qty'] ?? 0) }}</td>
+                                        <td class="text-center">{{ number_format((float) ($r['unit_price'] ?? 0), 2) }}
                                         </td>
-
-                                        {{-- Product filtered by category --}}
-                                        <td>
-                                            <select class="form-select"
-                                                    wire:model="rows.{{ $i }}.product_id"
-                                                    wire:change="rowProductChanged({{ $i }})">
-                                                <option value="">{{ __('pos.choose_product') }}</option>
-                                                @foreach($products as $p)
-                                                    @if(!$r['category_id'] || (int)$p->category_id === (int)$r['category_id'])
-                                                        @php
-                                                            $pname = $p->name;
-                                                            if (is_string($pname) && str_starts_with(trim($pname), '{')) {
-                                                                $a = json_decode($pname,true)?:[];
-                                                                $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $p->name;
-                                                            }
-                                                            $pprice = $p->price ?? ($p->selling_price ?? ($p->sale_price ?? ($p->unit_price ?? 0)));
-                                                        @endphp
-                                                        <option value="{{ $p->id }}">
-                                                            {{ $pname }} — {{ number_format((float)$pprice,2) }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                            @error("rows.$i.product_id") <small class="text-danger">{{ $message }}</small> @enderror
-
-                                            {{-- Product preview card --}}
-                                            @if(!empty($r['preview']))
-                                                <div class="preview-card">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div>
-                                                            <div class="title">{{ $r['preview']['name'] }}</div>
-                                                            <div class="meta">
-                                                                @if($r['preview']['sku']) <span>SKU: {{ $r['preview']['sku'] }}</span> @endif
-                                                                @if($r['preview']['barcode']) <span class="ms-2">Barcode: {{ $r['preview']['barcode'] }}</span> @endif
-                                                            </div>
-                                                        </div>
-                                                        <div class="text-end">
-                                                            <div class="badge badge-soft">{{ $r['preview']['uom'] ?? '—' }}</div>
-                                                            <div class="fw-bold mt-1">{{ number_format((float)($r['preview']['price'] ?? 0), 2) }}</div>
-                                                        </div>
-                                                    </div>
-                                                    @if(!empty($r['preview']['description']))
-                                                        <div class="mt-2" style="color:#475569;font-size:.9rem">
-                                                            {{ $r['preview']['description'] }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        </td>
-
-                                        {{-- Unit --}}
-                                        <td>
-                                            <select class="form-select" wire:model="rows.{{ $i }}.unit_id">
-                                                <option value="">{{ __('pos.choose_unit') }}</option>
-                                                @foreach($units as $u)
-                                                    @php
-                                                        $uname = $u->name;
-                                                        if (is_string($uname) && str_starts_with(trim($uname), '{')) {
-                                                            $a = json_decode($uname,true)?:[];
-                                                            $uname = $a[app()->getLocale()] ?? $a['ar'] ?? $u->name;
-                                                        }
-                                                    @endphp
-                                                    <option value="{{ $u->id }}">{{ $uname }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error("rows.$i.unit_id") <small class="text-danger">{{ $message }}</small> @enderror
-                                            {{-- العرض النصي للوحدة --}}
-                                            @php $uomTxt = $r['uom_text'] ?? null; @endphp
-                                            @if($uomTxt)
-                                                <div class="form-hint">{{ $uomTxt }}</div>
-                                            @endif
-                                        </td>
-
-                                        {{-- Qty --}}
-                                        <td>
-                                            <input type="number" step="0.0001" class="form-control text-center"
-                                                   wire:model.lazy="rows.{{ $i }}.qty" placeholder="1">
-                                            @error("rows.$i.qty") <small class="text-danger">{{ $message }}</small> @enderror
-                                        </td>
-
-                                        {{-- Unit price --}}
-                                        <td>
-                                            <input type="number" step="0.0001" class="form-control text-center"
-                                                   wire:model.lazy="rows.{{ $i }}.unit_price" placeholder="0.00">
-                                            @error("rows.$i.unit_price") <small class="text-danger">{{ $message }}</small> @enderror
-                                        </td>
-
-                                        {{-- Line total --}}
-                                        <td class="text-center fw-semibold">
-                                            {{ number_format($lineTotal, 2) }}
-                                        </td>
-
-                                        {{-- Expiry (toggle + date) --}}
-                                        <td>
-                                            <div class="form-check mb-1">
-                                                <input class="form-check-input" type="checkbox"
-                                                       wire:model="rows.{{ $i }}.has_expiry"
-                                                       id="hasExp{{ $i }}">
-                                                <label class="form-check-label" for="hasExp{{ $i }}">
-                                                    {{ __('pos.has_expiry') ?? 'له تاريخ صلاحية؟' }}
-                                                </label>
-                                            </div>
-                                            <input type="date" class="form-control"
-                                                   wire:model="rows.{{ $i }}.expiry_date"
-                                                   {{ empty($r['has_expiry']) ? 'disabled' : '' }}>
-                                            @error("rows.$i.expiry_date") <small class="text-danger">{{ $message }}</small> @enderror
-                                        </td>
-
-                                        {{-- Batch --}}
-                                        <td>
-                                            <input type="text" class="form-control" wire:model="rows.{{ $i }}.batch_no" placeholder="BATCH-001">
+                                        <td class="text-end">
+                                            {{ number_format((float) ($r['qty'] ?? 0) * (float) ($r['unit_price'] ?? 0), 2) }}
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4" class="text-end">{{ __('الإجمالي الفرعي') }}</th>
+                                    <th class="text-end">{{ number_format((float) $subtotal, 2) }}</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4" class="text-end">{{ __('الخصم') }}</th>
+                                    <th class="text-end">{{ number_format((float) $discount, 2) }}</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4" class="text-end">{{ __('الضريبة') }}</th>
+                                    <th class="text-end">{{ number_format((float) $tax, 2) }}</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4" class="text-end">{{ __('الإجمالي النهائي') }}</th>
+                                    <th class="text-end">{{ number_format((float) $grand, 2) }}</th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
-                </div>
 
-                {{-- Totals --}}
-                <div class="col-12">
-                    <div class="totals-box">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="text-muted small">{{ __('pos.subtotal') }}</div>
-                                <div class="fw-bold">{{ number_format((float)$subtotal, 2) }}</div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="text-muted small">{{ __('pos.discount') }}</div>
-                                <input type="number" step="0.01" class="form-control" wire:model.lazy="discount">
-                            </div>
-                            <div class="col-md-3">
-                                <div class="text-muted small">{{ __('pos.tax') }}</div>
-                                <input type="number" step="0.01" class="form-control" wire:model.lazy="tax">
-                            </div>
-                            <div class="col-md-3">
-                                <div class="text-muted small">{{ __('pos.grand_total') }}</div>
-                                <div class="fw-bold text-primary">{{ number_format((float)$grand, 2) }}</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-
-                {{-- Actions --}}
-                <div class="col-12 d-flex gap-2">
-                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm" wire:loading.attr="disabled">
-                        <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-1"></span>
-                        <i class="mdi mdi-content-save-outline"></i>
-                        {{ $pos_id ? __('pos.update') : __('pos.save') }}
-                    </button>
-                    <a href="{{ route('pos.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
-                        <i class="mdi mdi-arrow-left"></i> {{ __('pos.back') }}
-                    </a>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal">{{ __('إغلاق') }}</button>
+                    <button class="btn btn-grad" onclick="printOrder()"><i class="fa-solid fa-print"></i>
+                        {{ __('طباعة') }}</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-{{-- SweetAlert2 --}}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-function confirmDeleteRow(idx) {
-    Swal.fire({
-        title: '{{ __("pos.confirm_delete_title") }}',
-        text: '{{ __("pos.confirm_delete_row_text") }}',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#198754',
-        cancelButtonColor: '#0d6efd',
-        confirmButtonText: '{{ __("pos.confirm") }}',
-        cancelButtonText: '{{ __("pos.cancel") }}'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Livewire.emit('deleteConfirmed', idx);
-            Swal.fire('{{ __("pos.deleted") }}', '{{ __("pos.row_deleted_ok") }}', 'success');
+    {{-- Print helper --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function printOrder() {
+            const node = document.getElementById('printArea');
+            if (!node) {
+                return window.print();
+            }
+            const w = window.open('', '_blank', 'width=900,height=700');
+            w.document.open();
+            w.document.write(`
+                <html dir="rtl" lang="ar">
+                <head>
+                    <meta charset="utf-8" />
+                    <title>{{ __('فاتورة بيع') }}</title>
+                    <style>
+                        body{font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans"; padding:16px}
+                        table{width:100%;border-collapse:collapse}
+                        th,td{border:1px solid #ddd;padding:6px}
+                        .text-end{text-align:right}
+                        .text-center{text-align:center}
+                        .table-light th{background:#f5f5f5}
+                    </style>
+                </head>
+                <body>${node.innerHTML}</body>
+                </html>
+            `);
+            w.document.close();
+            w.focus();
+            w.print();
+            setTimeout(() => w.close(), 300);
         }
-    })
-}
-</script>
+    </script>
+</div>

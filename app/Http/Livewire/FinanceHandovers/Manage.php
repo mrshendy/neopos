@@ -7,118 +7,155 @@ use Illuminate\Support\Facades\Auth;
 use App\models\finance\finance_handover as Handover;
 use App\models\finance\finance_settings as Settings;
 use App\User;
+use Carbon\Carbon;
 
 class Manage extends Component
 {
     public $handover_id;
 
-    public $finance_settings_id;
+    // من خزنة -> إلى خزنة
+    public $from_finance_settings_id;
+    public $to_finance_settings_id;
+
+    // تاريخ فقط (افتراضي اليوم)
     public $handover_date;
-    public $doc_no;
 
-    public $amount_expected = 0;
+    // مبالغ
+    public $amount_expected = 0; // هنسيبه داخلي للتوافق (مش ظاهر في الواجهة)
     public $amount_counted  = 0;
-    public $difference      = 0;
 
-    public $status = 'draft'; // draft|submitted|received|rejected
-
-    public $delivered_by; // من جدول users
-    public $received_by;  // من جدول users (اختياري إلا عند received)
-
+    // حالة + رقم + ملاحظات
+    public $status = 'draft';
+    public $doc_no;
     public $notes = ['ar' => '', 'en' => ''];
 
-    /** لعرض الأسماء في القوائم */
-    public $users = [];
+    // توافق قديم إن وجد
+    public $finance_settings_id;
+
+    // المستخدمون
+    public $delivered_by_user_id; // الذي قام بالتسليم
+    public $received_by_user_id;  // الذي استلم
+
+    // القوائم
+    public $cashboxes; // Collection
+    public $users;     // Collection
 
     protected $rules = [
-        'finance_settings_id' => 'required|integer|exists:finance_settings,id',
-        'handover_date'       => 'required|date',
-        'doc_no'              => 'nullable|string|max:50',
-        'amount_expected'     => 'required|numeric|min:0',
-        'amount_counted'      => 'required|numeric|min:0',
-        'status'              => 'required|in:draft,submitted,received,rejected',
-        'delivered_by'        => 'required|integer|exists:users,id',
-        'received_by'         => 'nullable|integer|exists:users,id',
-        'notes.ar'            => 'nullable|string|max:1000',
-        'notes.en'            => 'nullable|string|max:1000',
+        'from_finance_settings_id' => 'required|integer|different:to_finance_settings_id',
+        'to_finance_settings_id'   => 'required|integer',
+        'handover_date'            => 'required|date',
+
+        'amount_expected' => 'nullable|numeric|min:0',
+        'amount_counted'  => 'required|numeric|min:0',
+
+        'status' => 'required|in:draft,submitted,received,rejected',
+        'doc_no' => 'nullable|string|max:50',
+
+        'notes.ar' => 'nullable|string|max:1000',
+        'notes.en' => 'nullable|string|max:1000',
+
+        'delivered_by_user_id' => 'nullable|integer|exists:users,id',
+        'received_by_user_id'  => 'nullable|integer|exists:users,id',
     ];
 
     protected $messages = [
-        'finance_settings_id.required' => 'الخزينة مطلوبة.',
-        'handover_date.required'       => 'تاريخ التسليم مطلوب.',
-        'amount_expected.required'     => 'المبلغ المتوقع مطلوب.',
-        'amount_counted.required'      => 'المبلغ المُحصَّل مطلوب.',
-        'delivered_by.required'        => 'المستخدم الذي قام بالتسليم مطلوب.',
-        'delivered_by.exists'          => 'مستخدم التسليم غير موجود.',
-        'received_by.exists'           => 'مستخدم الاستلام غير موجود.',
+        'from_finance_settings_id.required' => 'الخزينة المرسِلة مطلوبة.',
+        'to_finance_settings_id.required'   => 'الخزينة المستلِمة مطلوبة.',
+        'from_finance_settings_id.different'=> 'لا يجب أن تكون الخزنة المرسِلة هي نفسها المستلمة.',
+        'handover_date.required'            => 'تاريخ التسليم مطلوب.',
+        'amount_counted.required'           => 'المبلغ المحصّل مطلوب.',
+        'status.required'                   => 'حالة التسليم مطلوبة.',
     ];
+
+    /** فرق معلوماتي (لو احتجته لاحقًا) */
+    public function getDifferenceProperty()
+    {
+        return (float)($this->amount_counted - ($this->amount_expected ?? 0));
+    }
+
+    /** العملة الخاصة بخزنة "من" */
+    public function getFromCurrencyIdProperty()
+    {
+        if (!$this->cashboxes) return null;
+        $cb = $this->cashboxes->firstWhere('id', (int) $this->from_finance_settings_id);
+        return $cb ? $cb->currency_id : null;
+    }
 
     public function mount($id = null)
     {
-        // تحميل المستخدمين (لو العدد كبير ممكن تستبدلها بسيرش لاحقًا)
-        $this->users = User::query()
-            ->select('id', 'name')
-            ->orderBy('name')
+        // اجلب كل الخزائن (id, name, currency_id) بدون أي اعتماد على is_main
+        $this->cashboxes = Settings::query()
+            ->select('id', 'name', 'currency_id')
+            ->orderBy('id')
             ->get();
 
-        $this->handover_date = now()->format('Y-m-d\TH:i');
-        $this->delivered_by  = Auth::id();
+        $this->users = User::orderBy('name')->get();
+
+        // تاريخ اليوم افتراضي
+        $this->handover_date = now()->toDateString();
 
         if ($id) {
             $this->handover_id = $id;
             $row = Handover::findOrFail($id);
 
-            $this->finance_settings_id = $row->finance_settings_id;
-            $this->handover_date       = optional($row->handover_date)->format('Y-m-d\TH:i');
-            $this->doc_no              = $row->doc_no;
-            $this->amount_expected     = $row->amount_expected;
-            $this->amount_counted      = $row->amount_counted;
-            $this->difference          = $row->difference;
-            $this->status              = $row->status;
-            $this->delivered_by        = $row->delivered_by ?: $this->delivered_by;
-            $this->received_by         = $row->received_by;
-            $this->notes               = $row->getTranslations('notes') ?: $this->notes;
+            $this->from_finance_settings_id = $row->source_finance_settings_id;
+            $this->to_finance_settings_id   = $row->target_finance_settings_id;
+            $this->handover_date            = optional($row->handover_date)?->format('Y-m-d') ?? $this->handover_date;
+
+            $this->amount_expected = (float) ($row->amount_expected ?? 0);
+            $this->amount_counted  = (float) $row->amount_counted;
+
+            $this->status = $row->status;
+            $this->doc_no = $row->doc_no;
+            $this->notes  = $row->getTranslations('notes') ?: $this->notes;
+
+            $this->delivered_by_user_id = $row->delivered_by_user_id;
+            $this->received_by_user_id  = $row->received_by_user_id;
+
+            $this->finance_settings_id  = $row->finance_settings_id; // لو كان موجود في الجدول
+        } else {
+            $this->finance_settings_id = $this->to_finance_settings_id;
         }
     }
 
-    public function updated($name)
+    /** عند تغيير "إلى خزنة" نخلي متغير التوافق يساويها */
+    public function updatedToFinanceSettingsId($value = null)
     {
-        if (in_array($name, ['amount_expected', 'amount_counted'])) {
-            $this->difference = (float) $this->amount_counted - (float) $this->amount_expected;
-        }
+        $this->finance_settings_id = $this->to_finance_settings_id;
+    }
+
+    /** زر التبديل */
+    public function swapCashboxes()
+    {
+        [$this->from_finance_settings_id, $this->to_finance_settings_id] =
+            [$this->to_finance_settings_id, $this->from_finance_settings_id];
+
+        $this->updatedToFinanceSettingsId();
     }
 
     public function save()
     {
-        // حساب الفرق قبل التحقق
-        $this->difference = (float) $this->amount_counted - (float) $this->amount_expected;
-
-        // شرط إضافي: لو الحالة received لازم received_by
-        if ($this->status === 'received' && empty($this->received_by)) {
-            $this->addError('received_by', 'تحديد المستخدم الذي استلم مطلوب عند حالة الاستلام.');
-            return;
-        }
-
         $this->validate();
 
         $payload = [
-            'finance_settings_id' => $this->finance_settings_id,
-            'handover_date'       => $this->handover_date,
-            'doc_no'              => $this->doc_no,
-            'amount_expected'     => $this->amount_expected,
-            'amount_counted'      => $this->amount_counted,
-            'difference'          => $this->difference,
-            'status'              => $this->status,
-            'delivered_by'        => $this->delivered_by,
-            'received_by'         => $this->received_by,
-            'notes'               => $this->notes,
-            'updated_by'          => Auth::id(),
-        ];
+            'source_finance_settings_id' => $this->from_finance_settings_id,
+            'target_finance_settings_id' => $this->to_finance_settings_id,
+            'handover_date'              => $this->handover_date ? Carbon::parse($this->handover_date)->startOfDay() : null,
 
-        // عند الاستلام سجّل وقت الاستلام إن لم يكن مسجلًا
-        if ($this->status === 'received') {
-            $payload['received_at'] = now();
-        }
+            // المبلغ المتوقع غير ظاهر في الواجهة حالياً - نحتفظ به إن وجد
+            'amount_expected' => $this->amount_expected ?: 0,
+            'amount_counted'  => $this->amount_counted,
+
+            'status' => $this->status,
+            'doc_no' => $this->doc_no,
+            'notes'  => $this->notes,
+
+            // توافق قديم (لو عمود finance_settings_id موجود)
+            'finance_settings_id' => $this->to_finance_settings_id,
+
+            'delivered_by_user_id' => $this->delivered_by_user_id,
+            'received_by_user_id'  => $this->received_by_user_id,
+        ];
 
         if ($this->handover_id) {
             $row = Handover::findOrFail($this->handover_id);
@@ -129,15 +166,17 @@ class Manage extends Component
             $this->handover_id = $row->id;
         }
 
-        session()->flash('success', __('pos.msg_updated_success'));
+        session()->flash('success', __('pos.msg_saved') ?? 'تم الحفظ بنجاح.');
         return redirect()->route('finance.handovers');
     }
 
     public function render()
     {
         return view('livewire.finance-handovers.manage', [
-            'cashboxes' => Settings::orderBy('id')->get(),
-            'users'     => $this->users,
+            'cashboxes'      => $this->cashboxes,
+            'users'          => $this->users,
+            'difference'     => $this->difference,
+            'fromCurrencyId' => $this->fromCurrencyId,
         ]);
     }
 }

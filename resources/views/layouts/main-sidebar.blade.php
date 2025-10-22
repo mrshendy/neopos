@@ -62,7 +62,7 @@
                         {{-- إدارة المبيعات (POS) --}}
                         <li class="nav-item">
                             <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'pos.')) active @endif"
-                                href="{{ route('pos.index') }}">
+                                href="{{ route('pos.create') }}">
                                 <i class="mdi mdi-point-of-sale"></i>
                                 <span data-key="t-pos">{{ __('pos.sales_title') ?? 'إدارة المبيعات' }}</span>
                             </a>
