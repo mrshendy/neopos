@@ -10,8 +10,8 @@ use Spatie\Translatable\HasTranslations;
 class customer extends Model
 {
     use HasFactory, SoftDeletes, HasTranslations;
-
-    protected $table = 'customer';
+ protected $table = 'customer'; 
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'code','type','name','address','city','country',

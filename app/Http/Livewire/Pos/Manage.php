@@ -17,7 +17,7 @@ class Manage extends Component
     public $pos_id = null;
 
     public $pos_date;
-    public $delivery_date; // للواجهة فقط حالياً (غير محفوظة بجدول pos)
+    public $delivery_date; // UI فقط (غير محفوظة)
     public $warehouse_id;
     public $customer_id;
     public $notes_ar = '';
@@ -48,7 +48,7 @@ class Manage extends Component
             $this->notes_en = $t['en'] ?? '';
 
             $this->pos_date      = $pos->pos_date;
-            $this->delivery_date = $pos->delivery_date ?? null; // لو غير موجودة ترجع null
+            $this->delivery_date = $pos->delivery_date ?? null;
             $this->warehouse_id  = $pos->warehouse_id;
             $this->customer_id   = $pos->customer_id ?? '';
 
@@ -58,7 +58,7 @@ class Manage extends Component
                     'unit_id'     => $l->unit_id,
                     'qty'         => (float) $l->qty,
                     'unit_price'  => (float) $l->unit_price,
-                    'onhand'      => 0, // للعرض
+                    'onhand'      => 0,
                     'uom_text'    => $l->uom_text ?? null,
                     'has_expiry'  => !empty($l->expiry_date),
                     'expiry_date' => $l->expiry_date,
@@ -116,7 +116,7 @@ class Manage extends Component
             if ($p) {
                 $this->rows[$i]['unit_id'] = $p->unit_id ?? null;
 
-                // اسم الوحدة (يدعم تخزين JSON بالاسم)
+                // استنتاج اسم الوحدة (يدعم JSON)
                 $uom = null;
                 if ($p->unit_id) {
                     $u = Unit::find($p->unit_id);
@@ -130,7 +130,7 @@ class Manage extends Component
                     }
                 }
                 $this->rows[$i]['uom_text'] = $uom;
-                $this->rows[$i]['onhand']   = 0; // TODO: اربط برصيد المخزون إن توفر
+                $this->rows[$i]['onhand']   = 0; // اربطها بالمخزون لاحقًا
             }
         }
         $this->recalcTotals();
@@ -140,16 +140,16 @@ class Manage extends Component
     {
         return [
             'pos_date'      => 'required|date',
-            // delivery_date غير محفوظة الآن
+            // delivery_date غير محفوظة حاليًا
             'warehouse_id'  => 'required|exists:warehouses,id',
-            'customer_id'   => 'nullable|exists:customer,id', // ← اسم الجدول الصحيح عندك
+            'customer_id'    => 'nullable|exists:customer,id',
 
             'discount' => 'nullable|numeric|min:0',
             'tax'      => 'nullable|numeric|min:0',
 
             'rows'                 => 'required|array|min:1',
             'rows.*.product_id'    => 'required|exists:products,id',
-            'rows.*.unit_id'       => 'nullable|exists:unit,id', // ← اسم الجدول الصحيح عندك
+            'rows.*.unit_id'       => 'nullable|exists:unit,id', // عدّل للاسم الصحيح عندك لو مفرد
             'rows.*.qty'           => 'required|numeric|min:0.0001',
             'rows.*.unit_price'    => 'required|numeric|min:0',
             'rows.*.expiry_date'   => 'nullable|date',
@@ -194,13 +194,16 @@ class Manage extends Component
                 $pos->status  = 'draft';
             }
 
-            // طبّع القيم الاختيارية إلى NULL
+            // ✅ تأكيد سلامة customer_id مع FK: لو غير موجود في customers نحوله NULL
             $customerId = $this->customer_id ?: null;
+            if ($customerId && !Customer::query()->whereKey($customerId)->exists()) {
+                $customerId = null;
+            }
 
             $pos->pos_date      = $this->pos_date;
-            // لا نحفظ delivery_date حالياً
+            // لا نحفظ delivery_date الآن
             $pos->warehouse_id  = $this->warehouse_id;
-            $pos->customer_id   = $customerId; // NULL أو id صحيح من جدول customer
+            $pos->customer_id   = $customerId;    // إمّا id صحيح أو NULL
             $pos->notes         = ['ar' => $this->notes_ar, 'en' => $this->notes_en];
             $pos->subtotal      = $this->subtotal;
             $pos->discount      = $this->discount;
@@ -218,11 +221,17 @@ class Manage extends Component
                     $r['expiry_date'] = null;
                 }
 
+                // لو unit_id غير موجود بالفعل خلّيه NULL لتفادي أي FK مماثل
+                $unitId = $r['unit_id'] ?: null;
+                if ($unitId && !Unit::query()->whereKey($unitId)->exists()) {
+                    $unitId = null;
+                }
+
                 $line = new PosLine([
                     'product_id'   => $r['product_id'],
-                    'unit_id'      => $r['unit_id'] ?: null,
+                    'unit_id'      => $unitId,
                     'warehouse_id' => $this->warehouse_id,
-                    'code'         => null, // لا يوجد code بالمنتجات حالياً
+                    'code'         => null,
                     'uom_text'     => $r['uom_text'],
                     'qty'          => (float) $r['qty'],
                     'unit_price'   => (float) $r['unit_price'],
@@ -245,7 +254,7 @@ class Manage extends Component
     {
         return view('livewire.pos.manage', [
             'warehouses' => Warehouse::orderBy('name')->get(['id','name']),
-            'customers'  => Customer::orderBy('name')->get(['id','name']), // يستخدم موديلك الذي يشير لجدول customer
+            'customers'  => Customer::orderBy('name')->get(['id','name']), // الـ Model لازم يشير لجدول customers
             'products'   => Product::orderBy('name')->get(['id','name','unit_id']),
             'units'      => Unit::orderBy('name')->get(['id','name']),
         ]);
