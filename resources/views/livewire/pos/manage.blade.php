@@ -15,25 +15,47 @@
     @endif
 
     <style>
-        .stylish-card{border:1px solid rgba(0,0,0,.06)}
+        :root{
+            --pos-primary:#2563eb;  /* أزرق حديث */
+            --pos-accent:#10b981;   /* أخضر */
+            --pos-soft:#f8fafc;
+            --pos-border:rgba(0,0,0,.06);
+            --pos-muted:#64748b;
+        }
+        .stylish-card{border:1px solid var(--pos-border)}
+        .toolbar .btn{border-radius:9999px}
+        .form-hint{color:var(--pos-muted);font-size:.8rem;margin-top:.2rem}
+
         .table thead th{background:#f8f9fc;white-space:nowrap;position:sticky;top:0;z-index:1}
         .table td,.table th{vertical-align:middle}
-        .preview{font-size:.85rem;color:#64748b;margin-top:.25rem;display:flex;align-items:center;gap:.35rem}
-        .badge-soft{background:#f8fafc;border:1px solid rgba(0,0,0,.05);color:#334155}
-        .form-hint{color:#6b7280;font-size:.8rem;margin-top:.2rem}
-        .toolbar{display:flex;gap:.5rem;align-items:center}
-        .toolbar .btn{border-radius:9999px}
         .totals-box{background:#fafafa;border:1px dashed rgba(0,0,0,.08);border-radius:12px;padding:14px}
-        .totals-box .row > div{margin-bottom:6px}
+        .totals-box .row>div{margin-bottom:6px}
+
+        /* Chips للأقسام */
+        .chipbar{display:flex;flex-wrap:wrap;gap:.5rem}
+        .chip{
+            display:inline-flex;align-items:center;gap:.4rem;
+            background:var(--pos-soft);border:1px solid var(--pos-border);
+            padding:.35rem .7rem;border-radius:999px;cursor:pointer;
+            transition:.15s; user-select:none;
+        }
+        .chip.active{background:#e0f2fe;border-color:#93c5fd}
+        .chip .dot{width:8px;height:8px;border-radius:999px;background:var(--pos-primary)}
+        .preview-card{
+            background:#ffffff;border:1px solid var(--pos-border);border-radius:12px;padding:10px;margin-top:6px
+        }
+        .preview-card .title{font-weight:700}
+        .preview-card .meta{color:var(--pos-muted);font-size:.85rem}
+        .badge-soft{background:#f8fafc;border:1px solid rgba(0,0,0,.05);color:#334155}
     </style>
 
     <div class="card shadow-sm rounded-4 stylish-card mb-4">
         <div class="card-header bg-light fw-bold d-flex align-items-center justify-content-between">
-            <div>
+            <div class="d-flex align-items-center gap-2">
                 <i class="mdi mdi-receipt-text-outline me-1"></i>
-                {{ $pos_id ? __('pos.pos_title_edit') : __('pos.pos_title_new') }}
+                <span>{{ $pos_id ? __('pos.pos_title_edit') : __('pos.pos_title_new') }}</span>
                 @if($pos_id)
-                    <span class="badge bg-light text-dark border ms-2">#{{ $pos_id }}</span>
+                    <span class="badge bg-light text-dark border">#{{ $pos_id }}</span>
                 @endif
             </div>
             <div class="toolbar">
@@ -48,22 +70,17 @@
 
         <div class="card-body">
             <form wire:submit.prevent="save" class="row g-3">
-
                 {{-- Header --}}
                 <div class="col-lg-3">
                     <label class="form-label mb-1">{{ __('pos.sale_date') }}</label>
                     <input type="date" class="form-control" wire:model="pos_date">
-                    <div class="preview"><i class="mdi mdi-calendar"></i> <span>{{ $pos_date ?: '—' }}</span></div>
-                    <div class="form-hint">{{ __('pos.hint_sale_date') }}</div>
                     @error('pos_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="col-lg-3">
                     <label class="form-label mb-1">{{ __('pos.delivery_date') }}</label>
                     <input type="date" class="form-control" wire:model="delivery_date">
-                    <div class="preview"><i class="mdi mdi-calendar-clock"></i> <span>{{ $delivery_date ?: '—' }}</span></div>
                     <div class="form-hint">{{ __('pos.hint_delivery_date') }}</div>
-                    @error('delivery_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="col-lg-3">
@@ -81,8 +98,6 @@
                             <option value="{{ $w->id }}">{{ $wname }}</option>
                         @endforeach
                     </select>
-                    <div class="preview"><i class="mdi mdi-warehouse"></i> <span class="badge badge-soft">{{ $warehouse_id ?: '—' }}</span></div>
-                    <div class="form-hint">{{ __('pos.hint_warehouse') }}</div>
                     @error('warehouse_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
@@ -101,8 +116,6 @@
                             <option value="{{ $s->id }}">{{ $sname }}</option>
                         @endforeach
                     </select>
-                    <div class="preview"><i class="mdi mdi-account-outline"></i> <span class="badge badge-soft">{{ $customer_id ?: '—' }}</span></div>
-                    <div class="form-hint">{{ __('pos.hint_customer') }}</div>
                     @error('customer_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
@@ -110,12 +123,29 @@
                 <div class="col-lg-6">
                     <label class="form-label mb-1">{{ __('pos.notes_ar') }}</label>
                     <textarea class="form-control" rows="2" wire:model="notes_ar" placeholder="{{ __('pos.notes_ph') }}"></textarea>
-                    <div class="preview"><i class="mdi mdi-note-text-outline"></i> <span>{{ $notes_ar }}</span></div>
                 </div>
                 <div class="col-lg-6">
                     <label class="form-label mb-1">{{ __('pos.notes_en') }}</label>
                     <textarea class="form-control" rows="2" wire:model="notes_en" placeholder="{{ __('pos.notes_ph') }}"></textarea>
-                    <div class="preview"><i class="mdi mdi-note-text-outline"></i> <span>{{ $notes_en }}</span></div>
+                </div>
+
+                {{-- Fast Category Chipbar (فلتر بصري للأقسام) --}}
+                <div class="col-12">
+                    <div class="chipbar mb-2">
+                        <span class="chip active">
+                            <span class="dot"></span><span>{{ __('pos.all_categories') ?? 'كل الأقسام' }}</span>
+                        </span>
+                        @foreach($categories as $cat)
+                            @php
+                                $cname = $cat->name;
+                                if (is_string($cname) && str_starts_with(trim($cname), '{')) {
+                                    $a = json_decode($cname,true)?:[];
+                                    $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $cat->name;
+                                }
+                            @endphp
+                            <span class="chip"><span class="dot"></span><span>{{ $cname }}</span></span>
+                        @endforeach
+                    </div>
                 </div>
 
                 {{-- Lines --}}
@@ -134,17 +164,21 @@
                             <thead>
                                 <tr>
                                     <th style="width:40px"></th>
-                                    <th style="width:300px">{{ __('pos.product') }}</th>
-                                    <th style="width:160px">{{ __('pos.unit') }}</th>
-                                    <th style="width:120px" class="text-center">{{ __('pos.qty') }}</th>
-                                    <th style="width:140px" class="text-center">{{ __('pos.unit_price') }}</th>
-                                    <th style="width:120px" class="text-center">{{ __('pos.onhand') }}</th>
-                                    <th style="width:160px">{{ __('pos.expiry_date') }}</th>
+                                    <th style="width:200px">{{ __('pos.category') }}</th>
+                                    <th style="width:320px">{{ __('pos.product') }}</th>
+                                    <th style="width:140px">{{ __('pos.unit') }}</th>
+                                    <th class="text-center" style="width:120px">{{ __('pos.qty') }}</th>
+                                    <th class="text-center" style="width:140px">{{ __('pos.unit_price') }}</th>
+                                    <th class="text-center" style="width:140px">{{ __('pos.line_total') }}</th>
+                                    <th style="width:180px">{{ __('pos.expiry_date') }}</th>
                                     <th style="width:160px">{{ __('pos.batch_no') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($rows as $i => $r)
+                                    @php
+                                        $lineTotal = (float)($r['qty'] ?? 0) * (float)($r['unit_price'] ?? 0);
+                                    @endphp
                                     <tr wire:key="row-{{ $i }}">
                                         <td class="text-center">
                                             <button type="button" class="btn btn-light btn-sm" onclick="confirmDeleteRow({{ $i }})" title="{{ __('pos.remove_row') }}">
@@ -152,30 +186,77 @@
                                             </button>
                                         </td>
 
-                                        {{-- Product --}}
+                                        {{-- Category --}}
+                                        <td>
+                                            <select class="form-select" wire:model="rows.{{ $i }}.category_id" wire:change="rowCategoryChanged({{ $i }})">
+                                                <option value="">{{ __('pos.select_category') ?? '— اختر القسم —' }}</option>
+                                                @foreach($categories as $cat)
+                                                    @php
+                                                        $cname = $cat->name;
+                                                        if (is_string($cname) && str_starts_with(trim($cname), '{')) {
+                                                            $a = json_decode($cname,true)?:[];
+                                                            $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $cat->name;
+                                                        }
+                                                    @endphp
+                                                    <option value="{{ $cat->id }}">{{ $cname }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error("rows.$i.category_id") <small class="text-danger">{{ $message }}</small> @enderror
+                                        </td>
+
+                                        {{-- Product filtered by category --}}
                                         <td>
                                             <select class="form-select"
                                                     wire:model="rows.{{ $i }}.product_id"
                                                     wire:change="rowProductChanged({{ $i }})">
                                                 <option value="">{{ __('pos.choose_product') }}</option>
                                                 @foreach($products as $p)
-                                                    @php
-                                                        $pname = $p->name;
-                                                        if (is_string($pname) && str_starts_with(trim($pname), '{')) {
-                                                            $a = json_decode($pname,true)?:[];
-                                                            $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $p->name;
-                                                        }
-                                                    @endphp
-                                                    <option value="{{ $p->id }}">{{ $pname }}</option>
+                                                    @if(!$r['category_id'] || (int)$p->category_id === (int)$r['category_id'])
+                                                        @php
+                                                            $pname = $p->name;
+                                                            if (is_string($pname) && str_starts_with(trim($pname), '{')) {
+                                                                $a = json_decode($pname,true)?:[];
+                                                                $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $p->name;
+                                                            }
+                                                            $pprice = $p->price ?? ($p->selling_price ?? ($p->sale_price ?? ($p->unit_price ?? 0)));
+                                                        @endphp
+                                                        <option value="{{ $p->id }}">
+                                                            {{ $pname }} — {{ number_format((float)$pprice,2) }}
+                                                        </option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                             @error("rows.$i.product_id") <small class="text-danger">{{ $message }}</small> @enderror
+
+                                            {{-- Product preview card --}}
+                                            @if(!empty($r['preview']))
+                                                <div class="preview-card">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div>
+                                                            <div class="title">{{ $r['preview']['name'] }}</div>
+                                                            <div class="meta">
+                                                                @if($r['preview']['sku']) <span>SKU: {{ $r['preview']['sku'] }}</span> @endif
+                                                                @if($r['preview']['barcode']) <span class="ms-2">Barcode: {{ $r['preview']['barcode'] }}</span> @endif
+                                                            </div>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <div class="badge badge-soft">{{ $r['preview']['uom'] ?? '—' }}</div>
+                                                            <div class="fw-bold mt-1">{{ number_format((float)($r['preview']['price'] ?? 0), 2) }}</div>
+                                                        </div>
+                                                    </div>
+                                                    @if(!empty($r['preview']['description']))
+                                                        <div class="mt-2" style="color:#475569;font-size:.9rem">
+                                                            {{ $r['preview']['description'] }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         </td>
 
                                         {{-- Unit --}}
                                         <td>
                                             <select class="form-select" wire:model="rows.{{ $i }}.unit_id">
-                            <option value="">{{ __('pos.choose_unit') }}</option>
+                                                <option value="">{{ __('pos.choose_unit') }}</option>
                                                 @foreach($units as $u)
                                                     @php
                                                         $uname = $u->name;
@@ -188,12 +269,17 @@
                                                 @endforeach
                                             </select>
                                             @error("rows.$i.unit_id") <small class="text-danger">{{ $message }}</small> @enderror
+                                            {{-- العرض النصي للوحدة --}}
+                                            @php $uomTxt = $r['uom_text'] ?? null; @endphp
+                                            @if($uomTxt)
+                                                <div class="form-hint">{{ $uomTxt }}</div>
+                                            @endif
                                         </td>
 
                                         {{-- Qty --}}
                                         <td>
                                             <input type="number" step="0.0001" class="form-control text-center"
-                                                   wire:model.lazy="rows.{{ $i }}.qty" placeholder="0">
+                                                   wire:model.lazy="rows.{{ $i }}.qty" placeholder="1">
                                             @error("rows.$i.qty") <small class="text-danger">{{ $message }}</small> @enderror
                                         </td>
 
@@ -204,12 +290,9 @@
                                             @error("rows.$i.unit_price") <small class="text-danger">{{ $message }}</small> @enderror
                                         </td>
 
-                                        {{-- On hand --}}
-                                        <td class="text-end">
-                                            @php $oh = (float)($r['onhand'] ?? 0); @endphp
-                                            <span class="{{ $oh < 0 ? 'text-danger fw-bold' : 'text-success' }}">
-                                                {{ number_format($oh, 4) }}
-                                            </span>
+                                        {{-- Line total --}}
+                                        <td class="text-center fw-semibold">
+                                            {{ number_format($lineTotal, 2) }}
                                         </td>
 
                                         {{-- Expiry (toggle + date) --}}
@@ -239,18 +322,6 @@
                     </div>
                 </div>
 
-                {{-- خصم وضريبة --}}
-                <div class="col-md-3">
-                    <label class="form-label">{{ __('pos.discount') }}</label>
-                    <input type="number" step="0.01" class="form-control" wire:model.lazy="discount">
-                    @error('discount') <small class="text-danger">{{ $message }}</small> @enderror
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">{{ __('pos.tax') }}</label>
-                    <input type="number" step="0.01" class="form-control" wire:model.lazy="tax">
-                    @error('tax') <small class="text-danger">{{ $message }}</small> @enderror
-                </div>
-
                 {{-- Totals --}}
                 <div class="col-12">
                     <div class="totals-box">
@@ -261,15 +332,15 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="text-muted small">{{ __('pos.discount') }}</div>
-                                <div class="fw-bold">{{ number_format((float)$discount, 2) }}</div>
+                                <input type="number" step="0.01" class="form-control" wire:model.lazy="discount">
                             </div>
                             <div class="col-md-3">
                                 <div class="text-muted small">{{ __('pos.tax') }}</div>
-                                <div class="fw-bold">{{ number_format((float)$tax, 2) }}</div>
+                                <input type="number" step="0.01" class="form-control" wire:model.lazy="tax">
                             </div>
                             <div class="col-md-3">
                                 <div class="text-muted small">{{ __('pos.grand_total') }}</div>
-                                <div class="fw-bold text-black">{{ number_format((float)$grand, 2) }}</div>
+                                <div class="fw-bold text-primary">{{ number_format((float)$grand, 2) }}</div>
                             </div>
                         </div>
                     </div>
