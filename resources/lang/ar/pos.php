@@ -2425,4 +2425,29 @@ return [
 'delivered_by' => 'المستخدم الذي قام بالتسليم.',
 'received_by'  => 'المستخدم الذي استلم.',
 
+'receipts_title_index' => 'الإيصالات',
+'receipts_title_manage'=> 'إدارة إيصال',
+'total_cash'           => 'إجمالي النقدي',
+'total_return'         => 'إجمالي المرتجع',
+'total_net'            => 'إجمالي الصافي',
+'active'               => 'نشط',
+'canceled'             => 'ملغي',
+'return_amount'        => 'المرتجع',
+'btn_canceled_report'  => 'تقرير الملغاة',
+'cancel_title'         => 'إلغاء إيصال',
+'cancel_reason'        => 'سبب الإلغاء',
+'cancel_reason_ph'     => 'اكتب سبب الإلغاء...',
+'cancel_confirm'       => 'تأكيد الإلغاء',
+'receipt_canceled'     => 'تم إلغاء الإيصال.',
+// helps
+'rec_help_cashbox'     => 'اختر الخزينة الخاصة بهذا الإيصال.',
+'rec_help_date'        => 'تاريخ ووقت الإيصال.',
+'rec_help_docno'       => 'رقم الإيصال اختياري.',
+'rec_help_method'      => 'طريقة سداد الإيصال.',
+'rec_help_amount'      => 'المبلغ الإجمالي للإيصال.',
+'rec_help_return'      => 'قيمة المرتجع (إن وجدت).',
+'rec_help_reference'   => 'مرجع خارجي (اختياري).',
+'rec_help_status'      => 'حالة الإيصال.',
+
+
 ];

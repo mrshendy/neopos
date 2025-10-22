@@ -5,6 +5,7 @@ use App\Http\Controllers\finance_settingscontroller;
 use App\Http\Controllers\financecontroller;
 use App\Http\Controllers\financehandovercontroller;
 use App\Http\Controllers\financemovementscontroller;
+use App\Http\Controllers\financereceiptcontroller;
 use App\Http\Controllers\general\branchcontroller;
 use App\Http\Controllers\inventory\alertscontroller;
 use App\Http\Controllers\inventory\countscontroller;
@@ -17,7 +18,7 @@ use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\offers\couponscontroller;
 use App\Http\Controllers\offers\offerscontroller;
-use App\Http\Controllers\poscontroller;
+use App\Http\Controllers\poscontroller;     
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
@@ -234,6 +235,11 @@ Route::group(
 
         Route::get('/finance/handovers', [financehandovercontroller::class, 'index'])->name('finance.handovers');
         Route::get('/finance/handovers/manage/{id?}', [financehandovercontroller::class, 'manage'])->name('finance.handovers.manage');
+
+        Route::prefix('finance')->group(function () {
+            Route::get('/receipts', [financereceiptcontroller::class, 'index'])->name('finance.receipts');
+            Route::get('/receipts/manage/{id?}', [financereceiptcontroller::class, 'manage'])->name('finance.receipts.manage');
+        });
 
         Route::get('/{page}', 'AdminController@index');
 

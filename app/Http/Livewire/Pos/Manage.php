@@ -9,7 +9,6 @@ use App\models\pos\pos as Pos;
 use App\models\pos\posLine as PosLine;
 use App\models\product\product as Product;
 use App\models\unit\unit as Unit;
-use App\models\product\category as Category;
 use App\models\inventory\warehouse as Warehouse;
 use App\models\customer\customer as Customer;
 
@@ -17,7 +16,7 @@ class Manage extends Component
 {
     public $pos_id = null;
 
-    public $sale_date;
+    public $pos_date;
     public $delivery_date;
     public $warehouse_id;
     public $customer_id;
@@ -37,7 +36,7 @@ class Manage extends Component
 
     public function mount($id = null): void
     {
-        $this->sale_date = now()->toDateString();
+        $this->pos_date = now()->toDateString();
         $this->delivery_date = null;
 
         if ($id) {
@@ -48,19 +47,18 @@ class Manage extends Component
             $this->notes_ar = $t['ar'] ?? '';
             $this->notes_en = $t['en'] ?? '';
 
-            $this->sale_date     = $pos->sale_date;
+            $this->pos_date      = $pos->pos_date;
             $this->delivery_date = $pos->delivery_date;
             $this->warehouse_id  = $pos->warehouse_id;
             $this->customer_id   = $pos->customer_id;
 
             $this->rows = $pos->lines->map(function ($l) {
                 return [
-                    'category_id' => $l->category_id,
                     'product_id'  => $l->product_id,
                     'unit_id'     => $l->unit_id,
                     'qty'         => (float) $l->qty,
                     'unit_price'  => (float) $l->unit_price,
-                    'onhand'      => 0, // للعرض فقط
+                    'onhand'      => 0, // عرض فقط
                     'uom_text'    => $l->uom_text ?? null,
                     'has_expiry'  => !empty($l->expiry_date),
                     'expiry_date' => $l->expiry_date,
@@ -77,7 +75,6 @@ class Manage extends Component
     public function blankRow(): array
     {
         return [
-            'category_id' => null,
             'product_id'  => null,
             'unit_id'     => null,
             'qty'         => 0,
@@ -106,17 +103,10 @@ class Manage extends Component
 
     public function updated($field): void
     {
-        if (str_starts_with($field, 'rows.')) {
+        // أي تغيير في صفوف البنود أو الخصم/الضريبة يعيد الحساب
+        if (str_starts_with($field, 'rows.') || in_array($field, ['discount', 'tax'])) {
             $this->recalcTotals();
         }
-    }
-
-    public function rowCategoryChanged(int $i): void
-    {
-        $this->rows[$i]['product_id'] = null;
-        $this->rows[$i]['unit_id']    = null;
-        $this->rows[$i]['uom_text']   = null;
-        $this->rows[$i]['onhand']     = 0;
     }
 
     public function rowProductChanged(int $i): void
@@ -141,7 +131,7 @@ class Manage extends Component
                     }
                 }
                 $this->rows[$i]['uom_text'] = $uom;
-                $this->rows[$i]['onhand']   = 0; // لو عندك دالة رصيد مخزني، استبدله هنا
+                $this->rows[$i]['onhand']   = 0; // TODO: استبدلها بدالة الرصيد لو متاحة
             }
         }
         $this->recalcTotals();
@@ -150,24 +140,26 @@ class Manage extends Component
     protected function rules(): array
     {
         return [
-            'sale_date'     => 'required|date',
+            'pos_date'      => 'required|date',
             'delivery_date' => 'nullable|date',
-            'warehouse_id'  => 'required|exists:warehouses,id',
-            'customer_id'   => 'nullable|exists:customers,id',
-            'rows'          => 'required|array|min:1',
+            'warehouse_id'  => 'required|exists:warehouses,id', // غيّرها لو جدولك مختلف
+            'customer_id'   => 'nullable|exists:customer,id',   // أو customers,id حسب جدولك
 
-            'rows.*.category_id' => 'nullable|integer',
-            'rows.*.product_id'  => 'required|exists:products,id',
-            'rows.*.unit_id'     => 'nullable|exists:units,id',
-            'rows.*.qty'         => 'required|numeric|min:0.0001',
-            'rows.*.unit_price'  => 'required|numeric|min:0',
-            'rows.*.expiry_date' => 'nullable|date',
-            'rows.*.batch_no'    => 'nullable|string|max:80',
+            'discount' => 'nullable|numeric|min:0',
+            'tax'      => 'nullable|numeric|min:0',
+
+            'rows'                 => 'required|array|min:1',
+            'rows.*.product_id'    => 'required|exists:products,id',
+            'rows.*.unit_id'       => 'nullable|exists:unit,id', // لو جدولك units غيّرها
+            'rows.*.qty'           => 'required|numeric|min:0.0001',
+            'rows.*.unit_price'    => 'required|numeric|min:0',
+            'rows.*.expiry_date'   => 'nullable|date',
+            'rows.*.batch_no'      => 'nullable|string|max:80',
         ];
     }
 
     protected $messages = [
-        'sale_date.required'         => 'تاريخ البيع مطلوب',
+        'pos_date.required'          => 'تاريخ البيع مطلوب',
         'warehouse_id.required'      => 'المخزن مطلوب',
         'rows.required'              => 'تفاصيل الفاتورة مطلوبة',
         'rows.*.product_id.required' => 'يرجى اختيار الصنف',
@@ -177,7 +169,7 @@ class Manage extends Component
 
     private function recalcTotals(): void
     {
-        $subtotal = 0;
+        $subtotal = 0.0;
         foreach ($this->rows as $r) {
             $q  = (float) ($r['qty'] ?? 0);
             $up = (float) ($r['unit_price'] ?? 0);
@@ -199,11 +191,11 @@ class Manage extends Component
             } else {
                 $pos = new Pos();
                 $next = (int) ((Pos::max('id') ?? 0) + 1);
-                $pos->sale_no = 'SO-'.now()->format('Ymd').'-'.str_pad((string)$next, 4, '0', STR_PAD_LEFT);
+                $pos->pos_no  = 'SO-'.now()->format('Ymd').'-'.str_pad((string)$next, 4, '0', STR_PAD_LEFT);
                 $pos->status  = 'draft';
             }
 
-            $pos->sale_date     = $this->sale_date;
+            $pos->pos_date      = $this->pos_date;
             $pos->delivery_date = $this->delivery_date;
             $pos->warehouse_id  = $this->warehouse_id;
             $pos->customer_id   = $this->customer_id;
@@ -223,16 +215,28 @@ class Manage extends Component
                 if (empty($r['has_expiry'])) {
                     $r['expiry_date'] = null;
                 }
+
+                // product code إن وُجد
+                $code = null;
+                if (!empty($r['product_id'])) {
+                    $prod = Product::find($r['product_id']);
+                    if ($prod && isset($prod->code)) {
+                        $code = $prod->code;
+                    }
+                }
+
                 $line = new PosLine([
-                    'category_id' => $r['category_id'],
                     'product_id'  => $r['product_id'],
                     'unit_id'     => $r['unit_id'],
+                    'warehouse_id'=> $this->warehouse_id, // موجود في pos_lines عندك
+                    'code'        => $code,
+                    'uom_text'    => $r['uom_text'],
                     'qty'         => (float) $r['qty'],
                     'unit_price'  => (float) $r['unit_price'],
-                    'uom_text'    => $r['uom_text'], // ✅ العمود الصحيح في pos_lines
+                    'line_total'  => round((float)$r['qty'] * (float)$r['unit_price'], 4),
                     'expiry_date' => $r['expiry_date'],
                     'batch_no'    => $r['batch_no'],
-                    'line_total'  => (float)$r['qty'] * (float)$r['unit_price'],
+                    'notes'       => null,
                 ]);
                 $pos->lines()->save($line);
             }
@@ -249,9 +253,7 @@ class Manage extends Component
         return view('livewire.pos.manage', [
             'warehouses' => Warehouse::orderBy('name')->get(['id','name']),
             'customers'  => Customer::orderBy('name')->get(['id','name']),
-            'categories' => Category::orderBy('name')->get(['id','name']),
-            // ✅ لا نطلب uom من products لأنه غير موجود عندك
-            'products'   => Product::orderBy('name')->get(['id','name','category_id','unit_id']),
+            'products'   => Product::orderBy('name')->get(['id','name','unit_id','code']),
             'units'      => Unit::orderBy('name')->get(['id','name']),
         ]);
     }

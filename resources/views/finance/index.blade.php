@@ -159,7 +159,7 @@
                 <div class="col-xxl-3 col-lg-4 col-md-6">
                     <div class="tile h-100">
                         <div class="tile-icon mb-2"><i class="mdi mdi-clipboard-text-outline"></i></div>
-                        <a href="" class="tile-title stretched-link">
+                        <a href="{{ route('finance.receipts') }}" class="tile-title stretched-link">
                             {{ __('pos.cashboxes_receipts') }}
                         </a>
                         <div class="tile-open">{{ __('pos.open') }}</div>

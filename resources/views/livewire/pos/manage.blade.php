@@ -52,10 +52,10 @@
                 {{-- Header --}}
                 <div class="col-lg-3">
                     <label class="form-label mb-1">{{ __('pos.sale_date') }}</label>
-                    <input type="date" class="form-control" wire:model="sale_date">
-                    <div class="preview"><i class="mdi mdi-calendar"></i> <span>{{ $sale_date ?: '—' }}</span></div>
+                    <input type="date" class="form-control" wire:model="pos_date">
+                    <div class="preview"><i class="mdi mdi-calendar"></i> <span>{{ $pos_date ?: '—' }}</span></div>
                     <div class="form-hint">{{ __('pos.hint_sale_date') }}</div>
-                    @error('sale_date') <small class="text-danger">{{ $message }}</small> @enderror
+                    @error('pos_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="col-lg-3">
@@ -134,9 +134,8 @@
                             <thead>
                                 <tr>
                                     <th style="width:40px"></th>
-                                    <th style="width:180px">{{ __('pos.category') }}</th>
-                                    <th style="width:260px">{{ __('pos.product') }}</th>
-                                    <th style="width:140px">{{ __('pos.unit') }}</th>
+                                    <th style="width:300px">{{ __('pos.product') }}</th>
+                                    <th style="width:160px">{{ __('pos.unit') }}</th>
                                     <th style="width:120px" class="text-center">{{ __('pos.qty') }}</th>
                                     <th style="width:140px" class="text-center">{{ __('pos.unit_price') }}</th>
                                     <th style="width:120px" class="text-center">{{ __('pos.onhand') }}</th>
@@ -153,42 +152,23 @@
                                             </button>
                                         </td>
 
-                                        {{-- Category --}}
-                                        <td>
-                                            <select class="form-select" wire:model="rows.{{ $i }}.category_id" wire:change="rowCategoryChanged({{ $i }})">
-                                                <option value="">{{ __('pos.select_category') ?? '— اختر القسم —' }}</option>
-                                                @foreach($categories as $cat)
-                                                    @php
-                                                        $cname = $cat->name;
-                                                        if (is_string($cname) && str_starts_with(trim($cname), '{')) {
-                                                            $a = json_decode($cname,true)?:[];
-                                                            $cname = $a[app()->getLocale()] ?? $a['ar'] ?? $cat->name;
-                                                        }
-                                                    @endphp
-                                                    <option value="{{ $cat->id }}">{{ $cname }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error("rows.$i.category_id") <small class="text-danger">{{ $message }}</small> @enderror
-                                        </td>
-
-                                        {{-- Product filtered by category --}}
+                                        {{-- Product (بدون تصنيف) --}}
                                         <td>
                                             <select class="form-select"
                                                     wire:model="rows.{{ $i }}.product_id"
-                                                    wire:change="rowProductChanged({{ $i }})"
-                                                    {{ empty($r['category_id']) ? 'disabled' : '' }}>
+                                                    wire:change="rowProductChanged({{ $i }})">
                                                 <option value="">{{ __('pos.choose_product') }}</option>
                                                 @foreach($products as $p)
-                                                    @if((int)$p->category_id === (int)($r['category_id'] ?? 0))
-                                                        @php
-                                                            $pname = $p->name;
-                                                            if (is_string($pname) && str_starts_with(trim($pname), '{')) {
-                                                                $a = json_decode($pname,true)?:[];
-                                                                $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $p->name;
-                                                            }
-                                                        @endphp
-                                                        <option value="{{ $p->id }}">{{ $pname }}</option>
-                                                    @endif
+                                                    @php
+                                                        $pname = $p->name;
+                                                        if (is_string($pname) && str_starts_with(trim($pname), '{')) {
+                                                            $a = json_decode($pname,true)?:[];
+                                                            $pname = $a[app()->getLocale()] ?? $a['ar'] ?? $p->name;
+                                                        }
+                                                    @endphp
+                                                    <option value="{{ $p->id }}">
+                                                        {{ $pname }}{{ isset($p->code) && $p->code ? ' — '.$p->code : '' }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             @error("rows.$i.product_id") <small class="text-danger">{{ $message }}</small> @enderror
@@ -259,6 +239,18 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                {{-- Discount & Tax inputs --}}
+                <div class="col-md-3">
+                    <label class="form-label">{{ __('pos.discount') }}</label>
+                    <input type="number" step="0.01" class="form-control" wire:model.lazy="discount">
+                    @error('discount') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">{{ __('pos.tax') }}</label>
+                    <input type="number" step="0.01" class="form-control" wire:model.lazy="tax">
+                    @error('tax') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 {{-- Totals --}}
