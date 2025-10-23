@@ -59,7 +59,7 @@
     <div class="hero">
         <div class="hero-inner">
             <div class="hero-title">
-                <i class="fa-solid fa-list"></i>
+<i class="mdi mdi-clipboard-list-outline"></i>        <!-- نسخة أنيقة وأقرب للـ fa -->
                 <div>
                     <h1>{{ __('pos.title_pos_index') }}</h1>
                     <div class="hero-sub">{{ __('pos.modern_fast_interface') }}</div>

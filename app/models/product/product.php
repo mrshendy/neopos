@@ -37,6 +37,7 @@ class product extends Model
         'expiry_weekdays' => 'array',
         'category_id' => 'integer',
         'supplier_id' => 'integer', // فعّل لو عندك العمود
+
     ];
 
     /* ========= العلاقات الأساسية ========= */
@@ -55,43 +56,75 @@ class product extends Model
         return $this->belongsTo(\App\models\unit\unit::class, 'unit_id');
     }
 
-    // ✅ رابط صورة مصغّرة من image_path
-    public function getThumbUrlAttribute(): ?string
+        public function getUnitsMapAttribute(): array
     {
-        if (! $this->image_path) {
-            return null;
+        $arr = [];
+        // ناخد الـ raw سواء من attributes أو من خاصية Eloquent
+        $raw = $this->attributes['units_matrix'] ?? $this->units_matrix ?? null;
+
+        if (is_array($raw)) {
+            $arr = $raw;
+        } elseif (is_string($raw)) {
+            $raw = trim($raw);
+            if ($raw !== '') {
+                $decoded = json_decode($raw, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $arr = $decoded;
+                }
+            }
+        } elseif (is_object($raw)) {
+            $arr = (array) $raw;
         }
 
-        // لو مخزنة على public disk
-        if (Storage::disk('public')->exists($this->image_path)) {
-            return Storage::disk('public')->url($this->image_path);
-        }
-
-        // أو مسار جاهز تحت public/
-        return asset($this->image_path);
+        // تأكد من إنه Array
+        return is_array($arr) ? $arr : [];
     }
 
     /**
-     * ✅ فكّ مصفوفة الوحدات والأسعار من حقل units_matrix (JSON):
-     * مثال متوقّع:
-     * {
-     *   "minor":  {"label":"قطعة","price":5,"factor":1},
-     *   "middle": {"label":"علبة","price":45,"factor":10},
-     *   "major":  {"label":"كرتونة","price":500,"factor":100}
-     * }
+     * 🧩 أداة مساعدة اختيارية:
+     * ترجّع options/map/default لاستخدامها مباشرةً في الـ UI
      */
-    public function getUnitsMapAttribute(): array
+    public function saleUnitOptions(): array
     {
-        $arr = [];
-        if ($this->units_matrix) {
-            $json = json_decode($this->units_matrix, true);
-            if (is_array($json)) {
-                $arr = $json;
-            }
+        $options = [];
+        $map     = [];
+        $default = null;
+
+        $matrix = $this->units_map; // يستخدم الـ accessor الآمن بالأعلى
+
+        foreach (['minor','middle','major'] as $key) {
+            if (!isset($matrix[$key])) continue;
+            $label = $matrix[$key]['label'] ?? ucfirst($key);
+            $price = (float)($matrix[$key]['price'] ?? 0);
+            $options[$key] = $label;
+            $map[$key]     = ['price' => $price, 'uom' => $label];
         }
 
-        return $arr;
+        if (!empty($this->sale_unit_key) && isset($options[$this->sale_unit_key])) {
+            $default = $this->sale_unit_key;
+        } else {
+            $default = array_key_first($options);
+        }
+
+        // fallback لو مفيش أي وحدات
+        if (empty($options)) {
+            $uomName = $this->unit?->name;
+            if (is_array($uomName)) {
+                $uomName = $uomName[app()->getLocale()] ?? ($uomName['ar'] ?? (reset($uomName) ?: 'وحدة'));
+            }
+            $uomName = $uomName ?: 'وحدة';
+            $options = ['base' => $uomName];
+            $map     = ['base' => ['price' => 0.0, 'uom' => $uomName]];
+            $default = 'base';
+        }
+
+        return [
+            'options'        => $options,
+            'map'            => $map,
+            'defaultUnitKey' => $default,
+        ];
     }
+
 
     public function transactions()
     {

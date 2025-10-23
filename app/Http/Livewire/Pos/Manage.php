@@ -3,11 +3,10 @@
 namespace App\Http\Livewire\Pos;
 
 use Livewire\Component;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 use App\models\pos\pos as Pos;
 use App\models\pos\posLine as PosLine;
@@ -19,7 +18,6 @@ use App\models\product\category as Category;
 
 class Manage extends Component
 {
-    // فلاتر وأساسيات
     public string $barcode = '';
     public string $filterProductText = '';
     public ?int $activeCategoryId = null;
@@ -34,29 +32,26 @@ class Manage extends Component
     public string $pos_date = '';
     public string $notes_ar = '';
 
-    // الأرقام
     public float $discount = 0.0;
     public float $tax      = 0.0;
     public float $subtotal = 0.0;
     public float $grand    = 0.0;
 
-    // السلة
     /** @var array<int, array> */
     public array $rows = [];
 
-    // بيانات كتالوج
     public $products;
     public $categories;
     public $customers;
     public $warehouses;
 
-    // لو كان تعديل
     public ?int $pos_id = null;
 
     protected $listeners = [];
 
     protected array $rules = [
         'warehouse_id' => 'required|integer',
+        'customer_id'  => 'nullable|integer',
         'pos_date'     => 'required|date',
         'discount'     => 'nullable|numeric|min:0',
         'tax'          => 'nullable|numeric|min:0',
@@ -64,7 +59,6 @@ class Manage extends Component
         'rows.*.product_id' => 'required|integer',
         'rows.*.qty'        => 'required|numeric|min:0.01',
         'rows.*.unit_price' => 'required|numeric|min:0',
-        'rows.*.unit_id'    => 'nullable|integer',
     ];
 
     public function mount(?int $posId = null): void
@@ -72,55 +66,43 @@ class Manage extends Component
         $this->pos_id   = $posId;
         $this->pos_date = Carbon::today()->toDateString();
 
-        // تحميل بيانات أساسية
-        $this->products   = Product::query()->latest('id')->limit(500)->get();
+        $this->products   = Product::query()->with('unit')->latest('id')->limit(500)->get();
         $this->categories = Category::query()->orderBy('id')->get();
         $this->warehouses = Warehouse::query()->orderBy('id')->get();
         $this->customers  = Customer::query()->latest('id')->limit(500)->get();
 
-        // تعيين مخزن افتراضي لو واحد فقط
         if (blank($this->warehouse_id) && $this->warehouses->count() === 1) {
             $this->warehouse_id = (int)$this->warehouses->first()->id;
         }
 
-        // لو تعديل: حمّل الفاتورة + السطور إلى السلة
         if ($this->pos_id) {
-            $pos = Pos::with(['lines.product', 'lines.unit'])->findOrFail($this->pos_id);
+            $pos = Pos::with('lines.product')->find($this->pos_id);
+            if ($pos) {
+                $this->warehouse_id = (int)($pos->warehouse_id ?? 0) ?: null;
+                $this->customer_id  = (int)($pos->customer_id  ?? 0) ?: null;
+                $this->pos_date     = (string)$pos->pos_date;
+                $this->notes_ar     = (string)($pos->notes ?? '');
 
-            $this->warehouse_id = $pos->warehouse_id ?: $this->warehouse_id;
-            $this->customer_id  = $pos->customer_id ?: null;
-            $this->pos_date     = $pos->pos_date ?: $this->pos_date;
-            $this->notes_ar     = (string)($pos->notes ?? '');
-            $this->discount     = (float)$pos->discount;
-            $this->tax          = (float)$pos->tax;
+                $this->discount     = (float)$pos->discount;
+                $this->tax          = (float)$pos->tax;
 
-            $rows = [];
-            foreach ($pos->lines as $line) {
-                $product = $line->product;
-                if (!$product) continue;
-
-                $units = $this->loadUnitOptions($product);
-                $pname = $this->localize($product->name);
-
-                $unitId = $line->unit_id ?? $units['defaultUnitId'];
-                if (!isset($units['map'][$unitId])) {
-                    $unitId = $units['defaultUnitId'];
+                $this->rows = [];
+                foreach ($pos->lines as $line) {
+                    $p = $line->product;
+                    $this->rows[] = [
+                        'product_id'   => (int)$line->product_id,
+                        'qty'          => (float)$line->qty,
+                        'unit_id'      => null,
+                        'unit_price'   => (float)$line->unit_price,
+                        'unit_options' => [],
+                        'preview'      => [
+                            'name'  => $this->localize($p->name ?? $line->uom_text ?? __('pos.unit')),
+                            'uom'   => $line->uom_text ?? ($p?->unit?->name ?? __('pos.unit')),
+                            'image' => $this->productThumbUrl($p),
+                        ],
+                    ];
                 }
-                $info = $units['map'][$unitId];
-
-                $rows[] = [
-                    'product_id'   => (int)$product->id,
-                    'qty'          => (float)$line->qty,
-                    'unit_id'      => $unitId,
-                    'unit_price'   => (float)($line->unit_price ?? $line->price ?? $info['price']),
-                    'unit_options' => $units['options'],
-                    'preview'      => [
-                        'name' => $pname,
-                        'uom'  => $line->uom_text ?? $info['uom'],
-                    ],
-                ];
             }
-            $this->rows = $rows;
         }
 
         $this->recomputeTotals();
@@ -133,13 +115,11 @@ class Manage extends Component
             'categories'      => $this->categories,
             'warehouses'      => $this->warehouses,
             'customers'       => $this->customers,
-            'catalogProducts' => null, // لو عندك مصدر كتالوج خارجي
+            'catalogProducts' => null,
         ]);
     }
 
-    /* =========================
-       عمليات مساعدة (أسماء/وحدات)
-       ========================= */
+    /* ---------------- Helpers ---------------- */
 
     private function localize($raw): string
     {
@@ -148,20 +128,32 @@ class Manage extends Component
         }
         if (is_string($raw)) {
             $trim = trim($raw);
-            if (Str::startsWith($trim, '{') || Str::startsWith($trim, '[')) {
+            if ($trim !== '' && (Str::startsWith($trim, '{') || Str::startsWith($trim, '['))) {
                 $arr = json_decode($trim, true);
                 if (is_array($arr)) {
-                    return (string)($arr[app()->getLocale()] ?? ($arr['ar'] ?? ($raw)));
+                    return (string)($arr[app()->getLocale()] ?? ($arr['ar'] ?? $raw));
                 }
             }
             return $raw;
         }
-        return (string) $raw;
+        return (string)$raw;
+    }
+
+    private function productThumbUrl(?Product $product): ?string
+    {
+        if (!$product) return null;
+        $path = $product->image_path ?: null;
+        if (!$path) return null;
+
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->url($path);
+        }
+        return asset($path);
     }
 
     /**
-     * تحميل خيارات وحدات المنتج + السعر الافتراضي لكل وحدة
-     * تُعيد: ['options' => [unit_id => name], 'map' => [unit_id => ['price'=>..., 'uom'=>...]], 'default_unit_id' => ?]
+     * تحميل وحدات البيع من units_matrix (سواء Array cast أو String JSON)
+     * return: ['options'=>[key=>label], 'map'=>[key=>['price'=>..,'uom'=>..]], 'defaultUnitId'=>key]
      */
     private function loadUnitOptions(Product $product): array
     {
@@ -169,33 +161,44 @@ class Manage extends Component
         $map     = [];
         $defaultUnitId = null;
 
-        // إن كانت هناك علاقة many-to-many مع وحدات وأسعار (pivot)
-        if (method_exists($product, 'units')) {
-            $units = $product->units()->withPivot(['price', 'label', 'factor'])->get();
-            foreach ($units as $u) {
-                $uName = $this->localize($u->name ?? $u->pivot->label ?? __('pos.unit'));
-                $options[$u->id] = $uName;
-                $map[$u->id] = [
-                    'price' => (float)($u->pivot->price ?? $product->min_price ?? 0),
-                    'uom'   => $uName,
-                ];
-                if ($defaultUnitId === null) $defaultUnitId = (int)$u->id;
-            }
+        // ✅ التعامل الآمن مع Array أو String
+        $matrix = [];
+        $raw = $product->units_matrix;
+
+        if (is_array($raw)) {
+            $matrix = $raw;
+        } elseif (is_string($raw) && trim($raw) !== '') {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) $matrix = $decoded;
         }
 
-        // في حال ما عندك جدول وحدات: اعتمد أقل سعر كوحدة وحيدة
+        foreach (['minor','middle','major'] as $key) {
+            if (!isset($matrix[$key])) continue;
+            $label = $matrix[$key]['label'] ?? ucfirst($key);
+            $price = (float)($matrix[$key]['price'] ?? 0);
+            $options[$key] = $label;
+            $map[$key]     = ['price' => $price, 'uom' => $label];
+        }
+
+        $saleKey = $product->sale_unit_key;
+        if ($saleKey && isset($options[$saleKey])) {
+            $defaultUnitId = $saleKey;
+        } else {
+            $defaultUnitId = array_key_first($options);
+        }
+
         if (empty($options)) {
-            $options = [0 => __('pos.unit')];
-            $map     = [0 => ['price' => (float)($product->min_price ?? 0), 'uom' => __('pos.unit')]];
-            $defaultUnitId = 0;
+            // fallback لو مفيش مصفوفة
+            $baseName = $this->localize($product->unit->name ?? __('pos.unit'));
+            $options  = ['base' => $baseName];
+            $map      = ['base' => ['price' => 0.0, 'uom' => $baseName]];
+            $defaultUnitId = 'base';
         }
 
-        return compact('options', 'map', 'defaultUnitId');
+        return compact('options','map','defaultUnitId');
     }
 
-    /* =========================
-       واجهة المستخدم: فلاتر واختيارات
-       ========================= */
+    /* -------------- فلاتر واختيارات -------------- */
 
     public function selectCategory(?int $categoryId): void
     {
@@ -206,9 +209,7 @@ class Manage extends Component
     {
         $name = trim($this->customerSearch);
         if ($name === '') return;
-        $match = $this->customers->first(function ($c) use ($name) {
-            return $this->localize($c->name) === $name;
-        });
+        $match = $this->customers->first(fn($c) => $this->localize($c->name) === $name);
         if ($match) $this->customer_id = (int)$match->id;
     }
 
@@ -216,9 +217,7 @@ class Manage extends Component
     {
         $name = trim($this->warehouseSearch);
         if ($name === '') return;
-        $match = $this->warehouses->first(function ($w) use ($name) {
-            return $this->localize($w->name) === $name;
-        });
+        $match = $this->warehouses->first(fn($w) => $this->localize($w->name) === $name);
         if ($match) $this->warehouse_id = (int)$match->id;
     }
 
@@ -226,24 +225,19 @@ class Manage extends Component
     {
         $name = trim($this->categorySearch);
         if ($name === '') return;
-        $match = $this->categories->first(function ($cat) use ($name) {
-            return $this->localize($cat->name) === $name;
-        });
+        $match = $this->categories->first(fn($cat) => $this->localize($cat->name) === $name);
         $this->activeCategoryId = $match ? (int)$match->id : null;
     }
 
-    /* =========================
-       السلة + الباركود + الوحدات
-       ========================= */
+    /* -------------- السلة والوحدات -------------- */
 
     public function addByBarcode(): void
     {
         $code = trim($this->barcode);
         if ($code === '') return;
 
-        $product = $this->products->first(function ($p) use ($code) {
-            return (string)($p->barcode ?? '') === $code;
-        }) ?? Product::where('barcode', $code)->first();
+        $product = $this->products->first(fn($p) => (string)($p->barcode ?? '') === $code)
+            ?? Product::where('barcode', $code)->first();
 
         if (!$product) {
             session()->flash('success', __('لم يتم العثور على منتج بهذا الباركود'));
@@ -257,10 +251,9 @@ class Manage extends Component
 
     public function addProductToCart(int $productId): void
     {
-        $product = $this->products->firstWhere('id', $productId) ?? Product::find($productId);
+        $product = $this->products->firstWhere('id', $productId) ?? Product::with('unit')->find($productId);
         if (!$product) return;
 
-        // لو موجود بالسلة زوّد الكمية
         foreach ($this->rows as $i => $r) {
             if ((int)$r['product_id'] === (int)$productId) {
                 $this->rows[$i]['qty'] = (float)$this->rows[$i]['qty'] + 1;
@@ -269,22 +262,21 @@ class Manage extends Component
             }
         }
 
-        // تحميل الوحدات
-        $units = $this->loadUnitOptions($product);
-        $pname = $this->localize($product->name);
-
-        $unitId   = $units['defaultUnitId'];
-        $unitInfo = $units['map'][$unitId];
+        $units  = $this->loadUnitOptions($product);
+        $pname  = $this->localize($product->name);
+        $unitId = $units['defaultUnitId'];
+        $info   = $units['map'][$unitId];
 
         $this->rows[] = [
             'product_id'   => (int)$product->id,
             'qty'          => 1,
-            'unit_id'      => $unitId,
-            'unit_price'   => (float)$unitInfo['price'],
+            'unit_id'      => $unitId, // minor/middle/major/base
+            'unit_price'   => (float)$info['price'],
             'unit_options' => $units['options'],
             'preview'      => [
-                'name' => $pname,
-                'uom'  => $unitInfo['uom'],
+                'name'  => $pname,
+                'uom'   => $info['uom'],
+                'image' => $this->productThumbUrl($product),
             ],
         ];
 
@@ -296,21 +288,19 @@ class Manage extends Component
         if (!array_key_exists($index, $this->rows)) return;
 
         $row = $this->rows[$index];
-        $product = $this->products->firstWhere('id', $row['product_id']) ?? Product::find($row['product_id']);
+        $product = $this->products->firstWhere('id', $row['product_id']) ?? Product::with('unit')->find($row['product_id']);
         if (!$product) return;
 
-        $units = $this->loadUnitOptions($product);
-
-        $unitId = (int)($row['unit_id'] ?? $units['defaultUnitId']);
+        $units  = $this->loadUnitOptions($product);
+        $unitId = $row['unit_id'] ?? $units['defaultUnitId'];
 
         if (!isset($units['map'][$unitId])) {
             $unitId = $units['defaultUnitId'];
         }
 
         $info = $units['map'][$unitId];
-
-        $this->rows[$index]['unit_id']    = $unitId;
-        $this->rows[$index]['unit_price'] = (float)$info['price'];
+        $this->rows[$index]['unit_id']        = $unitId;
+        $this->rows[$index]['unit_price']     = (float)$info['price'];
         $this->rows[$index]['preview']['uom'] = $info['uom'];
 
         $this->recomputeTotals();
@@ -344,46 +334,23 @@ class Manage extends Component
         $this->recomputeTotals();
     }
 
-    /* =========================
-       إجماليات
-       ========================= */
+    /* -------------- الإجماليات -------------- */
 
     private function recomputeTotals(): void
     {
         $sub = 0.0;
         foreach ($this->rows as $r) {
-            $qty   = (float)($r['qty'] ?? 0);
-            $price = (float)($r['unit_price'] ?? 0);
-            $sub  += $qty * $price;
+            $sub += (float)($r['qty'] ?? 0) * (float)($r['unit_price'] ?? 0);
         }
         $this->subtotal = round($sub, 2);
-        $disc = (float)$this->discount;
-        $tax  = (float)$this->tax;
-        $this->grand = round(max(0, $this->subtotal - $disc + $tax), 2);
+        $this->grand    = round(max(0, $this->subtotal - (float)$this->discount + (float)$this->tax), 2);
     }
 
     public function updatedDiscount(): void { $this->recomputeTotals(); }
     public function updatedTax(): void      { $this->recomputeTotals(); }
     public function updatedRows(): void     { $this->recomputeTotals(); }
 
-    /* =========================
-       حفظ في pos + pos_lines
-       ========================= */
-
-    private function nextPosNo(): string
-    {
-        $prefix = 'POS-' . Carbon::now()->format('Ymd') . '-';
-        $last = Pos::withTrashed()
-            ->where('pos_no', 'like', $prefix.'%')
-            ->orderByDesc('id')
-            ->value('pos_no');
-
-        $seq = 1;
-        if ($last && preg_match('/-(\d{4})$/', $last, $m)) {
-            $seq = (int)$m[1] + 1;
-        }
-        return $prefix . str_pad((string)$seq, 4, '0', STR_PAD_LEFT);
-    }
+    /* -------------- الحفظ -------------- */
 
     public function save()
     {
@@ -395,45 +362,47 @@ class Manage extends Component
         }
 
         DB::transaction(function () {
-            // رأس الفاتورة
-            $pos = $this->pos_id
-                ? Pos::lockForUpdate()->findOrFail($this->pos_id)
-                : new Pos();
+            $pos = Pos::updateOrCreate(
+                ['id' => $this->pos_id],
+                [
+                    'pos_no'       => null,
+                    'pos_date'     => $this->pos_date,
+                    'status'       => 'draft',
+                    'warehouse_id' => $this->warehouse_id,
+                    'customer_id'  => $this->customer_id,
+                    'user_id'      => auth()->id(),
+                    'subtotal'     => $this->subtotal,
+                    'discount'     => $this->discount,
+                    'tax'          => $this->tax,
+                    'grand_total'  => $this->grand,
+                    'notes'        => $this->notes_ar,
+                ]
+            );
 
-            if (!$this->pos_id) {
-                $pos->pos_no = $this->nextPosNo();
+            $this->pos_id = (int)$pos->id;
+
+            if (empty($pos->pos_no)) {
+                $pos->pos_no = sprintf('POS-%s-%05d', date('Ymd'), $pos->id);
+                $pos->save();
             }
 
-            $pos->pos_date     = $this->pos_date;
-            $pos->status       = $pos->status ?: 'draft'; // اتركها مسودة
-            $pos->warehouse_id = $this->warehouse_id;
-            $pos->customer_id  = $this->customer_id;
-            $pos->user_id      = Auth::id();
-            $pos->subtotal     = $this->subtotal;
-            $pos->discount     = $this->discount;
-            $pos->tax          = $this->tax;
-            $pos->grand_total  = $this->grand;
-            $pos->notes        = $this->notes_ar ?: null;
-            $pos->save();
-
-            $this->pos_id = $pos->id;
-
-            // حذف السطور القديمة ثم إنشاء الجديدة
             PosLine::where('pos_id', $pos->id)->delete();
 
             foreach ($this->rows as $r) {
+                $product = $this->products->firstWhere('id', $r['product_id']) ?? Product::find($r['product_id']);
+
                 $qty   = (float)($r['qty'] ?? 0);
                 $price = (float)($r['unit_price'] ?? 0);
                 $total = $qty * $price;
 
                 $uomText = $r['preview']['uom'] ?? ($r['uom_text'] ?? null);
+                $code    = $product?->sku ?: ($product?->barcode ?: null);
 
                 PosLine::create([
                     'pos_id'       => $pos->id,
                     'product_id'   => (int)$r['product_id'],
-                    'unit_id'      => $r['unit_id'] ?: null,
-                    'warehouse_id' => $this->warehouse_id,
-                    'code'         => null,
+                    'unit_id'      => null,
+                    'code'         => $code,
                     'uom_text'     => $uomText,
                     'qty'          => $qty,
                     'unit_price'   => $price,
@@ -441,11 +410,11 @@ class Manage extends Component
                     'expiry_date'  => null,
                     'batch_no'     => null,
                     'notes'        => null,
+                    'warehouse_id' => $this->warehouse_id,
                 ]);
             }
         });
 
-        session()->flash('success', $this->pos_id ? __('تم حفظ الفاتورة وتحديث السطور بنجاح') : __('تم حفظ الفاتورة بنجاح'));
-        $this->recomputeTotals();
+        session()->flash('success', __('تم حفظ/تحديث الفاتورة بنجاح'));
     }
 }
