@@ -1,6 +1,5 @@
-<div class="page-wrap">
+<div class="container-fluid">
 
-    {{-- alerts --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-3">
             <i class="mdi mdi-check-circle-outline me-2"></i>{{ session('success') }}
@@ -14,187 +13,174 @@
         </div>
     @endif
 
-    {{-- header --}}
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <div>
-            <h4 class="mb-1 fw-bold">
-                <i class="mdi mdi-account-group-outline me-2"></i> {{ __('pos.title_customers_index') ?? 'إدارة العملاء' }}
-            </h4>
-            <div class="text-muted small">{{ __('pos.subtitle_customers_index') ?? 'بحث، تصفية، تعديل، وحذف العملاء' }}</div>
-        </div>
-        <a href="{{ route('customers.create') }}" class="btn btn-success rounded-pill px-4 shadow-sm">
-            <i class="mdi mdi-account-plus"></i> {{ __('pos.btn_new_customer') ?? 'عميل جديد' }}
-        </a>
-    </div>
+    <style>
+        .stylish-card{border:1px solid rgba(0,0,0,.06)}
+        .badge-status{font-weight:700}
+        .badge-status.active{background:#f0fdf4;color:#166534;border:1px solid rgba(22,101,52,.15)}
+        .badge-status.inactive{background:#fef2f2;color:#991b1b;border:1px solid rgba(153,27,27,.15)}
+        .toolbar{display:flex;gap:.5rem;align-items:center}
+        .toolbar .btn{border-radius:9999px}
+        .metric{border-radius:16px;border:1px solid rgba(0,0,0,.06);background:#fff;box-shadow:0 6px 18px rgba(13,110,253,.06)}
+        .metric .v{font-size:1.25rem;font-weight:800}
+        .metric .k{color:#6b7280}
+        .table thead th{background:#f8f9fc;position:sticky;top:0;z-index:1}
+    </style>
 
-    {{-- filters --}}
-    <div class="card shadow-sm rounded-4 mb-3">
-        <div class="card-body">
-            <div class="row g-3 align-items-end">
-                <div class="col-lg-4">
-                    <label class="form-label mb-1"><i class="mdi mdi-magnify"></i> {{ __('pos.search') }}</label>
-                    <input type="text" class="form-control" wire:model.debounce.400ms="search"
-                           placeholder="{{ __('pos.ph_search_customer') ?? 'ابحث بالاسم/الكود/الهاتف' }}">
-                    <small class="text-muted">{{ __('pos.hint_search_customer') ?? 'اكتب جزءًا من الاسم أو الكود أو الهاتف' }}</small>
+    <div class="card shadow-sm rounded-4 stylish-card mb-4">
+        <div class="card-header bg-light d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="mb-0 fw-bold"><i class="mdi mdi-account-multiple-outline me-1"></i> {{ __('pos.customers_index_title') }}</h5>
+                <div class="text-muted small">{{ __('pos.customers_index_subtitle') ?? '' }}</div>
+            </div>
+            <div class="toolbar">
+                <a href="{{ route('customers.create') }}" class="btn btn-primary rounded-pill px-3 shadow-sm">
+                    <i class="mdi mdi-plus-circle-outline me-1"></i> {{ __('pos.customers_new') }}
+                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="text-muted small">{{ __('pos.per_page') }}</div>
+                    <select class="form-select form-select-sm" style="width:auto" wire:model="perPage">
+                        <option>10</option><option>20</option><option>30</option><option>50</option>
+                    </select>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-lg-3">
-                    <label class="form-label mb-1"><i class="mdi mdi-shield-check-outline"></i> {{ __('pos.filter_status') }}</label>
-                    <select class="form-select" wire:model="account_status">
-                        <option value="">{{ __('pos.all') }}</option>
+        <div class="card-body">
+            {{-- Top metrics --}}
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="metric p-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="k">{{ __('pos.records_showing') ?? 'Showing' }}</div>
+                            <div class="v">{{ $customers->count() }}</div>
+                        </div>
+                        <i class="mdi mdi-eye-outline fs-2 text-primary"></i>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric p-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="k">{{ __('pos.records_total') ?? 'Total' }}</div>
+                            <div class="v">{{ $customers->total() }}</div>
+                        </div>
+                        <i class="mdi mdi-database-outline fs-2 text-primary"></i>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric p-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="k">{{ __('pos.updated_at') }}</div>
+                            <div class="v">{{ now()->format('Y-m-d H:i') }}</div>
+                        </div>
+                        <i class="mdi mdi-update fs-2 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Filters --}}
+            <div class="row g-2 mb-3">
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">{{ __('pos.search') }}</label>
+                    <input type="text" class="form-control" placeholder="{{ __('pos.customers_search_ph') }}" wire:model.debounce.400ms="search">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small text-muted mb-1">{{ __('pos.status') }}</label>
+                    <select class="form-select" wire:model="status">
+                        <option value="">{{ __('pos.status_all') ?? __('pos.all') }}</option>
                         <option value="active">{{ __('pos.status_active') }}</option>
                         <option value="inactive">{{ __('pos.status_inactive') }}</option>
-                        <option value="suspended">{{ __('pos.status_suspended') ?? 'معلّق' }}</option>
                     </select>
-                    <small class="text-muted">{{ __('pos.h_account_status') ?? 'حالة حساب العميل' }}</small>
                 </div>
-
-                <div class="col-lg-3">
-                    <label class="form-label mb-1"><i class="mdi mdi-storefront-outline"></i> {{ __('pos.f_channel') }}</label>
-                    <select class="form-select" wire:model="channel">
-                        <option value="">{{ __('pos.all') }}</option>
-                        <option value="retail">{{ __('pos.opt_retail') }}</option>
-                        <option value="wholesale">{{ __('pos.opt_wholesale') }}</option>
-                        <option value="online">{{ __('pos.opt_online') }}</option>
-                        <option value="pharmacy">{{ __('pos.opt_pharmacy') }}</option>
-                    </select>
-                    <small class="text-muted">{{ __('pos.h_channel') }}</small>
+                <div class="col-md-2">
+                    <label class="form-label small text-muted mb-1">{{ __('pos.date_from') }}</label>
+                    <input type="date" class="form-control" wire:model="date_from">
                 </div>
-
-                <div class="col-lg-2 text-end">
-                    <button class="btn btn-light rounded-pill px-3 shadow-sm"
-                        wire:click="$set('search','');$set('account_status','');$set('channel','')">
-                        <i class="mdi mdi-filter-remove-outline"></i> {{ __('pos.clear_filters') ?? 'مسح الفلاتر' }}
+                <div class="col-md-2">
+                    <label class="form-label small text-muted mb-1">{{ __('pos.date_to') }}</label>
+                    <input type="date" class="form-control" wire:model="date_to">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-outline-primary w-100" wire:click="$refresh">
+                        <i class="mdi mdi-filter-outline"></i> {{ __('pos.refresh') }}
                     </button>
                 </div>
             </div>
 
-            {{-- summary --}}
-            <div class="d-flex align-items-center mt-3 small text-muted">
-                <i class="mdi mdi-dots-grid me-1"></i>
-                <span>{{ __('pos.search') }}:</span>
-                <span class="badge bg-light text-dark ms-1">{{ $search ?: '—' }}</span>
-                <span class="ms-3">{{ __('pos.f_channel') }}:</span>
-                <span class="badge bg-light text-dark ms-1">{{ $channel ?: __('pos.all') }}</span>
-                <span class="ms-3">{{ __('pos.filter_status') }}:</span>
-                <span class="badge bg-light text-dark ms-1">
-                    {{ $account_status ? __($account_status==='active'?'pos.status_active':($account_status==='inactive'?'pos.status_inactive':'pos.status_suspended')) : __('pos.all') }}
-                </span>
-                <span class="ms-auto">
-                    <span class="badge bg-primary-subtle text-primary rounded-pill">
-                        <i class="mdi mdi-counter me-1"></i>{{ $rows->total() }}
-                    </span>
-                </span>
+            {{-- Table --}}
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width:120px">{{ __('pos.code') }}</th>
+                            <th>{{ __('pos.name') ?? __('pos.name_ar') }}</th>
+                            <th style="width:150px">{{ __('pos.phone') }}</th>
+                            <th style="width:220px">{{ __('pos.email') }}</th>
+                            <th style="width:120px">{{ __('pos.country') }}</th>
+                            <th class="text-center" style="width:110px">{{ __('pos.status') }}</th>
+                            <th style="width:170px">{{ __('pos.created_at') }}</th>
+                            <th style="width:220px">{{ __('pos.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($customers as $r)
+                            @php
+                                $loc = app()->getLocale();
+                                $nm = is_array($r->name) ? ($r->name[$loc] ?? ($r->name['ar'] ?? $r->name['en'] ?? '')) : $r->name;
+                            @endphp
+                            <tr>
+                                <td class="fw-semibold">{{ $r->code }}</td>
+                                <td>{{ $nm }}</td>
+                                <td>{{ $r->phone ?: '—' }}</td>
+                                <td>{{ $r->email ?: '—' }}</td>
+                                <td>{{ $r->country ?: '—' }}</td>
+                                <td class="text-center">
+                                    <span class="badge badge-status {{ $r->status }}">{{ __('pos.status_'.$r->status) }}</span>
+                                </td>
+                                <td>{{ $r->created_at?->format('Y-m-d H:i') }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ route('customers.show', $r->id) }}" class="btn btn-sm btn-outline-info" title="{{ __('pos.show') }}">
+                                            <i class="mdi mdi-eye-outline"></i>
+                                        </a>
+                                        <a href="{{ route('customers.edit', $r->id) }}" class="btn btn-sm btn-outline-primary" title="{{ __('pos.edit') }}">
+                                            <i class="mdi mdi-pencil-outline"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="toggle({{ $r->id }})" title="{{ __('pos.change_status') }}">
+                                            <i class="mdi mdi-swap-horizontal"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $r->id }})" title="{{ __('pos.delete') }}">
+                                            <i class="mdi mdi-trash-can-outline"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="8" class="text-center text-muted py-4">{{ __('pos.no_data') }}</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3">
+                {{ $customers->links() }}
             </div>
         </div>
     </div>
 
-    {{-- table --}}
-    <div class="card shadow-sm rounded-4">
-        <div class="table-responsive">
-            <table class="table table-hover table-borderless align-middle mb-0 pretty-table">
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>{{ __('pos.f_code') }}</th>
-                        <th>{{ __('pos.f_legal_name_ar') }}</th>
-                        <th>{{ __('pos.f_phone') }}</th>
-                        <th>{{ __('pos.f_channel') }}</th>
-                        <th>{{ __('pos.f_account_status') }}</th>
-                        <th class="text-end">{{ __('pos.actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($rows as $row)
-                        <tr>
-                            <td class="text-muted">{{ $row->id }}</td>
-                            <td class="font-monospace fw-600">{{ $row->code }}</td>
-                            <td class="text-truncate" style="max-width:280px"
-                                title="{{ $row->getTranslation('legal_name', app()->getLocale()) }}">
-                                {{ $row->getTranslation('legal_name', app()->getLocale()) }}
-                            </td>
-                            <td>{{ $row->phone ?: '—' }}</td>
-                            <td>
-                                <span class="badge bg-light text-dark">
-                                    {{ __(
-                                        $row->channel==='retail'?'pos.opt_retail':
-                                        ($row->channel==='wholesale'?'pos.opt_wholesale':
-                                        ($row->channel==='online'?'pos.opt_online':'pos.opt_pharmacy'))
-                                    ) }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge rounded-pill px-3 {{ $row->account_status=='active' ? 'bg-success-subtle text-success' : ($row->account_status=='inactive' ? 'bg-secondary-subtle text-secondary' : 'bg-warning-subtle text-warning') }}">
-                                    {{
-                                        __(
-                                            $row->account_status==='active'?'pos.status_active':
-                                            ($row->account_status==='inactive'?'pos.status_inactive':'pos.status_suspended')
-                                        )
-                                    }}
-                                </span>
-                            </td>
-                            <td class="text-end">
-                                <div class="btn-group">
-                                    <a href="{{ route('customers.edit',$row->id) }}" class="btn btn-primary btn-sm rounded-pill m-1" data-bs-toggle="tooltip" title="{{ __('pos.btn_edit') }}">
-                                        <i class="mdi mdi-pencil"></i>
-                                    </a>
-                                    <button onclick="confirmDelete({{ $row->id }})" class="btn btn-danger btn-sm rounded-pill m-1" data-bs-toggle="tooltip" title="{{ __('pos.btn_delete') }}">
-                                        <i class="mdi mdi-delete-outline"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7">
-                                <div class="py-5 text-center text-muted">
-                                    <i class="mdi mdi-account-off fs-1 d-block mb-2"></i>
-                                    {{ __('pos.no_data') }}
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <div class="card-body d-flex justify-content-between align-items-center">
-            <div class="small text-muted">
-                <i class="mdi mdi-information-outline"></i>
-                {{ $rows->firstItem() }}–{{ $rows->lastItem() }} / {{ $rows->total() }}
-            </div>
-            <div>{{ $rows->onEachSide(1)->links() }}</div>
-        </div>
-    </div>
-</div>
-
-{{-- sweetalert --}}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+    {{-- SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
     function confirmDelete(id){
         Swal.fire({
-            title: '{{ __("pos.alert_title") }}',
-            text: '{{ __("pos.alert_text") }}',
+            title: '{{ __("pos.confirm_delete_title") }}',
+            text: '{{ __("pos.confirm_delete_text") }}',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#198754',
             cancelButtonColor: '#0d6efd',
-            confirmButtonText: '{{ __("pos.alert_confirm") }}',
-            cancelButtonText: '{{ __("pos.alert_cancel") }}'
-        }).then((r)=>{
-            if(r.isConfirmed){
-                Livewire.emit('deleteConfirmed', id);
-                Swal.fire('{{ __("pos.deleted") }}', '{{ __("pos.msg_deleted_ok") }}', 'success');
-            }
-        })
+            confirmButtonText: '{{ __("pos.confirm") }}',
+            cancelButtonText: '{{ __("pos.cancel") }}'
+        }).then((r)=>{ if(r.isConfirmed){ Livewire.emit('deleteConfirmed', id); Swal.fire('{{ __("pos.deleted") }}','{{ __("pos.deleted_ok") }}','success'); }});
     }
-</script>
-
-<style>
-    .pretty-table thead th{ position: sticky; top: 0; z-index: 1; background: var(--bs-light,#f8f9fa); }
-    .table-hover tbody tr:hover{ background: rgba(13,110,253,.03); }
-    .fw-600{ font-weight:600; }
-    .bg-success-subtle{ background:#d1e7dd!important; color:#0f5132!important; }
-    .bg-secondary-subtle{ background:#e2e3e5!important; color:#41464b!important; }
-    .bg-warning-subtle{ background:#fff3cd!important; color:#664d03!important; }
-</style>
+    </script>
+</div>

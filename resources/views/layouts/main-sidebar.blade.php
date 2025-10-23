@@ -59,6 +59,15 @@
                                 <span data-key="t-suppliers">{{ __('pos.supplier_title') }}</span>
                             </a>
                         </li>
+                        {{-- إدارة المبيعات (POS) --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'pos.')) active @endif"
+                                href="{{ route('pos.create') }}">
+                                <i class="mdi mdi-point-of-sale"></i>
+                                <span data-key="t-pos">{{ __('pos.sales_title') ?? 'إدارة المبيعات' }}</span>
+                            </a>
+                        </li>
+
                         {{-- المنتجات --}}
                         <li class="nav-item">
                             <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'products.')) active @endif"
@@ -67,8 +76,47 @@
                                 <span data-key="t-products">{{ __('pos.products_index_title') }}</span>
                             </a>
                         </li>
+                        {{-- المشتريات --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'purchases.')) active @endif"
+                                href="{{ route('purchases.index') }}">
+                                <i class="mdi mdi-cart-outline"></i>
+                                <span data-key="t-purchases">{{ __('pos.purchases_title') ?? 'المشتريات' }}</span>
+                            </a>
+                        </li>
 
-                   
+                        {{-- العروض والكوبونات --}}
+                        @php
+                            $promoOpen =
+                                Str::startsWith(Route::currentRouteName(), 'offers.') ||
+                                Str::startsWith(Route::currentRouteName(), 'coupons.');
+                        @endphp
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font {{ $promoOpen ? 'active' : '' }}" href="#sidebarpromos"
+                                data-bs-toggle="collapse" role="button"
+                                aria-expanded="{{ $promoOpen ? 'true' : 'false' }}" aria-controls="sidebarpromos">
+                                <i class="mdi mdi-ticket-percent-outline me-1"></i>
+                                <span data-key="t-promos">{{ __('pos.offers_title') }} &
+                                    {{ __('pos.coupons_title') }}</span>
+                            </a>
+                            <div class="collapse menu-dropdown {{ $promoOpen ? 'show' : '' }}" id="sidebarpromos">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ Str::startsWith(Route::currentRouteName(), 'offers.') ? 'active' : '' }}"
+                                            href="{{ route('offers.index') }}">
+                                            {{ __('pos.offers_title') }}
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ Str::startsWith(Route::currentRouteName(), 'coupons.') ? 'active' : '' }}"
+                                            href="{{ route('coupons.index') }}">
+                                            {{ __('pos.coupons_title') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
                         {{-- المخزون --}}
                         <li class="nav-item">
                             <a class="nav-link menu-link font 
@@ -76,6 +124,14 @@
                                 href="{{ route('inventory.manage') }}">
                                 <i class="mdi mdi-warehouse"></i>
                                 <span data-key="t-inventory">{{ __('pos.inventory_title') ?? 'المخزون' }}</span>
+                            </a>
+                        </li>
+                        {{-- الخزائن --}}
+                        <li class="nav-item">
+                            <a class="nav-link menu-link font @if (Str::startsWith(Route::currentRouteName(), 'finance.')) active @endif"
+                                href="{{ route('finance.index') }}">
+                                <i class="mdi mdi-safe"></i>
+                                <span data-key="t-cashboxes">{{ __('pos.finance_title_index') }}</span>
                             </a>
                         </li>
 

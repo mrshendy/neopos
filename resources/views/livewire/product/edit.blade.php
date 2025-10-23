@@ -29,7 +29,7 @@
                         @if($image)
                             <img src="{{ $image->temporaryUrl() }}" class="rounded border" width="88" height="88" style="object-fit:cover">
                         @elseif($image_path)
-                            <img src="{{ asset('storage/'.ltrim($image_path,'/')) }}" class="rounded border" width="88" height="88" style="object-fit:cover">
+                            <img src="{{ asset('attachments/'.ltrim($image_path,'/')) }}" class="rounded border" width="88" height="88" style="object-fit:cover">
                         @else
                             <div class="rounded border bg-light d-flex align-items-center justify-content-center" style="width:88px;height:88px">
                                 <i class="mdi mdi-image-off-outline text-muted fs-2"></i>
@@ -346,36 +346,7 @@
                                 <div class="preview-box"><i class="mdi mdi-numeric"></i><span>{{ $expiry_value ?: '—' }}</span></div>
                             </div>
 
-                            @if($expiry_unit === 'day')
-                                <div class="col-12">
-                                    <label class="form-label d-block">{{ __('pos.expiry_weekdays') ?? 'أيام الأسبوع' }}</label>
-                                    @php
-                                        $days = [
-                                            'sat'=>__('pos.sat') ?? 'السبت',
-                                            'sun'=>__('pos.sun') ?? 'الأحد',
-                                            'mon'=>__('pos.mon') ?? 'الإثنين',
-                                            'tue'=>__('pos.tue') ?? 'الثلاثاء',
-                                            'wed'=>__('pos.wed') ?? 'الأربعاء',
-                                            'thu'=>__('pos.thu') ?? 'الخميس',
-                                            'fri'=>__('pos.fri') ?? 'الجمعة',
-                                        ];
-                                    @endphp
-                                    <div class="d-flex flex-wrap gap-3">
-                                        @foreach($days as $key => $label)
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="wd-{{ $key }}"
-                                                       wire:model="expiry_weekdays" value="{{ $key }}">
-                                                <label class="form-check-label" for="wd-{{ $key }}">{{ $label }}</label>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    <small class="text-muted d-block mb-1">{{ __('pos.hint_expiry_days') ?? 'اختر الأيام المتاحة' }}</small>
-                                    <div class="preview-box">
-                                        <i class="mdi mdi-calendar-multiselect"></i>
-                                        <span>{{ $expiry_weekdays ? implode('، ', $expiry_weekdays) : '—' }}</span>
-                                    </div>
-                                </div>
-                            @endif
+                            
                         </div>
                     @endif
                 </div>

@@ -2,46 +2,55 @@
 
 namespace App\models\inventory;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Translatable\HasTranslations;
 
 class warehouse extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasTranslations;
 
     protected $table = 'warehouses';
-    protected $guarded = [];
 
-    public function scopeActive($q){ return $q->where('status','active'); }
+    protected $fillable = [
+        'name',
+        'code',
+        'branch_id',
+        'status',
+        'warehouse_type',
+        'manager_ids',
+        'address',
+        'category_id',
+        'product_ids',
+    ];
 
-    public function stockTransactionsSrc(){ return $this->hasMany(stock_transaction::class,'src_warehouse_id'); }
-    public function stockTransactionsDst(){ return $this->hasMany(stock_transaction::class,'dst_warehouse_id'); }
+    protected array $translatable = ['name'];
 
-    /* كمية منتج ما داخل هذا المخزن (بالصغرى) */
-    public function currentQtyMinorForProduct(int $productId): float
+    protected $casts = [
+        'name'        => 'array',
+        'manager_ids' => 'array',
+        'product_ids' => 'array',
+    ];
+
+    public function branch(): BelongsTo
     {
-        $in = stock_transaction_line::where('product_id',$productId)
-            ->whereHas('transaction', fn($t)=>$t->where(function($w){
-                $w->where('type','in')->orWhere('type','transfer');
-            })->where('dst_warehouse_id',$this->id))
-            ->sum('qty_minor');
+        return $this->belongsTo(\App\models\general\branch::class, 'branch_id');
+    }
 
-        $out = stock_transaction_line::where('product_id',$productId)
-            ->whereHas('transaction', fn($t)=>$t->where(function($w){
-                $w->where('type','out')->orWhere('type','transfer');
-            })->where('src_warehouse_id',$this->id))
-            ->sum('qty_minor');
+    public function scopeActive($q)
+    {
+        return $q->where('status', 'active');
+    }
 
-        // التسويات:
-        $adjPlus  = stock_transaction_line::where('product_id',$productId)
-            ->whereHas('transaction', fn($t)=>$t->where('type','adjustment')->where('src_warehouse_id',$this->id))
-            ->where('qty_minor','>',0)->sum('qty_minor');
+    public function scopeForBranch($q, ?int $branchId)
+    {
+        return $branchId ? $q->where('branch_id', $branchId) : $q;
+    }
 
-        $adjMinus = stock_transaction_line::where('product_id',$productId)
-            ->whereHas('transaction', fn($t)=>$t->where('type','adjustment')->where('src_warehouse_id',$this->id))
-            ->where('qty_minor','<',0)->sum(\DB::raw('abs(qty_minor)'));
-
-        return (float)$in - (float)$out + (float)$adjPlus - (float)$adjMinus;
+    public function setCodeAttribute($value): void
+    {
+        $this->attributes['code'] = strtoupper(trim((string) $value));
     }
 }

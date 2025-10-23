@@ -6,6 +6,6 @@
 <div class="page-wrap">
   
 
-    @livewire('inventory.transactions.create')
+    @livewire('inventory.transactions.manage')
 </div>
 @endsection

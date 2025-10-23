@@ -17,6 +17,7 @@ class category extends Model
 
     public $translatable = ['name', 'description'];
 
+protected $casts = ['name' => 'array'];
 
     public function products()
     {

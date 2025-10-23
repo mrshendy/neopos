@@ -20,4 +20,11 @@ class warehousescontroller extends Controller
     {
         return view('inventory.warehouses.edit', ['id' => $id]);
     }
+
+    public function show(\App\models\inventory\warehouse $warehouse)
+    {
+        return view('inventory.warehouses.show', [
+            'warehouse_id' => $warehouse->getKey(),
+        ]);
+    }
 }

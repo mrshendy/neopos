@@ -2,24 +2,67 @@
 
 namespace App\models\inventory;
 
-use Illuminate\Database\Eloquent\Model;
+use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations; // عندك الملف ضمن app/models/User.php
 
 class stock_transaction extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations, SoftDeletes;
 
     protected $table = 'stock_transactions';
-    protected $guarded = [];
-    protected $casts = ['transacted_at' => 'datetime'];
 
-    public function lines()         { return $this->hasMany(stock_transaction_line::class, 'transaction_id'); }
-    public function srcWarehouse()  { return $this->belongsTo(warehouse::class, 'src_warehouse_id'); }
-    public function dstWarehouse()  { return $this->belongsTo(warehouse::class, 'dst_warehouse_id'); }
+    public $translatable = ['notes', 'type_label'];
 
-    /* سكوبات نوع الحركة */
-    public function scopeIn($q)       { return $q->where('type','in'); }
-    public function scopeOut($q)      { return $q->where('type','out'); }
-    public function scopeTransfer($q) { return $q->where('type','transfer'); }
-    public function scopeAdjustment($q){ return $q->where('type','adjustment'); }
+    protected $appends = ['type_name'];
+
+    protected $fillable = [
+        'trx_no', 'trx_date', 'type', 'warehouse_from_id', 'warehouse_to_id',
+        'user_id', 'ref_type', 'ref_id', 'notes', 'status',
+    ];
+
+    protected $casts = [
+        'trx_date' => 'date',
+    ];
+
+    /** الأسماء الأصلية اللي كنتَ كاتبها */
+    public function fromWarehouse()
+    {
+        return $this->belongsTo(warehouse::class, 'warehouse_from_id');
+    }
+
+    public function toWarehouse()
+    {
+        return $this->belongsTo(warehouse::class, 'warehouse_to_id');
+    }
+
+    /** ✅ Aliases مطلوبة من الكومبوننت: */
+    public function warehouseFrom()
+    {
+        return $this->belongsTo(warehouse::class, 'warehouse_from_id');
+    }
+
+    public function warehouseTo()
+    {
+        return $this->belongsTo(warehouse::class, 'warehouse_to_id');
+    }
+
+    /** المستخدم الذي أنشأ الحركة */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /** السطور */
+    public function lines()
+    {
+        return $this->hasMany(stock_transaction_line::class, 'stock_transaction_id');
+    }
+
+    public function getTypeNameAttribute(): string
+    {
+        return __('pos.stock_trx_type.'.$this->type);
+    }
 }
