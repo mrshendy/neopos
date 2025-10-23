@@ -1,57 +1,49 @@
 <?php
 
-namespace App\Http\Livewire\general\branches;
+namespace App\Http\Livewire\General\Branches;
 
 use Livewire\Component;
-use App\models\general\branch;
+use App\Models\General\Branch as BranchModel; // ✅ صحّح الـnamespace والكابيتالايز
 
-class edit extends Component
+class Edit extends Component
 {
-    public $branch_id;
-    public $name_ar;
-    public $name_en;
-    public $address;
-    public $status = 'active';
+    public BranchModel $branch;
+
+    public $name = '';
+    public $address = '';
+    public $status = 1;
 
     protected $rules = [
-        'name_ar' => 'required|string|max:255',
-        'name_en' => 'required|string|max:255',
+        'name'    => 'required|string|min:2|max:190',
         'address' => 'nullable|string|max:255',
-        'status'  => 'required|in:active,inactive',
+        'status'  => 'required|boolean',
     ];
 
-    protected $messages = [
-        'name_ar.required' => 'الاسم العربي مطلوب',
-        'name_en.required' => 'الاسم الإنجليزي مطلوب',
-        'status.in'        => 'حقل الحالة غير صحيح',
-    ];
-
-    public function mount($branch_id)
+    // ✅ أبسَط وأضمن: اعتمد فقط على Route Model Binding
+    public function mount(BranchModel $branch): void
     {
-        $this->branch_id = $branch_id;
-        $b = branch::findOrFail($branch_id);
-        $this->name_ar = $b->getTranslation('name', 'ar');
-        $this->name_en = $b->getTranslation('name', 'en');
-        $this->address = $b->address;
-        $this->status  = $b->status;
+        $this->branch  = $branch;
+        $this->name    = $branch->name;
+        $this->address = $branch->address;
+        $this->status  = (int) $branch->status;
     }
 
-    public function update()
+    public function save()
     {
         $this->validate();
 
-        $b = branch::findOrFail($this->branch_id);
-        $b->name    = ['ar' => $this->name_ar, 'en' => $this->name_en];
-        $b->address = $this->address ?: null;
-        $b->status  = $this->status;
-        $b->save();
+        $this->branch->update([
+            'name'    => $this->name,
+            'address' => $this->address,
+            'status'  => (bool) $this->status,
+        ]);
 
-        session()->flash('success', 'تم تحديث بيانات الفرع بنجاح');
+        session()->flash('success', __('branches.msg_updated'));
         return redirect()->route('branches.index');
     }
 
     public function render()
     {
-        return view('general.branches.edit')->layout('layouts.master');
+        return view('livewire.general.branches.edit');
     }
 }

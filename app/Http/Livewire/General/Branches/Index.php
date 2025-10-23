@@ -1,42 +1,51 @@
 <?php
 
-namespace App\Http\Livewire\general\branches;
+namespace App\Http\Livewire\General\Branches;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\models\general\branch;
+use App\Models\General\Branch;
 
-class index extends Component
+class Index extends Component
 {
     use WithPagination;
 
-    protected $paginationTheme = 'bootstrap';
-
     public $search = '';
-    public $statusOptions = ['active' => 'نشط', 'inactive' => 'متوقف'];
-    public $status = '';
+    public $status = ''; // '' الكل، 1 فعّال، 0 غير فعّال
+    public $perPage = 10;
 
     protected $queryString = ['search', 'status', 'page'];
+
+    protected $listeners = ['confirmDelete' => 'delete'];
 
     public function updatingSearch() { $this->resetPage(); }
     public function updatingStatus() { $this->resetPage(); }
 
+    public function delete($id)
+    {
+        $branch = Branch::findOrFail($id);
+        $branch->delete();
+        session()->flash('success', 'تم حذف الفرع بنجاح');
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $branches = branch::withCount('warehouses')
-            ->when($this->search, function ($q) {
+        $q = Branch::query()
+            ->when(strlen($this->search), function ($q) {
                 $s = "%{$this->search}%";
-                $q->where('name->ar', 'like', $s)
-                  ->orWhere('name->en', 'like', $s)
-                  ->orWhere('address', 'like', $s);
+                $q->where(function ($qq) use ($s) {
+                    $qq->where('name', 'like', $s)
+                       ->orWhere('address', 'like', $s);
+                });
             })
-            ->when($this->status !== '', fn($q) => $q->where('status', $this->status))
-            ->orderByDesc('id')
-            ->paginate(10);
+            ->when($this->status !== '' && $this->status !== null, function ($q) {
+                $q->where('status', (int)$this->status);
+            })
+            ->orderByDesc('id');
 
-        return view('general.branches.index', [
-            'branches' => $branches,
-            'statusOptions' => $this->statusOptions,
-        ])->layout('layouts.master');
+        return view('livewire.general.branches.index', [
+            'rows' => $q->paginate($this->perPage),
+        ]);
     }
 }

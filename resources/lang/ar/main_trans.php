@@ -12,7 +12,7 @@ return [
     | you want to customize your views to better match your application.
     |
     */
-    'title' => 'نظام ادارة العيادات',
+    'title'  => 'الاعدادات الرئيسية',
 
     // Patient management
     'patients' => 'المرضي',

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'فروع الشركة')
+@section('title', 'فروع ')
 
 @section('content')
 <div class="page-wrap">

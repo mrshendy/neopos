@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\currenciescontroller;
 use App\Http\Controllers\customer\customercontroller;
 use App\Http\Controllers\finance_settingscontroller;
 use App\Http\Controllers\financecontroller;
@@ -18,7 +19,7 @@ use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
 use App\Http\Controllers\offers\couponscontroller;
 use App\Http\Controllers\offers\offerscontroller;
-use App\Http\Controllers\poscontroller;     
+use App\Http\Controllers\poscontroller;
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
 use App\Http\Controllers\supplier\suppliercontroller;
@@ -53,25 +54,25 @@ Route::group(
     ], function () {
 
         Route::group(['namespace' => 'Application_settings'], function () {
-            //Place settings
+            // Place settings
             Route::resource('places_settings', 'place_settingsController');
-            //country
+            // country
             Route::resource('country', 'countryController');
-            //city
+            // city
             Route::get('/city/{id}', 'CityController@getgovernorate');
             Route::resource('city', 'CityController');
-            //governorate
+            // governorate
             Route::resource('governorate', 'governorateController');
-            //area
+            // area
             Route::get('/area/{id}', 'areaController@getcity');
             Route::resource('area', 'areaController');
-            //settings_type settings
+            // settings_type settings
             Route::resource('settings_type', 'settings_typeController');
             // application_setting
             Route::resource('settings', 'application_settingsController');
-            //currencies settings
+            // currencies settings
             Route::resource('currencies', 'currenciesController');
-            //nationalities settings
+            // nationalities settings
             Route::resource('nationalities_settings', 'nationalities_settingsController');
         });
 
@@ -241,9 +242,11 @@ Route::group(
             Route::get('/receipts/manage/{id?}', [financereceiptcontroller::class, 'manage'])->name('finance.receipts.manage');
         });
 
+        Route::get('/currencies', [currenciescontroller::class, 'index'])->name('currencies.index');
+
         Route::get('/{page}', 'AdminController@index');
 
     });
 
 Auth::routes();
-//Auth::routes(['register' => false]);
+// Auth::routes(['register' => false]);
