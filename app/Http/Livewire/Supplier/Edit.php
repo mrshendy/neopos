@@ -67,7 +67,7 @@ class Edit extends Component
             'payment_term_id' => 'nullable|exists:payment_terms,id',
 
             // حسب تسمية جداولك
-            'country_id' => 'nullable|exists:Countries,id',
+            'country_id' => 'nullable|exists:country,id',
             'governorate_id' => 'nullable|exists:governorate,id',
             'city_id' => 'nullable|exists:city,id',
             'area_id' => 'nullable|exists:Area,id',
@@ -125,7 +125,7 @@ class Edit extends Component
 
     public function render()
     {
-        // ⚠️ اسم المتغير للمشهد = country (مش countries)
+        // ⚠️ اسم المتغير للمشهد = country (مش country)
         $country      = country::orderBy('id', 'asc')->get();
 
         $governorates = governorate::orderBy('id', 'asc')->get();

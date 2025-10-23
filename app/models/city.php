@@ -1,32 +1,50 @@
 <?php
 
 namespace App\models;
+
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class City extends Model
-{
-    use HasTranslations;
-    protected $fillable = [
-        'name',
-        'id_country',
-        'id_governorate',
-        'user_add',
+use Spatie\Translatable\HasTranslations;
 
-    ];
-    public $translatable = ['name'];
+class city extends Model
+{
+    use SoftDeletes, HasTranslations;
+
     protected $table = 'city';
-    public $timestamps = true;
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    public $translatable = ['name'];
 
-  public function governorate()
-{
-    return $this->belongsTo(\App\models\customer\governorate::class, 'governorate_id');
-}
-public function areas()
-{
-    return $this->hasMany(\App\models\customer\area::class, 'city_id');
-}
+    protected $fillable = [
+        'name',               // JSON
+        'id_country',
+        'id_governoratees',
+        'status',
+        'user_add',
+        'user_update',
+    ];
 
+    protected static function booted()
+    {
+        static::creating(function ($m) {
+            if (is_null($m->user_add)) $m->user_add = auth()->id() ?? 0;
+        });
+        static::updating(function ($m) {
+            $m->user_update = auth()->id() ?? 0;
+        });
+    }
+
+    // علاقات
+    public function country()
+    {
+        return $this->belongsTo(country::class, 'id_country');
+    }
+
+    public function governoratees()
+    {
+        return $this->belongsTo(governorate::class, 'id_governoratees');
+    }
+
+    public function areas()
+    {
+        return $this->hasMany(area::class, 'id_city');
+    }
 }

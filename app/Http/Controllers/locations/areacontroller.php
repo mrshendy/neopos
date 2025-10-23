@@ -4,97 +4,132 @@ namespace App\Http\Controllers\locations;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\models\area; 
-use App\models\city;  
+use App\models\area;
+use App\models\city;
+use App\models\country;
+use App\models\governorate;
 
 class areacontroller extends Controller
 {
-    public function index(Request $req)
+    public function index()
     {
-        $q = area::with('city');
-
-        if ($s = trim((string)$req->get('search',''))) {
-            $q->where('name->ar','like',"%{$s}%")
-              ->orWhere('name->en','like',"%{$s}%");
-        }
-        if ($c = $req->get('city_id')) {
-            $q->where('city_id', (int)$c);
-        }
-        if ($st = $req->get('status','')) {
-            $q->where('status', $st);
-        }
-
-        $rows = $q->orderBy('city_id')->orderBy('id','desc')->paginate(15)->withQueryString();
-        $cities = city::orderBy('name->ar')->get();
-
-        return view('locations.area.index', compact('rows','cities'));
+        $areaes  = area::with(['country','governoratees','city'])->orderByDesc('id')->get();
+        $country = country::orderBy('name->ar')->get();
+        return view('settings.area', compact('areaes','country'));
     }
 
-    public function create()
+    public function store(Request $request)
     {
-        $cities = city::orderBy('name->ar')->get();
-        return view('locations.area.create', compact('cities'));
-    }
-
-    public function store(Request $req)
-    {
-        $data = $req->validate([
-            'city_id' => ['required','integer','exists:city,id'],
-            'name_ar' => ['required','string','min:2','max:150'],
-            'name_en' => ['required','string','min:2','max:150'],
-            'status'  => ['required','in:active,inactive'],
+        $data = $request->validate([
+            'name_ar'          => ['required','string','min:2','max:150'],
+            'name_en'          => ['required','string','min:2','max:150'],
+            'id_country'       => ['required','integer','exists:country,id'],
+            'id_governoratees' => ['required','integer','exists:governorate,id'],
+            'id_city'          => ['required','integer','exists:city,id'],
         ], [
-            'city_id.required' => 'المدينة مطلوبة.',
+            'name_ar.required'          => 'الاسم العربي مطلوب.',
+            'name_en.required'          => 'الاسم الإنجليزي مطلوب.',
+            'id_country.required'       => 'يجب اختيار الدولة.',
+            'id_governoratees.required' => 'يجب اختيار المحافظة.',
+            'id_city.required'          => 'يجب اختيار المدينة.',
         ]);
 
-        $row = area::create([
-            'city_id' => (int)$data['city_id'],
-            'status'  => $data['status'],
+        // تحقق اتساق السلاسل (مدينة ⟵ محافظة ⟵ دولة)
+        $gov = governorate::findOrFail((int)$data['id_governoratees']);
+        if ((int)$gov->id_country !== (int)$data['id_country']) {
+            return back()->with('error','المحافظة لا تنتمي إلى الدولة المختارة.')->withInput();
+        }
+        $cty = city::findOrFail((int)$data['id_city']);
+        if ((int)$cty->id_governoratees !== (int)$data['id_governoratees']) {
+            return back()->with('error','المدينة لا تنتمي إلى المحافظة المختارة.')->withInput();
+        }
+
+        try {
+            area::create([
+                'name'              => ['ar'=>$data['name_ar'],'en'=>$data['name_en']],
+                'id_country'        => (int)$data['id_country'],
+                'id_governoratees'  => (int)$data['id_governoratees'],
+                'id_city'           => (int)$data['id_city'],
+                'status'            => 'active',
+                'user_add'          => auth()->id() ?? 0,
+            ]);
+            return back()->with('success','تم إضافة المنطقة بنجاح.');
+        } catch (\Throwable $e) {
+            return back()->with('error','حدث خطأ أثناء الإضافة: '.$e->getMessage())->withInput();
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $id = (int)($request->id ?? $id);
+
+        $data = $request->validate([
+            'name_ar'          => ['required','string','min:2','max:150'],
+            'name_en'          => ['required','string','min:2','max:150'],
+            'id_country'       => ['required','integer','exists:country,id'],
+            'id_governoratees' => ['required','integer','exists:governorate,id'],
+            'id_city'          => ['required','integer','exists:city,id'],
         ]);
-        $row->setTranslations('name', ['ar'=>$data['name_ar'],'en'=>$data['name_en']]);
-        $row->save();
 
-        return redirect()->route('area.index')->with('success','تم إنشاء المنطقة بنجاح.');
+        $gov = governorate::findOrFail((int)$data['id_governoratees']);
+        if ((int)$gov->id_country !== (int)$data['id_country']) {
+            return back()->with('error','المحافظة لا تنتمي إلى الدولة المختارة.')->withInput();
+        }
+        $cty = city::findOrFail((int)$data['id_city']);
+        if ((int)$cty->id_governoratees !== (int)$data['id_governoratees']) {
+            return back()->with('error','المدينة لا تنتمي إلى المحافظة المختارة.')->withInput();
+        }
+
+        try {
+            $row = area::findOrFail($id);
+            $row->name             = ['ar'=>$data['name_ar'],'en'=>$data['name_en']];
+            $row->id_country       = (int)$data['id_country'];
+            $row->id_governoratees = (int)$data['id_governoratees'];
+            $row->id_city          = (int)$data['id_city'];
+            $row->user_update      = auth()->id() ?? 0;
+            $row->save();
+
+            return back()->with('success','تم تحديث المنطقة بنجاح.');
+        } catch (\Throwable $e) {
+            return back()->with('error','حدث خطأ أثناء التحديث: '.$e->getMessage())->withInput();
+        }
     }
 
-    public function edit($id)
+    public function destroy(Request $request, $id)
     {
-        $row = area::findOrFail($id);
-        $cities = city::orderBy('name->ar')->get();
-        return view('locations.area.edit', compact('row','cities'));
+        $id = (int)($request->id ?? $id);
+        try {
+            $row = area::findOrFail($id);
+            $row->delete();
+            return back()->with('success','تم حذف المنطقة بنجاح.');
+        } catch (\Throwable $e) {
+            return back()->with('error','تعذر حذف المنطقة: '.$e->getMessage());
+        }
     }
 
-    public function update(Request $req, $id)
+    // AJAX: محافظات دولة معينة
+    public function governoratesByCountry($countryId)
     {
-        $row = area::findOrFail($id);
+        $list = governorate::where('id_country', (int)$countryId)
+            ->orderBy('name->ar')
+            ->get(['id','name']);
 
-        $data = $req->validate([
-            'city_id' => ['required','integer','exists:city,id'],
-            'name_ar' => ['required','string','min:2','max:150'],
-            'name_en' => ['required','string','min:2','max:150'],
-            'status'  => ['required','in:active,inactive'],
-        ]);
-
-        $row->city_id = (int)$data['city_id'];
-        $row->status  = $data['status'];
-        $row->setTranslations('name', ['ar'=>$data['name_ar'],'en'=>$data['name_en']]);
-        $row->save();
-
-        return redirect()->route('area.index')->with('success','تم تحديث المنطقة بنجاح.');
+        $locale = app()->getLocale();
+        return response()->json(
+            $list->map(fn($g)=>['id'=>$g->id,'name'=>$g->getTranslation('name',$locale) ?: $g->getTranslation('name','en')])
+        );
     }
 
-    public function destroy($id)
+    // AJAX: مدن محافظة معينة
+    public function citiesByGovernorate($govId)
     {
-        $row = area::findOrFail($id);
-        $row->delete();
-        return redirect()->route('area.index')->with('success','تم حذف المنطقة (حذف ناعم).');
-    }
+        $list = city::where('id_governoratees', (int)$govId)
+            ->orderBy('name->ar')
+            ->get(['id','name']);
 
-    public function toggleStatus($id)
-    {
-        $row = area::findOrFail($id);
-        $row->status = $row->status === 'active' ? 'inactive' : 'active';
-        $row->save();
-        return back()->with('success','تم تغيير الحالة بنجاح.');
+        $locale = app()->getLocale();
+        return response()->json(
+            $list->map(fn($c)=>['id'=>$c->id,'name'=>$c->getTranslation('name',$locale) ?: $c->getTranslation('name','en')])
+        );
     }
 }

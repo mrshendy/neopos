@@ -4,96 +4,72 @@ namespace App\Http\Controllers\locations;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\models\countries; 
+use App\models\country;
 
 class countrycontroller extends Controller
 {
-    public function index(Request $req)
+    public function index()
     {
-        $q = countries::query();
-
-        if ($s = trim((string)$req->get('search', ''))) {
-            $q->where('name->ar', 'like', "%{$s}%")
-              ->orWhere('name->en', 'like', "%{$s}%")
-              ->orWhere('code', 'like', "%{$s}%");
-        }
-
-        if ($st = $req->get('status', '')) {
-            $q->where('status', $st);
-        }
-
-        $rows = $q->orderBy('status', 'desc')->orderBy('code')->paginate(15)->withQueryString();
-
-        return view('settings.countries', compact('rows'));
+        $country = country::orderByDesc('id')->get();
+        return view('settings.country', compact('country'));
     }
 
-    public function create()
+    public function store(Request $request)
     {
-        return view('settings.country.create');
-    }
-
-    public function store(Request $req)
-    {
-        $data = $req->validate([
+        $data = $request->validate([
             'name_ar' => ['required','string','min:2','max:150'],
             'name_en' => ['required','string','min:2','max:150'],
-            'code'    => ['nullable','string','max:10'],
-            'status'  => ['required','in:active,inactive'],
         ], [
-            'name_ar.required' => 'الاسم بالعربية مطلوب.',
-            'name_en.required' => 'الاسم بالإنجليزية مطلوب.',
-            'status.in'        => 'قيمة الحالة غير صحيحة.',
+            'name_ar.required' => 'الاسم العربي مطلوب.',
+            'name_en.required' => 'الاسم الإنجليزي مطلوب.',
         ]);
 
-        $row = countries::create([
-            'code'   => $data['code'] ?? null,
-            'status' => $data['status'],
-        ]);
-
-        // HasTranslations: columns [name]
-        $row->setTranslations('name', ['ar'=>$data['name_ar'], 'en'=>$data['name_en']]);
-        $row->save();
-
-        return redirect()->route('country.index')->with('success', 'تم إنشاء الدولة بنجاح.');
+        try {
+            country::create([
+                'name'      => ['ar'=>$data['name_ar'], 'en'=>$data['name_en']],
+                'status'    => 'active',
+                'user_add'  => auth()->id() ?? 0,
+            ]);
+            return back()->with('success','تم إنشاء الدولة بنجاح.');
+        } catch (\Throwable $e) {
+            return back()->with('error','حدث خطأ غير متوقع أثناء الحفظ: '.$e->getMessage())->withInput();
+        }
     }
 
-    public function edit($id)
+    public function update(Request $request, $id)
     {
-        $row = countries::findOrFail($id);
-        return view('locations.country.edit', compact('row'));
-    }
+        // يدعم hidden id لو موجود
+        $id = (int)($request->id ?? $id);
 
-    public function update(Request $req, $id)
-    {
-        $row = countries::findOrFail($id);
-
-        $data = $req->validate([
+        $data = $request->validate([
             'name_ar' => ['required','string','min:2','max:150'],
             'name_en' => ['required','string','min:2','max:150'],
-            'code'    => ['nullable','string','max:10'],
-            'status'  => ['required','in:active,inactive'],
+        ], [
+            'name_ar.required' => 'الاسم العربي مطلوب.',
+            'name_en.required' => 'الاسم الإنجليزي مطلوب.',
         ]);
 
-        $row->code   = $data['code'] ?? null;
-        $row->status = $data['status'];
-        $row->setTranslations('name', ['ar'=>$data['name_ar'], 'en'=>$data['name_en']]);
-        $row->save();
+        try {
+            $row = country::findOrFail($id);
+            $row->name = ['ar'=>$data['name_ar'], 'en'=>$data['name_en']];
+            $row->user_update = auth()->id() ?? 0;
+            $row->save();
 
-        return redirect()->route('country.index')->with('success', 'تم تحديث الدولة بنجاح.');
+            return back()->with('success','تم تحديث الدولة بنجاح.');
+        } catch (\Throwable $e) {
+            return back()->with('error','حدث خطأ غير متوقع أثناء التحديث: '.$e->getMessage())->withInput();
+        }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $row = countries::findOrFail($id);
-        $row->delete(); // SoftDeletes
-        return redirect()->route('country.index')->with('success', 'تم حذف الدولة (حذف ناعم).');
-    }
-
-    public function toggleStatus($id)
-    {
-        $row = countries::findOrFail($id);
-        $row->status = $row->status === 'active' ? 'inactive' : 'active';
-        $row->save();
-        return back()->with('success', 'تم تغيير الحالة بنجاح.');
+        $id = (int)($request->id ?? $id);
+        try {
+            $row = country::findOrFail($id);
+            $row->delete(); // Soft delete
+            return back()->with('success','تم حذف الدولة بنجاح.');
+        } catch (\Throwable $e) {
+            return back()->with('error','تعذر حذف الدولة: '.$e->getMessage());
+        }
     }
 }

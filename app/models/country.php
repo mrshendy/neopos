@@ -1,30 +1,39 @@
 <?php
 
 namespace App\models;
+
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
+
 class country extends Model
 {
+    use SoftDeletes, HasTranslations;
 
-    use HasTranslations;
-    protected $fillable = [
-        'name',
-        'notes',
-        'user_add',
-
-    ];
+    protected $table = 'country'; // ✅ مطابق لرسائل الخطأ
     public $translatable = ['name'];
-    protected $table = 'country';
-    public $timestamps = true;
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
 
+    protected $fillable = [
+        'name',        // JSON: ['ar'=>..., 'en'=>...]
+        'code',        // لو موجود
+        'status',      // لو موجود
+        'user_add',
+        'user_update',
+    ];
 
-// app/models/customer/country.php
-public function governorates()
-{
-    return $this->hasMany(\App\models\customer\governorate::class, 'country_id');
-}
+    protected static function booted()
+    {
+        static::creating(function ($m) {
+            if (is_null($m->user_add))   $m->user_add   = auth()->id() ?? 0;
+        });
+        static::updating(function ($m) {
+            $m->user_update = auth()->id() ?? 0;
+        });
+    }
 
+    // علاقات
+    public function governorates()
+    {
+        return $this->hasMany(governorate::class, 'id_country');
+    }
 }

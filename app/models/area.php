@@ -8,45 +8,44 @@ use Spatie\Translatable\HasTranslations;
 
 class area extends Model
 {
-    use HasTranslations;
-
-    protected $fillable = [
-        'name',
-        'id_country',
-        'id_governorate',
-        'id_city',
-        'notes',
-        'user_add',
-
-    ];
-
-    public $translatable = ['name'];
+    use SoftDeletes, HasTranslations;
 
     protected $table = 'area';
+    public $translatable = ['name'];
 
-    public $timestamps = true;
+    protected $fillable = [
+        'name',               // JSON
+        'id_country',
+        'id_governoratees',
+        'id_city',
+        'status',
+        'user_add',
+        'user_update',
+    ];
 
-    use SoftDeletes;
-
-    protected $dates = ['deleted_at'];
-
-    public function governoratees()
+    protected static function booted()
     {
-        return $this->belongsTo(governorate::class, 'id_governorate');
+        static::creating(function ($m) {
+            if (is_null($m->user_add)) $m->user_add = auth()->id() ?? 0;
+        });
+        static::updating(function ($m) {
+            $m->user_update = auth()->id() ?? 0;
+        });
     }
 
+    // علاقات
     public function country()
     {
         return $this->belongsTo(country::class, 'id_country');
     }
 
+    public function governoratees()
+    {
+        return $this->belongsTo(governorate::class, 'id_governoratees');
+    }
+
     public function city()
     {
         return $this->belongsTo(city::class, 'id_city');
-    }
-
-    public function customers()
-    {
-        return $this->hasMany(\App\models\customer\customer::class, 'area_id');
     }
 }

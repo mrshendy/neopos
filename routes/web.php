@@ -247,22 +247,40 @@ Route::group(
         });
 
         Route::get('/currencies', [currenciescontroller::class, 'index'])->name('currencies.index');
+   // country (index + store + update + destroy فقط)
+    Route::resource('country', countrycontroller::class)
+        ->only(['index','store','update','destroy'])
+        ->names('country');
+    Route::whereNumber('country', '[0-9]+');
 
-        // Countries
-        Route::resource('country', countrycontroller::class)->names('country');
-        Route::post('country/{id}/toggle-status', [countrycontroller::class, 'toggleStatus'])->name('country.toggle');
+    // Governorates
+    Route::resource('governorate', governoratecontroller::class)
+        ->only(['index','store','update','destroy'])
+        ->names('governorate');
+    Route::whereNumber('governorate', '[0-9]+');
 
-        // Governorates
-        Route::resource('governorate', governoratecontroller::class)->names('governorate');
-        Route::post('governorate/{id}/toggle-status', [governoratecontroller::class, 'toggleStatus'])->name('governorate.toggle');
+    // Cities
+    Route::resource('city', citycontroller::class)
+        ->only(['index','store','update','destroy'])
+        ->names('city');
+    Route::whereNumber('city', '[0-9]+');
 
-        // Cities
-        Route::resource('city', citycontroller::class)->names('city');
-        Route::post('city/{id}/toggle-status', [citycontroller::class, 'toggleStatus'])->name('city.toggle');
+    // Areas
+    Route::resource('area', areacontroller::class)
+        ->only(['index','store','update','destroy'])
+        ->names('area');
+    Route::whereNumber('area', '[0-9]+');
 
-        // Areas
-        Route::resource('area', areacontroller::class)->names('area');
-        Route::post('area/{id}/toggle-status', [areacontroller::class, 'toggleStatus'])->name('area.toggle');
+    // ===== AJAX (قوائم متدرّجة) =====
+    // من الدولة ← المحافظات
+    Route::get('ajax/governorates/{country}', [areacontroller::class, 'governoratesByCountry'])
+        ->whereNumber('country')
+        ->name('ajax.governorates.by-country');
+
+    // من المحافظة ← المدن
+    Route::get('ajax/cities/{governorate}', [areacontroller::class, 'citiesByGovernorate'])
+        ->whereNumber('governorate')
+        ->name('ajax.cities.by-governorate');
 
         Route::get('/{page}', 'AdminController@index');
 

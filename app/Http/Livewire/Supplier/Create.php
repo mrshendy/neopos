@@ -39,8 +39,8 @@ class Create extends Component
         'supplier_category_id' => 'nullable|exists:supplier_categories,id',
         'payment_term_id' => 'nullable|exists:payment_terms,id',
 
-        // ⚠️ جدولك كما ذكرت بأسماء: Countries / governorate / city / Area
-        'country_id' => 'nullable|exists:Countries,id',
+        // ⚠️ جدولك كما ذكرت بأسماء: country / governorate / city / Area
+        'country_id' => 'nullable|exists:country,id',
         'governorate_id' => 'nullable|exists:governorate,id',
         'city_id' => 'nullable|exists:city,id',
         'area_id' => 'nullable|exists:Area,id',
@@ -98,7 +98,7 @@ class Create extends Component
 
     public function render()
     {
-        // ⚠️ اسم المتغير للمشهد = country (مش countries)
+        // ⚠️ اسم المتغير للمشهد = country (مش country)
         $country      = country::orderBy('id', 'asc')->get();
         $governorates = governorate::orderBy('id', 'asc')->get();
         $cities       = $this->governorate_id
