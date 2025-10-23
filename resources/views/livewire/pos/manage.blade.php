@@ -19,10 +19,6 @@
         </div>
     @endif
 
-    {{-- Icons / Font --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.rtl.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --bg: #f7fafc;
@@ -42,7 +38,6 @@
 
         * {
             box-sizing: border-box;
-            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif
         }
 
         body {
@@ -494,7 +489,9 @@
                     @foreach ($customers as $c)
                         @php
                             $raw = $c->name;
-                            $name = is_array($raw) ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? '')) : (string) $raw;
+                            $name = is_array($raw)
+                                ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                : (string) $raw;
                         @endphp
                         <option value="{{ $name }}"></option>
                     @endforeach
@@ -507,7 +504,9 @@
                     @foreach ($warehouses as $w)
                         @php
                             $raw = $w->name;
-                            $name = is_array($raw) ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? '')) : (string) $raw;
+                            $name = is_array($raw)
+                                ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                : (string) $raw;
                         @endphp
                         <option value="{{ $name }}"></option>
                     @endforeach
@@ -520,7 +519,9 @@
                     @foreach ($categories as $cat)
                         @php
                             $raw = $cat->name;
-                            $name = is_array($raw) ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? '')) : (string) $raw;
+                            $name = is_array($raw)
+                                ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                : (string) $raw;
                         @endphp
                         <option value="{{ $name }}"></option>
                     @endforeach
@@ -541,7 +542,9 @@
                     @foreach ($categories as $cat)
                         @php
                             $raw = $cat->name;
-                            $name = is_array($raw) ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? '')) : (string) $raw;
+                            $name = is_array($raw)
+                                ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                : (string) $raw;
                         @endphp
                         <div class="chip {{ (int) $activeCategoryId === (int) $cat->id ? 'active' : '' }}"
                             wire:click="selectCategory({{ $cat->id }})">{{ $name }}</div>
@@ -579,7 +582,11 @@
                                     : (float) ($p->min_price ?? 0);
 
                             // صورة المنتج: accessor thumb_url أو من image_path مباشرة
-                            $img = $p->thumb_url ?? ($p->image_path ? asset($p->image_path) : null);
+                            $img =
+                                $p->thumb_url ??
+                                ($p->image_path
+                                    ? asset('attachments/' . ltrim($p->image_path, '/'))
+                                    : asset('assets/images/file.png'));
                         @endphp
                         @if ($passCat && $match)
                             <div class="product-card" wire:click="addProductToCart({{ $p->id }})"
@@ -617,7 +624,9 @@
                             @foreach ($warehouses as $w)
                                 @php
                                     $raw = $w->name;
-                                    $name = is_array($raw) ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? '')) : (string) $raw;
+                                    $name = is_array($raw)
+                                        ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                        : (string) $raw;
                                 @endphp
                                 <option value="{{ $w->id }}">{{ $name }}</option>
                             @endforeach
@@ -632,7 +641,9 @@
                             @foreach ($customers as $c)
                                 @php
                                     $raw = $c->name;
-                                    $name = is_array($raw) ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? '')) : (string) $raw;
+                                    $name = is_array($raw)
+                                        ? $raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?? ''))
+                                        : (string) $raw;
                                 @endphp
                                 <option value="{{ $c->id }}">{{ $name }}</option>
                             @endforeach
@@ -802,7 +813,8 @@
                                         <td class="text-center">{{ $r['preview']['uom'] ?? ($r['uom_text'] ?? '—') }}
                                         </td>
                                         <td class="text-center">{{ (float) ($r['qty'] ?? 0) }}</td>
-                                        <td class="text-center">{{ number_format((float) ($r['unit_price'] ?? 0), 2) }}
+                                        <td class="text-center">
+                                            {{ number_format((float) ($r['unit_price'] ?? 0), 2) }}
                                         </td>
                                         <td class="text-end">
                                             {{ number_format((float) ($r['qty'] ?? 0) * (float) ($r['unit_price'] ?? 0), 2) }}
