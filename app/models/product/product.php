@@ -34,9 +34,9 @@ class product extends Model
         'units_matrix' => 'array',   // هيكل: minor/middle/major => unit_id/cost/price/factor
         'expiry_enabled' => 'boolean',
         'expiry_value' => 'integer',
-        'expiry_weekdays' => 'array',  
+        'expiry_weekdays' => 'array',
         'category_id' => 'integer',
-        'supplier_id'    => 'integer', // فعّل لو عندك العمود
+        'supplier_id' => 'integer', // فعّل لو عندك العمود
     ];
 
     /* ========= العلاقات الأساسية ========= */
@@ -50,9 +50,47 @@ class product extends Model
      * الوحدة الافتراضية للمنتج (لو عندك عمود unit_id على الجدول).
      * إن ما كنت تستخدمه، سيظل الكود آمن.
      */
-    public function unit(): BelongsTo
+    public function unit()
     {
-        return $this->belongsTo(unit::class, 'unit_id');
+        return $this->belongsTo(\App\models\unit\unit::class, 'unit_id');
+    }
+
+    // ✅ رابط صورة مصغّرة من image_path
+    public function getThumbUrlAttribute(): ?string
+    {
+        if (! $this->image_path) {
+            return null;
+        }
+
+        // لو مخزنة على public disk
+        if (Storage::disk('public')->exists($this->image_path)) {
+            return Storage::disk('public')->url($this->image_path);
+        }
+
+        // أو مسار جاهز تحت public/
+        return asset($this->image_path);
+    }
+
+    /**
+     * ✅ فكّ مصفوفة الوحدات والأسعار من حقل units_matrix (JSON):
+     * مثال متوقّع:
+     * {
+     *   "minor":  {"label":"قطعة","price":5,"factor":1},
+     *   "middle": {"label":"علبة","price":45,"factor":10},
+     *   "major":  {"label":"كرتونة","price":500,"factor":100}
+     * }
+     */
+    public function getUnitsMapAttribute(): array
+    {
+        $arr = [];
+        if ($this->units_matrix) {
+            $json = json_decode($this->units_matrix, true);
+            if (is_array($json)) {
+                $arr = $json;
+            }
+        }
+
+        return $arr;
     }
 
     public function transactions()
