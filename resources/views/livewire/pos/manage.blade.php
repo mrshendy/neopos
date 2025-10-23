@@ -594,7 +594,7 @@
                                 <div class="product-thumb">
                                     @if ($img)
                                         <img src="{{ $img }}" alt="{{ $pname }}"
-                                            style="width:100%;height:100%;object-fit:cover;border-radius:10px"
+                                            style="width:100%;height:100%;object-fit:inherit;border-radius:10px"
                                             onerror="this.style.display='none'">
                                     @else
                                         <i class="fa-solid fa-box-open"></i>
@@ -668,7 +668,7 @@
                                 @php $rimg = $r['preview']['image'] ?? null; @endphp
                                 @if ($rimg)
                                     <img src="{{ $rimg }}" alt=""
-                                        style="width:100%;height:100%;object-fit:cover;border-radius:10px"
+                                        style="width:100%;height:100%;object-fit:inherit;border-radius:10px"
                                         onerror="this.style.display='none'">
                                 @else
                                     <i class="fa-solid fa-box"></i>
