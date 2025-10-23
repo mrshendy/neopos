@@ -352,69 +352,107 @@ class Manage extends Component
 
     /* -------------- الحفظ -------------- */
 
-    public function save()
-    {
-        $this->validate();
+  public function save()
+{
+    $this->validate();
 
-        if (empty($this->rows)) {
-            $this->addError('rows', __('السلة فارغة'));
-            return;
+    if (empty($this->rows)) {
+        $this->addError('rows', __('السلة فارغة'));
+        return;
+    }
+
+    DB::transaction(function () {
+        // هل تعديل أم إنشاء جديد؟
+        $isUpdate = !empty($this->pos_id);
+
+        // في حالة التعديل: نجيب السجل ونقفله أثناء التحديث
+        $pos = null;
+        if ($isUpdate) {
+            $pos = Pos::lockForUpdate()->find($this->pos_id);
         }
 
-        DB::transaction(function () {
-            $pos = Pos::updateOrCreate(
-                ['id' => $this->pos_id],
-                [
-                    'pos_no'       => null,
-                    'pos_date'     => $this->pos_date,
-                    'status'       => 'draft',
-                    'warehouse_id' => $this->warehouse_id,
-                    'customer_id'  => $this->customer_id,
-                    'user_id'      => auth()->id(),
-                    'subtotal'     => $this->subtotal,
-                    'discount'     => $this->discount,
-                    'tax'          => $this->tax,
-                    'grand_total'  => $this->grand,
-                    'notes'        => $this->notes_ar,
-                ]
-            );
+        if ($pos) {
+            // تحديث موجود
+            $pos->update([
+                'pos_date'     => $this->pos_date,
+                'status'       => $pos->status ?? 'draft', // نحافظ على الحالة إن رغبت
+                'warehouse_id' => $this->warehouse_id,
+                'customer_id'  => $this->customer_id,
+                'user_id'      => auth()->id(),
+                'subtotal'     => $this->subtotal,
+                'discount'     => $this->discount,
+                'tax'          => $this->tax,
+                'grand_total'  => $this->grand,
+                'notes'        => $this->notes_ar,
+            ]);
+        } else {
+            // إنشاء جديد ⇒ لازم نولّد pos_no قبل create لأنه NOT NULL
+            $posNo = $this->generatePosNo();
 
-            $this->pos_id = (int)$pos->id;
+            $pos = Pos::create([
+                'pos_no'       => $posNo,
+                'pos_date'     => $this->pos_date,
+                'status'       => 'draft',
+                'warehouse_id' => $this->warehouse_id,
+                'customer_id'  => $this->customer_id,
+                'user_id'      => auth()->id(),
+                'subtotal'     => $this->subtotal,
+                'discount'     => $this->discount,
+                'tax'          => $this->tax,
+                'grand_total'  => $this->grand,
+                'notes'        => $this->notes_ar,
+            ]);
+        }
 
-            if (empty($pos->pos_no)) {
-                $pos->pos_no = sprintf('POS-%s-%05d', date('Ymd'), $pos->id);
-                $pos->save();
-            }
+        // خزّن الـ id للاستخدام لاحقًا في الواجهة
+        $this->pos_id = (int)$pos->id;
 
-            PosLine::where('pos_id', $pos->id)->delete();
+        // حدّث السطور: امسح ثم أعد الإدراج
+        PosLine::where('pos_id', $pos->id)->delete();
 
-            foreach ($this->rows as $r) {
-                $product = $this->products->firstWhere('id', $r['product_id']) ?? Product::find($r['product_id']);
+        foreach ($this->rows as $r) {
+            $product = $this->products->firstWhere('id', $r['product_id']) ?? Product::find($r['product_id']);
 
-                $qty   = (float)($r['qty'] ?? 0);
-                $price = (float)($r['unit_price'] ?? 0);
-                $total = $qty * $price;
+            $qty   = (float)($r['qty'] ?? 0);
+            $price = (float)($r['unit_price'] ?? 0);
+            $total = $qty * $price;
 
-                $uomText = $r['preview']['uom'] ?? ($r['uom_text'] ?? null);
-                $code    = $product?->sku ?: ($product?->barcode ?: null);
+            $uomText = $r['preview']['uom'] ?? ($r['uom_text'] ?? null);
+            $code    = $product?->sku ?: ($product?->barcode ?: null);
 
-                PosLine::create([
-                    'pos_id'       => $pos->id,
-                    'product_id'   => (int)$r['product_id'],
-                    'unit_id'      => null,
-                    'code'         => $code,
-                    'uom_text'     => $uomText,
-                    'qty'          => $qty,
-                    'unit_price'   => $price,
-                    'line_total'   => $total,
-                    'expiry_date'  => null,
-                    'batch_no'     => null,
-                    'notes'        => null,
-                    'warehouse_id' => $this->warehouse_id,
-                ]);
-            }
-        });
+            PosLine::create([
+                'pos_id'       => $pos->id,
+                'product_id'   => (int)$r['product_id'],
+                'unit_id'      => null,
+                'code'         => $code,
+                'uom_text'     => $uomText,
+                'qty'          => $qty,
+                'unit_price'   => $price,
+                'line_total'   => $total,
+                'expiry_date'  => null,
+                'batch_no'     => null,
+                'notes'        => null,
+                'warehouse_id' => $this->warehouse_id,
+            ]);
+        }
+    });
 
-        session()->flash('success', __('تم حفظ/تحديث الفاتورة بنجاح'));
-    }
+    session()->flash('success', $this->pos_id ? __('تم حفظ/تحديث الفاتورة بنجاح') : __('تم حفظ/تحديث الفاتورة بنجاح'));
+}
+
+/**
+ * توليد رقم فاتورة فريد.
+ * - صيغة: POS-YYYYMMDD-##### (محاولة تقديرية سريعة)
+ * - لو حابب أمان أكثر: يمكنك استخدام جدول تسلسل أو عمود AUTO_INCREMENT مخصّص.
+ */
+private function generatePosNo(): string
+{
+    $date = date('Ymd');
+
+    // نحاول استخدام أعلى id + 1 فقط لتوليد 5 أرقام (ليست مضمونة 100% ضد السباقات لكن جيدة لمعظم الحالات)
+    $nextId = (int) (Pos::max('id') + 1);
+    $seq    = str_pad((string)($nextId % 100000), 5, '0', STR_PAD_LEFT);
+
+    return "POS-{$date}-{$seq}";
+}
 }

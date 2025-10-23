@@ -10,7 +10,7 @@
             --radius:12px; --radius-sm:8px; --shadow:0 1px 3px rgba(0,0,0,.08); --shadow-md:0 6px 16px rgba(0,0,0,.08);
             --sky:#0ea5e9; --sky-600:#0284c7; --sky-300:#7dd3fc; --accent:#8b5cf6;
         }
-        *{box-sizing:border-box; font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+        *{box-sizing:border-box; }
         body{background:var(--bg); color:var(--text)}
         .hero{position:relative; border-radius:16px; overflow:hidden; margin:10px 0 14px; border:1px solid var(--border);
               background: radial-gradient(800px 400px at 100% -20%, rgba(255,255,255,.35) 0%, transparent 70%),
