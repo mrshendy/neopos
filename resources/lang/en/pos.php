@@ -2414,40 +2414,40 @@ return [
     'rec_help_status' => 'Receipt status.',
 
     'handover_title_manage' => 'Cashbox Handover / Receipt',
-    'editing'   => 'Editing',
-    'creating'  => 'Creating',
+    'editing' => 'Editing',
+    'creating' => 'Creating',
 
     'from_cashbox' => 'From Cashbox',
-    'to_cashbox'   => 'To Cashbox',
-    'choose'       => 'Select...',
+    'to_cashbox' => 'To Cashbox',
+    'choose' => 'Select...',
     'help_from_cashbox' => 'Select the source cashbox.',
-    'help_to_cashbox'   => 'Select the target cashbox.',
+    'help_to_cashbox' => 'Select the target cashbox.',
 
     'swap' => 'Swap',
 
-    'handover_date'      => 'Handover Date',
+    'handover_date' => 'Handover Date',
     'help_handover_date' => 'Date only (defaults to today).',
 
     // balance
-    'cashbox_balance'       => 'Current Cashbox Balance (From)',
+    'cashbox_balance' => 'Current Cashbox Balance (From)',
     'handover_help_balance' => 'Calculated from non-canceled receipts and in/out handovers.',
 
-    'amount_counted'       => 'Counted Amount',
-    'handover_help_counted'=> 'Actual amount handed over.',
+    'amount_counted' => 'Counted Amount',
+    'handover_help_counted' => 'Actual amount handed over.',
 
     'difference' => 'Difference',
 
-    'status'    => 'Status',
-    'draft'     => 'Draft',
+    'status' => 'Status',
+    'draft' => 'Draft',
     'submitted' => 'Submitted',
-    'received'  => 'Received',
-    'rejected'  => 'Rejected',
+    'received' => 'Received',
+    'rejected' => 'Rejected',
     'handover_help_status' => 'Choose the current status.',
 
     'delivered_by' => 'Delivered By',
     'handover_help_delivered_by' => 'User who delivered.',
-    'received_by'  => 'Received By',
-    'handover_help_received_by'  => 'User who received.',
+    'received_by' => 'Received By',
+    'handover_help_received_by' => 'User who received.',
 
     'doc_no' => 'Document No.',
     'handover_help_docno' => 'Optional; can be generated later.',
@@ -2462,119 +2462,186 @@ return [
 
     'msg_saved' => 'Saved successfully.',
 
-
-     // Alerts / Errors
+    // Alerts / Errors
     'input_errors' => 'There are input errors',
 
     // Header
-    'sales_management'      => 'Sales Management',
+    'sales_management' => 'Sales Management',
     'modern_fast_interface' => 'Modern fast UI with smart search & instant invoice',
-    'today'                 => 'Today',
-    'sales_list'            => 'Sales List',
-    'preview_order'         => 'Preview Order',
-    'print'                 => 'Print',
+    'today' => 'Today',
+    'sales_list' => 'Sales List',
+    'preview_order' => 'Preview Order',
+    'print' => 'Print',
 
     // Toolbar / Search
-    'barcode_search_ph'     => 'Search by barcode (Enter to add to cart)',
-    'hint_barcode_enter'    => 'Type barcode then press Enter to add directly to cart',
-    'product_search_ph'     => 'Search product name / SKU',
-    'search_customer_ph'    => 'Search by customer',
-    'search_warehouse_ph'   => 'Search by warehouse',
-    'search_category_ph'    => 'Search by category',
-    'all'                   => 'All',
-    'add_to_cart'           => 'Add to cart',
-    'available'             => 'Available',
-    'no_products'           => 'No products found',
+    'barcode_search_ph' => 'Search by barcode (Enter to add to cart)',
+    'hint_barcode_enter' => 'Type barcode then press Enter to add directly to cart',
+    'product_search_ph' => 'Search product name / SKU',
+    'search_customer_ph' => 'Search by customer',
+    'search_warehouse_ph' => 'Search by warehouse',
+    'search_category_ph' => 'Search by category',
+    'all' => 'All',
+    'add_to_cart' => 'Add to cart',
+    'available' => 'Available',
+    'no_products' => 'No products found',
 
     // Cart side
-    'warehouse'             => 'Warehouse',
-    'customer_optional'     => 'Customer (optional)',
-    'note'                  => 'Note',
-    'cart_empty'            => 'Cart is empty — pick a product',
+    'warehouse' => 'Warehouse',
+    'customer_optional' => 'Customer (optional)',
+    'note' => 'Note',
+    'cart_empty' => 'Cart is empty — pick a product',
 
     // Table / Totals
-    'subtotal'              => 'Subtotal',
-    'discount'              => 'Discount',
-    'tax'                   => 'Tax',
-    'grand_total'           => 'Grand Total',
-    'save_finish'           => 'Save / Finish',
-    'update_btn'            => 'Update',
-    'clear_cart'            => 'Clear Cart',
-    'delete'                => 'Delete',
+    'subtotal' => 'Subtotal',
+    'discount' => 'Discount',
+    'tax' => 'Tax',
+    'grand_total' => 'Grand Total',
+    'save_finish' => 'Save / Finish',
+    'update_btn' => 'Update',
+    'clear_cart' => 'Clear Cart',
+    'delete' => 'Delete',
 
     // Modal / Invoice
-    'order_preview'         => 'Order Preview',
-    'invoice_sale'          => 'Sales Invoice',
-    'date'                  => 'Date',
-    'customer'              => 'Customer',
-    'product'               => 'Product',
-    'unit'                  => 'Unit',
-    'qty'                   => 'Qty',
-    'unit_price'            => 'Unit Price',
-    'total'                 => 'Total',
-    'close'                 => 'Close',
-    'unsaved'               => '(Unsaved)',
+    'order_preview' => 'Order Preview',
+    'invoice_sale' => 'Sales Invoice',
+    'date' => 'Date',
+    'customer' => 'Customer',
+    'product' => 'Product',
+    'unit' => 'Unit',
+    'qty' => 'Qty',
+    'unit_price' => 'Unit Price',
+    'total' => 'Total',
+    'close' => 'Close',
+    'unsaved' => '(Unsaved)',
 
-     // ==== Page titles ====
-    'title_pos_index'   => 'Sales Invoices',
-    'title_pos_show'    => 'View Sales Invoice',
+    // ==== Page titles ====
+    'title_pos_index' => 'Sales Invoices',
+    'title_pos_show' => 'View Sales Invoice',
 
     // ==== Buttons ====
-    'btn_new_sale'      => 'New Invoice',
-    'btn_show'          => 'Show',
-    'btn_edit'          => 'Edit',
-    'btn_delete'        => 'Delete',
-    'back_to_list'      => 'Back to list',
-    'clear_filters'     => 'Clear Filters',
-    'print'             => 'Print',
+    'btn_new_sale' => 'New Invoice',
+    'btn_show' => 'Show',
+    'btn_edit' => 'Edit',
+    'btn_delete' => 'Delete',
+    'back_to_list' => 'Back to list',
+    'clear_filters' => 'Clear Filters',
+    'print' => 'Print',
 
     // ==== Filters & search ====
-    'search'            => 'Search',
-    'ph_search_sale'    => 'Search by invoice no./status/notes',
-    'hint_search_sale'  => 'Type part of invoice number, status, or notes',
-    'date_from'         => 'Date From',
-    'date_to'           => 'Date To',
-    'status'            => 'Status',
-    'per_page'          => 'Per Page',
-    'hint_click_to_sort'=> 'Click a column header to sort asc/desc',
-    'all'               => 'All',
+    'search' => 'Search',
+    'ph_search_sale' => 'Search by invoice no./status/notes',
+    'hint_search_sale' => 'Type part of invoice number, status, or notes',
+    'date_from' => 'Date From',
+    'date_to' => 'Date To',
+    'status' => 'Status',
+    'per_page' => 'Per Page',
+    'hint_click_to_sort' => 'Click a column header to sort asc/desc',
+    'all' => 'All',
 
     // ==== Table columns ====
-    'sale_no'           => 'Invoice No.',     // rendered from pos_no
-    'sale_date'         => 'Invoice Date',    // rendered from pos_date
-    'delivery_date'     => 'Delivery Date',
-    'customer'          => 'Customer',
-    'warehouse'         => 'Warehouse',
-    'subtotal'          => 'Subtotal',
-    'grand_total'       => 'Grand Total',
-    'actions'           => 'Actions',
+    'sale_no' => 'Invoice No.',     // rendered from pos_no
+    'sale_date' => 'Invoice Date',    // rendered from pos_date
+    'delivery_date' => 'Delivery Date',
+    'customer' => 'Customer',
+    'warehouse' => 'Warehouse',
+    'subtotal' => 'Subtotal',
+    'grand_total' => 'Grand Total',
+    'actions' => 'Actions',
 
     // ==== Statuses ====
-    'status_draft'      => 'Draft',
-    'status_approved'   => 'Approved',
-    'status_posted'     => 'Posted',
-    'status_cancelled'  => 'Cancelled',
+    'status_draft' => 'Draft',
+    'status_approved' => 'Approved',
+    'status_posted' => 'Posted',
+    'status_cancelled' => 'Cancelled',
 
     // ==== Show ====
-    'invoice_info'      => 'Invoice Info',
-    'parties_info'      => 'Parties Info',
-    'created_by'        => 'Created By',
-    'product'           => 'Product',
-    'unit'              => 'Unit',
-    'qty'               => 'Qty',
-    'unit_price'        => 'Unit Price',
-    'total'             => 'Total',
-    'no_items'          => 'No items',
-    'print_hint'        => 'You can print the invoice using the button above.',
+    'invoice_info' => 'Invoice Info',
+    'parties_info' => 'Parties Info',
+    'created_by' => 'Created By',
+    'product' => 'Product',
+    'unit' => 'Unit',
+    'qty' => 'Qty',
+    'unit_price' => 'Unit Price',
+    'total' => 'Total',
+    'no_items' => 'No items',
+    'print_hint' => 'You can print the invoice using the button above.',
 
     // ==== Messages ====
-    'deleted_ok'        => 'Invoice deleted successfully',
-    'confirm_delete'    => 'Are you sure you want to delete this invoice?',
-    'no_data'           => 'No data available',
+    'deleted_ok' => 'Invoice deleted successfully',
+    'confirm_delete' => 'Are you sure you want to delete this invoice?',
+    'no_data' => 'No data available',
 
     // ==== Pagination info ====
-    'pagination_info'   => 'Showing :from–:to of :total',
-    
-    
+    'pagination_info' => 'Showing :from–:to of :total',
+
+    // ===== Toolbar / Filters =====
+    'search' => 'Search',
+    'ph_search_code_or_name' => 'Search by code or name…',
+    'hint_search_currencies' => 'Type part of the code or name to filter.',
+    'status' => 'Status',
+    'all' => 'All',
+    'active' => 'Active',
+    'inactive' => 'Inactive',
+    'per_page' => 'Per page',
+    'reload' => 'Reload',
+
+    // ===== Form Titles =====
+    'edit_currency' => 'Edit Currency',
+    'add_currency' => 'Add Currency',
+    'editing_id' => 'Editing ID',
+
+    // ===== Fields =====
+    'code' => 'Code',
+    'h_code' => 'Enter ISO-4217 currency code, e.g., EGP / USD.',
+    'name_ar' => 'Name (Arabic)',
+    'ph_ar' => 'e.g., الجنيه المصري',
+    'h_name_ar' => 'Arabic display name.',
+    'name_en' => 'Name (English)',
+    'ph_en' => 'e.g., Egyptian Pound',
+    'h_name_en' => 'English display name.',
+    'symbol' => 'Symbol',
+    'h_symbol' => 'Short symbol like: E£ / $ / SAR.',
+    'minor_unit' => 'Decimal Places',
+    'h_minor_unit' => 'Number of digits after decimal (0–6).',
+    'exchange_rate' => 'Exchange Rate',
+    'h_exchange_rate' => 'Rate relative to the system default currency.',
+    'h_status' => 'Whether the currency is active for use.',
+    'is_default' => 'Default Currency',
+    'h_is_default' => 'Default currency is used as base for conversions.',
+    'notes' => 'Notes',
+    'notes_ar' => 'Notes (Arabic)',
+    'notes_en' => 'Notes (English)',
+    'h_notes' => 'Administrative notes about the currency.',
+
+    // ===== Buttons / Actions =====
+    'save' => 'Save',
+    'reset' => 'Reset',
+    'actions' => 'Actions',
+    'change_status' => 'Toggle Status',
+    'delete' => 'Delete',
+    'edit' => 'Edit',
+
+    // ===== Table / Listing =====
+    'currencies_list' => 'Currencies List',
+    'name' => 'Name',
+    'default' => 'Default',
+    'no_data' => 'No data available.',
+    'showing' => 'Showing',
+    'of' => 'of',
+    'yes' => 'Yes',
+    'no' => 'No',
+
+    // ===== Alerts / Validation =====
+    'input_errors' => 'There are validation errors. Please review.',
+    'hint_filter_status' => 'Filter by status.',
+
+    // ===== SweetAlert2 (delete confirm) =====
+    'swal_title' => 'Warning',
+    'swal_text' => '⚠️ Are you sure you want to delete this? This cannot be undone!',
+    'swal_confirm' => 'Yes, delete',
+    'swal_cancel' => 'Cancel',
+    'swal_deleted_title' => 'Deleted!',
+    'swal_deleted_text' => '✅ Deleted successfully.',
+    'currencies_manage' => 'Manage Currencies',
 
 ];

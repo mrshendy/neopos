@@ -17,6 +17,10 @@ use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\Inventory\stockbalancecontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
+use App\Http\Controllers\locations\areacontroller;
+use App\Http\Controllers\locations\citycontroller;
+use App\Http\Controllers\locations\countrycontroller;
+use App\Http\Controllers\locations\governoratecontroller;
 use App\Http\Controllers\offers\couponscontroller;
 use App\Http\Controllers\offers\offerscontroller;
 use App\Http\Controllers\poscontroller;
@@ -243,6 +247,22 @@ Route::group(
         });
 
         Route::get('/currencies', [currenciescontroller::class, 'index'])->name('currencies.index');
+
+        // Countries
+        Route::resource('country', countrycontroller::class)->names('country');
+        Route::post('country/{id}/toggle-status', [countrycontroller::class, 'toggleStatus'])->name('country.toggle');
+
+        // Governorates
+        Route::resource('governorate', governoratecontroller::class)->names('governorate');
+        Route::post('governorate/{id}/toggle-status', [governoratecontroller::class, 'toggleStatus'])->name('governorate.toggle');
+
+        // Cities
+        Route::resource('city', citycontroller::class)->names('city');
+        Route::post('city/{id}/toggle-status', [citycontroller::class, 'toggleStatus'])->name('city.toggle');
+
+        // Areas
+        Route::resource('area', areacontroller::class)->names('area');
+        Route::post('area/{id}/toggle-status', [areacontroller::class, 'toggleStatus'])->name('area.toggle');
 
         Route::get('/{page}', 'AdminController@index');
 

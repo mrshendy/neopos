@@ -8,9 +8,14 @@ use App\models\unit\unit;
 class edit extends Component
 {
     public $unit_id;
-    public $name = ['ar' => '', 'en' => ''];
+
+    /** @var array{name:string, en:string} */
+    public $name        = ['ar' => '', 'en' => ''];
+
+    /** @var array{name:string, en:string} */
     public $description = ['ar' => '', 'en' => ''];
-    public $level = 'minor';
+
+    public $level  = 'minor';
     public $status = 'active';
 
     protected $rules = [
@@ -29,29 +34,40 @@ class edit extends Component
         'status.required'  => 'يجب اختيار حالة الوحدة.',
     ];
 
+    /** يضمن وجود مفاتيح ar/en */
+    private function withLocaleDefaults(?array $arr): array
+    {
+        return array_merge(['ar' => '', 'en' => ''], (array) $arr);
+    }
+
     public function mount($id)
     {
-        $this->unit_id = $id;
-        $u = unit::findOrFail($id);
+        $this->unit_id = (int) $id;
+        $u = unit::findOrFail($this->unit_id);
 
-        $this->name = $u->getTranslations('name');
-        $this->description = $u->getTranslations('description') ?? ['ar' => '', 'en' => ''];
-        $this->level = $u->level;
-        $this->status = $u->status;
+        // مهم: دمج الافتراضيات قبل الإسناد
+        $this->name        = $this->withLocaleDefaults($u->getTranslations('name'));
+        $this->description = $this->withLocaleDefaults($u->getTranslations('description'));
+        $this->level       = $u->level;
+        $this->status      = $u->status;
     }
 
     public function save()
     {
+        // كمان هنا لو المستخدم مسح حقلًا نضمن المفاتيح موجودة
+        $this->name        = $this->withLocaleDefaults($this->name);
+        $this->description = $this->withLocaleDefaults($this->description);
+
         $this->validate();
 
         $u = unit::findOrFail($this->unit_id);
-        $u->setTranslations('name', $this->name);
-        $u->setTranslations('description', $this->description);
+        $u->setTranslations('name',        ['ar' => (string)$this->name['ar'], 'en' => (string)$this->name['en']]);
+        $u->setTranslations('description', ['ar' => (string)$this->description['ar'], 'en' => (string)$this->description['en']]);
         $u->level  = $this->level;
         $u->status = $this->status;
         $u->save();
 
-        session()->flash('success', __('pos.msg_updated'));
+        session()->flash('success', __('pos.msg_updated') ?: 'تم التحديث بنجاح.');
         return redirect()->route('units.index');
     }
 

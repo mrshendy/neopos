@@ -63,9 +63,9 @@ class Create extends Component
         'supplier_id'                 => 'nullable|exists:suppliers,id',
         'status'                      => 'required|in:active,inactive',
 
-        'units_matrix.minor.unit_id'  => 'nullable|exists:units,id',
-        'units_matrix.middle.unit_id' => 'nullable|exists:units,id',
-        'units_matrix.major.unit_id'  => 'nullable|exists:units,id',
+        'units_matrix.minor.unit_id'  => 'nullable|exists:unit,id',
+        'units_matrix.middle.unit_id' => 'nullable|exists:unit,id',
+        'units_matrix.major.unit_id'  => 'nullable|exists:unit,id',
         'units_matrix.*.cost'         => 'nullable|numeric|min:0',
         'units_matrix.*.price'        => 'nullable|numeric|min:0',
         'units_matrix.*.factor'       => 'nullable|numeric|min:1',
