@@ -187,7 +187,7 @@
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width:140px">{{ __('pos.finset_ul_user') }}</th>
+                                    <th style="width:210px">{{ __('pos.finset_ul_user') }}</th>
                                     <th style="width:160px">{{ __('pos.finset_ul_daily_count') }}</th>
                                     <th style="width:180px">{{ __('pos.finset_ul_daily_amount') }}</th>
                                     <th style="width:160px">{{ __('pos.finset_ul_require_supervisor') }}</th>
@@ -198,14 +198,28 @@
                             <tbody>
                                 @forelse ($userLimits as $idx => $ul)
                                     <tr>
+                                        {{-- ✅ دروب منيو بأسماء المستخدمين --}}
                                         <td>
-                                            <input type="number" class="form-control"
-                                                   wire:model.defer="userLimits.{{ $idx }}.user_id"
-                                                   placeholder="{{ __('pos.finset_ul_ph_user') }}">
+                                            <select class="form-select"
+                                                    wire:model.defer="userLimits.{{ $idx }}.user_id">
+                                                <option value="">{{ __('pos.finset_ul_ph_user') }}</option>
+                                                @foreach($users as $u)
+                                                    <option value="{{ $u->id }}">{{ $u->name }}</option>
+                                                @endforeach
+                                            </select>
                                             <small class="help">{{ __('pos.finset_ul_help_user') }}</small>
-                                            <div class="preview-chip"><i class="mdi mdi-account-outline"></i> {{ $ul['user_id'] ?? '—' }}</div>
+
+                                            <div class="preview-chip">
+                                                <i class="mdi mdi-account-outline"></i>
+                                                @php
+                                                    $sel = collect($users)->firstWhere('id', (int)($ul['user_id'] ?? 0));
+                                                @endphp
+                                                {{ $sel->name ?? '—' }}
+                                            </div>
+
                                             @error("userLimits.$idx.user_id") <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                         </td>
+
                                         <td>
                                             <input type="number" min="0" class="form-control"
                                                    wire:model.defer="userLimits.{{ $idx }}.daily_count_limit" placeholder="0">
@@ -213,6 +227,7 @@
                                             <div class="preview-chip"><i class="mdi mdi-counter"></i> {{ $ul['daily_count_limit'] ?? '—' }}</div>
                                             @error("userLimits.$idx.daily_count_limit") <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                         </td>
+
                                         <td>
                                             <input type="number" min="0" step="0.01" class="form-control"
                                                    wire:model.defer="userLimits.{{ $idx }}.daily_amount_limit" placeholder="0.00">
@@ -220,6 +235,7 @@
                                             <div class="preview-chip"><i class="mdi mdi-cash"></i> {{ $ul['daily_amount_limit'] ?? '—' }}</div>
                                             @error("userLimits.$idx.daily_amount_limit") <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                         </td>
+
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox"
@@ -229,6 +245,7 @@
                                             <div class="preview-chip"><i class="mdi mdi-shield-account-outline"></i> {{ ($ul['require_supervisor'] ?? false) ? __('pos.yes') : __('pos.no') }}</div>
                                             @error("userLimits.$idx.require_supervisor") <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                         </td>
+
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox"
@@ -238,6 +255,7 @@
                                             <div class="preview-chip"><i class="mdi mdi-power"></i> {{ ($ul['active'] ?? true) ? __('pos.enabled') : __('pos.disabled') }}</div>
                                             @error("userLimits.$idx.active") <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                         </td>
+
                                         <td class="text-end">
                                             <button type="button" class="btn btn-sm btn-outline-danger rounded-pill"
                                                     onclick="confirmRemoveLimit({{ $idx }})">

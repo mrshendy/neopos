@@ -4,7 +4,9 @@ namespace App\Http\Livewire\Pos;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+
 use App\models\pos\pos as Pos;
 use App\models\inventory\warehouse as Warehouse;
 use App\models\customer\customer as Customer;
@@ -13,108 +15,133 @@ class Index extends Component
 {
     use WithPagination;
 
-    // Filters
-    public $search = '';
-    public $status = '';
-    public $date_from = null;
-    public $date_to   = null;
-    public $warehouse_id = '';
-    public $customer_id  = '';
+    // فلاتر
+    public string $q = '';
+    public ?string $date_from = null;
+    public ?string $date_to   = null;
+    public ?int $warehouse_id = null;
+    public ?int $customer_id  = null;
+    public ?string $status    = null;
 
-    // Pagination
-    public $perPage = 10;
+    // تحكم الجدول
+    public int $perPage = 10;
+    public string $sortBy = 'pos_date';
+    public string $sortDir = 'desc';
+
+    // مصادر الفلاتر
+    public $warehouses;
+    public $customers;
 
     protected $queryString = [
-        'search'       => ['except' => ''],
-        'status'       => ['except' => ''],
+        'q'            => ['except' => ''],
         'date_from'    => ['except' => null],
         'date_to'      => ['except' => null],
-        'warehouse_id' => ['except' => ''],
-        'customer_id'  => ['except' => ''],
-        'page'         => ['except' => 1],
+        'warehouse_id' => ['except' => null],
+        'customer_id'  => ['except' => null],
+        'status'       => ['except' => null],
+        'sortBy'       => ['except' => 'pos_date'],
+        'sortDir'      => ['except' => 'desc'],
         'perPage'      => ['except' => 10],
+        'page'         => ['except' => 1],
     ];
 
-    protected $listeners = [
-        'deleteConfirmed' => 'delete',
-        'statusChange'    => 'setStatus',
-    ];
-
-    public function updatingSearch(){ $this->resetPage(); }
-    public function updatedStatus(){ $this->resetPage(); }
-    public function updatedDateFrom(){ $this->resetPage(); }
-    public function updatedDateTo(){ $this->resetPage(); }
-    public function updatedWarehouseId(){ $this->resetPage(); }
-    public function updatedCustomerId(){ $this->resetPage(); }
-    public function updatedPerPage(){ $this->resetPage(); }
-
-    public function delete(int $id): void
+    public function mount(): void
     {
-        DB::transaction(function() use ($id){
-            $pos = Pos::with('lines')->findOrFail($id);
-            // soft delete بنود ثم الهيدر (لو عندك softDeletes)
-            $pos->lines()->delete();
-            $pos->delete();
-        });
+        $this->warehouses = Warehouse::orderBy('id')->get();
+        $this->customers  = Customer::latest('id')->limit(500)->get();
+        if (!$this->date_from && !$this->date_to) {
+            $this->date_from = Carbon::today()->startOfMonth()->toDateString();
+            $this->date_to   = Carbon::today()->toDateString();
+        }
+    }
 
-        session()->flash('success', __('pos.deleted_ok'));
+    private function localize($raw): string
+    {
+        if (is_array($raw)) return (string)($raw[app()->getLocale()] ?? ($raw['ar'] ?? (reset($raw) ?: '')));
+        if (is_string($raw)) {
+            $t = trim($raw);
+            if (Str::startsWith($t,'{') || Str::startsWith($t,'[')) {
+                $arr = json_decode($t, true);
+                if (is_array($arr)) return (string)($arr[app()->getLocale()] ?? ($arr['ar'] ?? $raw));
+            }
+            return $raw;
+        }
+        return (string)$raw;
+    }
+
+    public function updatingQ()            { $this->resetPage(); }
+    public function updatingDateFrom()     { $this->resetPage(); }
+    public function updatingDateTo()       { $this->resetPage(); }
+    public function updatingWarehouseId()  { $this->resetPage(); }
+    public function updatingCustomerId()   { $this->resetPage(); }
+    public function updatingStatus()       { $this->resetPage(); }
+    public function updatingPerPage()      { $this->resetPage(); }
+    public function updatingSortBy()       { $this->resetPage(); }
+    public function updatingSortDir()      { $this->resetPage(); }
+
+    public function sort(string $col): void
+    {
+        if ($this->sortBy === $col) {
+            $this->sortDir = $this->sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy  = $col;
+            $this->sortDir = 'asc';
+        }
+    }
+
+    public function clearFilters(): void
+    {
+        $this->q = '';
+        $this->date_from = Carbon::today()->startOfMonth()->toDateString();
+        $this->date_to   = Carbon::today()->toDateString();
+        $this->warehouse_id = null;
+        $this->customer_id  = null;
+        $this->status = null;
+        $this->perPage = 10;
+        $this->sortBy  = 'pos_date';
+        $this->sortDir = 'desc';
         $this->resetPage();
     }
 
-    public function setStatus(int $id, string $status): void
+    public function delete(int $id): void
     {
-        $allowed = ['draft','approved','posted','cancelled'];
-        if (!in_array($status, $allowed, true)) {
-            session()->flash('error', __('pos.invalid_status'));
-            return;
+        $pos = Pos::find($id);
+        if ($pos) {
+            $pos->delete();
+            session()->flash('success', __('pos.deleted_ok'));
         }
+        $this->resetPage();
+    }
 
-        $pos = Pos::findOrFail($id);
-        $pos->status = $status;
-        $pos->save();
-
-        session()->flash('success', __('pos.status_updated'));
+    private function baseQuery()
+    {
+        return Pos::query()
+            ->with(['warehouse:id,name', 'customer:id,name'])
+            ->when($this->q, function ($qq) {
+                $txt = mb_strtolower($this->q);
+                $qq->where(function ($w) use ($txt) {
+                    $w->whereRaw('LOWER(pos_no) LIKE ?', ["%{$txt}%"])
+                      ->orWhereRaw('LOWER(status)  LIKE ?', ["%{$txt}%"])
+                      ->orWhereRaw('LOWER(notes)   LIKE ?', ["%{$txt}%"]);
+                });
+            })
+            ->when($this->date_from, fn($qq) => $qq->whereDate('pos_date', '>=', $this->date_from))
+            ->when($this->date_to,   fn($qq) => $qq->whereDate('pos_date', '<=', $this->date_to))
+            ->when($this->warehouse_id, fn($qq) => $qq->where('warehouse_id', $this->warehouse_id))
+            ->when($this->customer_id,  fn($qq) => $qq->where('customer_id',  $this->customer_id))
+            ->when($this->status,       fn($qq) => $qq->where('status', $this->status));
     }
 
     public function render()
     {
-        $q = Pos::query()
-            ->with(['customer','warehouse'])
-            ->withCount('lines');
-
-        if ($this->search) {
-            $s = trim($this->search);
-            $q->where(function($qq) use ($s){
-                $qq->where('pos_no','like',"%{$s}%")
-                   ->orWhere('notes','like',"%{$s}%");
-            });
-        }
-
-        if ($this->status) {
-            $q->where('status', $this->status);
-        }
-
-        if ($this->warehouse_id) {
-            $q->where('warehouse_id', $this->warehouse_id);
-        }
-
-        if ($this->customer_id) {
-            $q->where('customer_id', $this->customer_id);
-        }
-
-        if ($this->date_from) {
-            $q->whereDate('pos_date','>=',$this->date_from);
-        }
-        if ($this->date_to) {
-            $q->whereDate('pos_date','<=',$this->date_to);
-        }
-
-        $rows = $q->orderByDesc('id')->paginate((int)$this->perPage);
+        $rows = $this->baseQuery()
+            ->orderBy($this->sortBy, $this->sortDir)
+            ->paginate($this->perPage);
 
         return view('livewire.pos.index', [
             'rows'       => $rows,
-            'warehouses' => Warehouse::orderBy('name')->get(['id','name']),
-            'customers'  => Customer::orderBy('name')->get(['id','name']),
+            'warehouses' => $this->warehouses,
+            'customers'  => $this->customers,
         ]);
     }
 }

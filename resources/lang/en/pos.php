@@ -2461,4 +2461,120 @@ return [
     'btn_save' => 'Save',
 
     'msg_saved' => 'Saved successfully.',
+
+
+     // Alerts / Errors
+    'input_errors' => 'There are input errors',
+
+    // Header
+    'sales_management'      => 'Sales Management',
+    'modern_fast_interface' => 'Modern fast UI with smart search & instant invoice',
+    'today'                 => 'Today',
+    'sales_list'            => 'Sales List',
+    'preview_order'         => 'Preview Order',
+    'print'                 => 'Print',
+
+    // Toolbar / Search
+    'barcode_search_ph'     => 'Search by barcode (Enter to add to cart)',
+    'hint_barcode_enter'    => 'Type barcode then press Enter to add directly to cart',
+    'product_search_ph'     => 'Search product name / SKU',
+    'search_customer_ph'    => 'Search by customer',
+    'search_warehouse_ph'   => 'Search by warehouse',
+    'search_category_ph'    => 'Search by category',
+    'all'                   => 'All',
+    'add_to_cart'           => 'Add to cart',
+    'available'             => 'Available',
+    'no_products'           => 'No products found',
+
+    // Cart side
+    'warehouse'             => 'Warehouse',
+    'customer_optional'     => 'Customer (optional)',
+    'note'                  => 'Note',
+    'cart_empty'            => 'Cart is empty — pick a product',
+
+    // Table / Totals
+    'subtotal'              => 'Subtotal',
+    'discount'              => 'Discount',
+    'tax'                   => 'Tax',
+    'grand_total'           => 'Grand Total',
+    'save_finish'           => 'Save / Finish',
+    'update_btn'            => 'Update',
+    'clear_cart'            => 'Clear Cart',
+    'delete'                => 'Delete',
+
+    // Modal / Invoice
+    'order_preview'         => 'Order Preview',
+    'invoice_sale'          => 'Sales Invoice',
+    'date'                  => 'Date',
+    'customer'              => 'Customer',
+    'product'               => 'Product',
+    'unit'                  => 'Unit',
+    'qty'                   => 'Qty',
+    'unit_price'            => 'Unit Price',
+    'total'                 => 'Total',
+    'close'                 => 'Close',
+    'unsaved'               => '(Unsaved)',
+
+     // ==== Page titles ====
+    'title_pos_index'   => 'Sales Invoices',
+    'title_pos_show'    => 'View Sales Invoice',
+
+    // ==== Buttons ====
+    'btn_new_sale'      => 'New Invoice',
+    'btn_show'          => 'Show',
+    'btn_edit'          => 'Edit',
+    'btn_delete'        => 'Delete',
+    'back_to_list'      => 'Back to list',
+    'clear_filters'     => 'Clear Filters',
+    'print'             => 'Print',
+
+    // ==== Filters & search ====
+    'search'            => 'Search',
+    'ph_search_sale'    => 'Search by invoice no./status/notes',
+    'hint_search_sale'  => 'Type part of invoice number, status, or notes',
+    'date_from'         => 'Date From',
+    'date_to'           => 'Date To',
+    'status'            => 'Status',
+    'per_page'          => 'Per Page',
+    'hint_click_to_sort'=> 'Click a column header to sort asc/desc',
+    'all'               => 'All',
+
+    // ==== Table columns ====
+    'sale_no'           => 'Invoice No.',     // rendered from pos_no
+    'sale_date'         => 'Invoice Date',    // rendered from pos_date
+    'delivery_date'     => 'Delivery Date',
+    'customer'          => 'Customer',
+    'warehouse'         => 'Warehouse',
+    'subtotal'          => 'Subtotal',
+    'grand_total'       => 'Grand Total',
+    'actions'           => 'Actions',
+
+    // ==== Statuses ====
+    'status_draft'      => 'Draft',
+    'status_approved'   => 'Approved',
+    'status_posted'     => 'Posted',
+    'status_cancelled'  => 'Cancelled',
+
+    // ==== Show ====
+    'invoice_info'      => 'Invoice Info',
+    'parties_info'      => 'Parties Info',
+    'created_by'        => 'Created By',
+    'product'           => 'Product',
+    'unit'              => 'Unit',
+    'qty'               => 'Qty',
+    'unit_price'        => 'Unit Price',
+    'total'             => 'Total',
+    'no_items'          => 'No items',
+    'print_hint'        => 'You can print the invoice using the button above.',
+
+    // ==== Messages ====
+    'deleted_ok'        => 'Invoice deleted successfully',
+    'confirm_delete'    => 'Are you sure you want to delete this invoice?',
+    'no_data'           => 'No data available',
+
+    // ==== Pagination info ====
+    'pagination_info'   => 'Showing :from–:to of :total',
+    
+    
+
 ];

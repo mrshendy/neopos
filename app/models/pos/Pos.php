@@ -33,10 +33,10 @@ class Pos extends Model
 
     // ✅ Casts مفيدة
     protected $casts = [
-        'pos_date'    => 'date',
-        'subtotal'    => 'decimal:4',
-        'discount'    => 'decimal:4',
-        'tax'         => 'decimal:4',
+        'pos_date' => 'date',
+        'subtotal' => 'decimal:4',
+        'discount' => 'decimal:4',
+        'tax' => 'decimal:4',
         'grand_total' => 'decimal:4',
     ];
 
@@ -44,13 +44,13 @@ class Pos extends Model
     public function setCustomerIdAttribute($val)
     {
         $this->attributes['customer_id'] =
-            (is_null($val) || $val === '' || (int)$val === 0) ? null : (int)$val;
+            (is_null($val) || $val === '' || (int) $val === 0) ? null : (int) $val;
     }
 
     public function setWarehouseIdAttribute($val)
     {
         $this->attributes['warehouse_id'] =
-            (is_null($val) || $val === '' || (int)$val === 0) ? null : (int)$val;
+            (is_null($val) || $val === '' || (int) $val === 0) ? null : (int) $val;
     }
 
     // ===== العلاقات =====
@@ -72,14 +72,17 @@ class Pos extends Model
     public function user()
     {
         // لو مشروعك قديم وما زال App\User استخدمه بدلاً من السطر التالي
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->belongsTo(\App\User::class, 'user_id');
         // return $this->belongsTo(\App\User::class, 'user_id');
     }
 
     // (اختياري) Helper لتقييد القيم المسموحة في status
-    public const STATUS_DRAFT     = 'draft';
-    public const STATUS_APPROVED  = 'approved';
-    public const STATUS_POSTED    = 'posted';
+    public const STATUS_DRAFT = 'draft';
+
+    public const STATUS_APPROVED = 'approved';
+
+    public const STATUS_POSTED = 'posted';
+
     public const STATUS_CANCELLED = 'cancelled'; // لاحظ LL
 
     public static function allowedStatuses(): array
@@ -94,7 +97,7 @@ class Pos extends Model
 
     public function setStatusAttribute($val)
     {
-        $val = strtolower((string)$val);
+        $val = strtolower((string) $val);
         // طَبّق شكل enum الموجود في الجدول بالضبط
         if ($val === 'canceled') {
             $val = 'cancelled';

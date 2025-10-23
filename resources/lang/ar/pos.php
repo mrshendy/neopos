@@ -2496,5 +2496,114 @@ return [
 'rec_help_reference'   => 'مرجع خارجي (اختياري).',
 'rec_help_status'      => 'حالة الإيصال.',
 
+ // Alerts / Errors
+    'input_errors' => 'يوجد أخطاء في الإدخال',
 
+    // Header
+    'sales_management'     => 'إدارة المبيعات',
+    'modern_fast_interface'=> 'واجهة حديثة سريعة مع بحث ذكي وفاتورة فورية',
+    'today'                => 'اليوم',
+    'sales_list'           => 'قائمة المبيعات',
+    'preview_order'        => 'عرض الطلب',
+    'print'                => 'طباعة',
+
+    // Toolbar / Search
+    'barcode_search_ph'    => 'البحث بالباركود (Enter للإضافة للسلة)',
+    'hint_barcode_enter'   => 'اكتب الباركود ثم Enter ليضاف المنتج مباشرة للسلة',
+    'product_search_ph'    => 'بحث اسم المنتج / SKU',
+    'search_customer_ph'   => 'بحث بالعميل',
+    'search_warehouse_ph'  => 'بحث بالمخزن',
+    'search_category_ph'   => 'بحث بالقسم',
+    'all'                  => 'الكل',
+    'add_to_cart'          => 'إضافة للسلة',
+    'available'            => 'متاح',
+    'no_products'          => 'لا توجد منتجات',
+
+    // Cart side
+    'warehouse'            => 'المخزن',
+    'customer_optional'    => 'العميل (اختياري)',
+    'note'                 => 'ملاحظة',
+    'cart_empty'           => 'السلة فارغة - اختر منتجًا من القائمة',
+
+    // Table / Totals
+    'subtotal'             => 'الإجمالي الفرعي',
+    'discount'             => 'الخصم',
+    'tax'                  => 'الضريبة',
+    'grand_total'          => 'الإجمالي النهائي',
+    'save_finish'          => 'حفظ / إنهاء',
+    'update_btn'           => 'تحديث',
+    'clear_cart'           => 'إفراغ السلة',
+    'delete'               => 'حذف',
+
+    // Modal / Invoice
+    'order_preview'        => 'معاينة الطلب',
+    'invoice_sale'         => 'فاتورة بيع',
+    'date'                 => 'التاريخ',
+    'customer'             => 'العميل',
+    'product'              => 'المنتج',
+    'unit'                 => 'الوحدة',
+    'qty'                  => 'الكمية',
+    'unit_price'           => 'سعر الوحدة',
+    'total'                => 'الإجمالي',
+    'close'                => 'إغلاق',
+    'unsaved'              => '(غير محفوظ)',
+     // ==== عناوين الصفحات ====
+    'title_pos_index'   => 'فواتير البيع',
+    'title_pos_show'    => 'عرض فاتورة البيع',
+
+    // ==== أزرار عامة ====
+    'btn_new_sale'      => 'فاتورة جديدة',
+    'btn_show'          => 'عرض',
+    'btn_edit'          => 'تعديل',
+    'btn_delete'        => 'حذف',
+    'back_to_list'      => 'عودة للقائمة',
+    'clear_filters'     => 'مسح الفلاتر',
+    'print'             => 'طباعة',
+
+    // ==== فلاتر وبحث ====
+    'search'            => 'بحث',
+    'ph_search_sale'    => 'بحث برقم الفاتورة/الحالة/الملاحظات',
+    'hint_search_sale'  => 'اكتب جزءًا من رقم الفاتورة أو الحالة أو الملاحظات',
+    'date_from'         => 'التاريخ من',
+    'date_to'           => 'التاريخ إلى',
+    'status'            => 'الحالة',
+    'per_page'          => 'لكل صفحة',
+    'hint_click_to_sort'=> 'اضغط على عنوان العمود للفرز تصاعدي/تنازلي',
+    'all'               => 'الكل',
+
+    // ==== أعمدة الجدول ====
+    'sale_no'           => 'رقم الفاتورة',     // يُعرض مع pos_no
+    'sale_date'         => 'تاريخ الفاتورة',   // يُعرض مع pos_date
+    'delivery_date'     => 'تاريخ التسليم',
+    'customer'          => 'العميل',
+    'warehouse'         => 'المخزن',
+    'subtotal'          => 'الإجمالي الفرعي',
+    'grand_total'       => 'الإجمالي النهائي',
+    'actions'           => 'الإجراءات',
+
+    // ==== الحالات ====
+    'status_draft'      => 'مسودة',
+    'status_approved'   => 'معتمدة',
+    'status_posted'     => 'مرحّلة',
+    'status_cancelled'  => 'ملغاة',
+
+    // ==== عرض الفاتورة (Show) ====
+    'invoice_info'      => 'بيانات الفاتورة',
+    'parties_info'      => 'بيانات الأطراف',
+    'created_by'        => 'أنشأ بواسطة',
+    'product'           => 'المنتج',
+    'unit'              => 'الوحدة',
+    'qty'               => 'الكمية',
+    'unit_price'        => 'سعر الوحدة',
+    'total'             => 'الإجمالي',
+    'no_items'          => 'لا توجد بنود',
+    'print_hint'        => 'يمكنك طباعة الفاتورة من الزر بالأعلى.',
+
+    // ==== رسائل عامة ====
+    'deleted_ok'        => 'تم حذف الفاتورة بنجاح',
+    'confirm_delete'    => 'هل أنت متأكد من حذف هذه الفاتورة؟',
+    'no_data'           => 'لا توجد بيانات متاحة',
+
+    // ==== معلومات التصفح ====
+    'pagination_info'   => 'عرض :from–:to من أصل :total',
 ];
