@@ -9,7 +9,7 @@
                     </span>
                     <span class="logo-lg">
                         <img src="{{ URL::asset('assets/images/logo.png') }}" alt=""
-                            style="height: 70px;width: 100% !important;">
+                            style="height: 120px;width: 100% !important;">
                     </span>
                 </a>
                 <!-- Light Logo-->
@@ -19,7 +19,7 @@
                     </span>
                     <span class="logo-lg">
                         <img src="{{ URL::asset('assets/images/logo.png') }}" alt="" height="17"
-                            style="height: 70px;width:100% !important;">
+                            style="height:120px;width:100% !important;">
                     </span>
                 </a>
                 <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
