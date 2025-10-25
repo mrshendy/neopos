@@ -38,7 +38,6 @@ return [
 'specialization_settings' => 'إعدادات التخصصات',
 'medical_settings' => 'الإعدادات الطبية',
 'currency_settings' => 'إعدادات العملات',
-'nationalities_settings' => 'إعدادات الجنسيات', 
 
     'settings'           => 'الإعدادات',
     'system_settings'    => 'إعدادات النظام',
@@ -52,7 +51,6 @@ return [
 
        'settings'                 => 'الإعدادات',
     'system_settings'          => 'إعدادات النظام',
-    'nationalities_settings'   => 'إعدادات الجنسيات',
 
     // صفحة الدول
     'add_new_country'          => 'إضافة دولة جديدة',

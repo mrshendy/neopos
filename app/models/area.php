@@ -8,13 +8,16 @@ use Spatie\Translatable\HasTranslations;
 
 class area extends Model
 {
-    use SoftDeletes, HasTranslations;
+    use HasTranslations, SoftDeletes;
 
     protected $table = 'area';
+    protected $primaryKey = 'id';
+    public $timestamps = true;
+
     public $translatable = ['name'];
 
     protected $fillable = [
-        'name',               // JSON
+        'name',
         'id_country',
         'id_governoratees',
         'id_city',
@@ -23,17 +26,16 @@ class area extends Model
         'user_update',
     ];
 
-    protected static function booted()
-    {
-        static::creating(function ($m) {
-            if (is_null($m->user_add)) $m->user_add = auth()->id() ?? 0;
-        });
-        static::updating(function ($m) {
-            $m->user_update = auth()->id() ?? 0;
-        });
-    }
+    protected $casts = [
+        'name'       => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
 
-    // علاقات
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
     public function country()
     {
         return $this->belongsTo(country::class, 'id_country');
@@ -47,5 +49,20 @@ class area extends Model
     public function city()
     {
         return $this->belongsTo(city::class, 'id_city');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (auth()->check() && empty($model->user_add)) {
+                $model->user_add = auth()->id();
+            }
+        });
+
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->user_update = auth()->id();
+            }
+        });
     }
 }

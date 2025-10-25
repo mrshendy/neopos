@@ -17,12 +17,9 @@ use App\Http\Controllers\inventory\settingscontroller;
 use App\Http\Controllers\Inventory\stockbalancecontroller;
 use App\Http\Controllers\inventory\transactionscontroller;
 use App\Http\Controllers\inventory\warehousescontroller;
-use App\Http\Controllers\locations\areacontroller;
-use App\Http\Controllers\locations\citycontroller;
-use App\Http\Controllers\locations\countrycontroller;
-use App\Http\Controllers\locations\governoratecontroller;
-use App\Http\Controllers\offers\couponscontroller;
+use App\Http\Controllers\offers\couponscontroller; // اسم الكلاس بالحروف الصغيرة كما طلبت
 use App\Http\Controllers\offers\offerscontroller;
+use App\Http\Controllers\placescontroller;
 use App\Http\Controllers\poscontroller;
 use App\Http\Controllers\product\categorycontroller;
 use App\Http\Controllers\product\productcontroller;
@@ -225,7 +222,7 @@ Route::group(
         Route::resource('finance_settings', finance_settingscontroller::class)->names([
             'index' => 'finance_settings.index',
             'create' => 'finance_settings.create',
-            'store' => 'finance_settings.store',   // الحفظ عبر Livewire لكن نسيبه لو احتجناه
+            'store' => 'finance_settings.store',
             'edit' => 'finance_settings.edit',
             'update' => 'finance_settings.update',
             'destroy' => 'finance_settings.destroy',
@@ -247,41 +244,14 @@ Route::group(
         });
 
         Route::get('/currencies', [currenciescontroller::class, 'index'])->name('currencies.index');
-   // country (index + store + update + destroy فقط)
-    Route::resource('country', countrycontroller::class)
-        ->only(['index','store','update','destroy'])
-        ->names('country');
-    Route::whereNumber('country', '[0-9]+');
 
-    // Governorates
-    Route::resource('governorate', governoratecontroller::class)
-        ->only(['index','store','update','destroy'])
-        ->names('governorate');
-    Route::whereNumber('governorate', '[0-9]+');
-
-    // Cities
-    Route::resource('city', citycontroller::class)
-        ->only(['index','store','update','destroy'])
-        ->names('city');
-    Route::whereNumber('city', '[0-9]+');
-
-    // Areas
-    Route::resource('area', areacontroller::class)
-        ->only(['index','store','update','destroy'])
-        ->names('area');
-    Route::whereNumber('area', '[0-9]+');
-
-    // ===== AJAX (قوائم متدرّجة) =====
-    // من الدولة ← المحافظات
-    Route::get('ajax/governorates/{country}', [areacontroller::class, 'governoratesByCountry'])
-        ->whereNumber('country')
-        ->name('ajax.governorates.by-country');
-
-    // من المحافظة ← المدن
-    Route::get('ajax/cities/{governorate}', [areacontroller::class, 'citiesByGovernorate'])
-        ->whereNumber('governorate')
-        ->name('ajax.cities.by-governorate');
-
+        Route::controller(placescontroller::class)->group(function () {
+            // الصفحات التي تستدعي Livewire فقط
+            Route::get('/country', 'countries')->name('country.index');
+            Route::get('/governorate', 'governorates')->name('governorate.index');
+            Route::get('/city', 'cities')->name('city.index');
+            Route::get('/area', 'areas')->name('area.index');
+        });
         Route::get('/{page}', 'AdminController@index');
 
     });

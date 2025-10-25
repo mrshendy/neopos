@@ -1,12 +1,7 @@
-
 @extends('layouts.master')
 @section('title')
 {{ trans('main_trans.title') }}
-
-
-
 @stop
-
 
 @section('content')
          <!-- start page title -->
@@ -34,7 +29,8 @@
                         <div class="card card-body text-center">
                             <div class="avatar-md mx-auto mb-3">
                                 <div class="avatar-title bg-soft-light  border border-info p-2 text-info  rounded">
-                                   <i class="mdi mdi-cog" style="font-size: 35px"></i>
+                                   <!-- Country -->
+                                   <i class="mdi mdi-earth" style="font-size: 35px"></i>
                                 </div>
                             </div>
                             <h4 class="card-title font font">{{ trans('settings_trans.country') }}</h4>
@@ -45,7 +41,8 @@
                         <div class="card card-body text-center">
                             <div class="avatar-md mx-auto mb-3">
                                 <div class="avatar-title bg-soft-light  border border-info p-2 text-info  rounded">
-                                    <i class="mdi mdi-cog" style="font-size: 35px"></i>
+                                    <!-- Governorate -->
+                                    <i class="mdi mdi-map" style="font-size: 35px"></i>
                                  </div>
                             </div>
                             <h4 class="card-title font">{{ trans('settings_trans.governorate') }}</h4>
@@ -56,7 +53,8 @@
                         <div class="card card-body text-center">
                             <div class="avatar-md mx-auto mb-3">
                                 <div class="avatar-title bg-soft-light  border border-info p-2 text-info  rounded">
-                                    <i class="mdi mdi-cog" style="font-size: 35px"></i>
+                                    <!-- City -->
+                                    <i class="mdi mdi-city" style="font-size: 35px"></i>
                                  </div>
                             </div>
                             <h4 class="card-title font">{{ trans('settings_trans.city') }}</h4>
@@ -67,7 +65,8 @@
                         <div class="card card-body text-center">
                             <div class="avatar-md mx-auto mb-3">
                                 <div class="avatar-title bg-soft-light  border border-info p-2 text-info  rounded">
-                                    <i class="mdi mdi-cog" style="font-size: 35px"></i>
+                                    <!-- Area -->
+                                    <i class="mdi mdi-map-marker" style="font-size: 35px"></i>
                                  </div>
                             </div>
                             <h4 class="card-title font">{{ trans('settings_trans.area') }}</h4>
@@ -78,8 +77,4 @@
                 </div><!-- end row -->
             </div><!-- end col -->
         </div><!-- end row -->
-  
-
-
 @endsection
-
