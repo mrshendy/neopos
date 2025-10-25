@@ -1,6 +1,6 @@
 {{-- resources/views/livewire/pos/show.blade.php --}}
 <div class="container-fluid px-3" x-data>
-    {{-- Icons / Font (نفس manage) --}}
+    {{-- Icons / Font --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.rtl.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -10,7 +10,7 @@
             --radius:12px; --radius-sm:8px; --shadow:0 1px 3px rgba(0,0,0,.08); --shadow-md:0 6px 16px rgba(0,0,0,.08);
             --sky:#0ea5e9; --sky-600:#0284c7; --sky-300:#7dd3fc; --accent:#8b5cf6;
         }
-        *{box-sizing:border-box; }
+        *{box-sizing:border-box;}
         body{background:var(--bg); color:var(--text)}
         .hero{position:relative; border-radius:16px; overflow:hidden; margin:10px 0 14px; border:1px solid var(--border);
               background: radial-gradient(800px 400px at 100% -20%, rgba(255,255,255,.35) 0%, transparent 70%),
@@ -32,9 +32,13 @@
         .btn-outline{border:1px solid var(--border); background:#fff; color:var(--text); border-radius:10px; padding:.45rem .9rem; font-weight:600}
         .btn-outline:hover{border-color:var(--sky-300)}
         .table-sm td,.table-sm th{padding:.5rem .75rem}
+        .summary{background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%); border:1px solid var(--border); border-radius:12px; padding:14px; margin-top:12px}
+        .summary-row{display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed var(--border)}
+        .summary-row:last-child{border-bottom:none}
+        .badge{vertical-align:middle}
     </style>
 
-    {{-- HERO HEADER (مطابق لإحساس manage) --}}
+    {{-- HERO HEADER --}}
     <div class="hero">
         <div class="hero-inner">
             <div class="hero-title">
@@ -42,7 +46,8 @@
                 <div>
                     <h1>{{ __('pos.title_pos_show') }}</h1>
                     <div class="hero-sub">
-                        {{ __('pos.sale_no') }}: {{ $sale->pos_no ?? '—' }} · {{ __('pos.sale_date') }}: {{ $sale->pos_date }}
+                        {{ __('pos.sale_no') }}: {{ $sale->pos_no ?? '—' }} ·
+                        {{ __('pos.sale_date') }}: {{ $sale->pos_date }}
                     </div>
                 </div>
             </div>
@@ -58,6 +63,7 @@
                         <span class="badge rounded-pill text-bg-{{ $badge }}">{{ __('pos.status_'.$sale->status) }}</span>
                     </span>
                 </div>
+
                 <a href="{{ route('pos.index') }}" class="btn-ghost">
                     <i class="fa-solid fa-arrow-left-long"></i> {{ __('pos.back_to_list') }}
                 </a>
@@ -82,72 +88,147 @@
                 <div class="col-lg-6">
                     <div class="p-3 border rounded-3">
                         <div class="fw-bold mb-2">{{ __('pos.invoice_info') }}</div>
-                        <div class="small text-muted">{{ __('pos.sale_no') }}: <strong>{{ $sale->pos_no ?? '—' }}</strong></div>
-                        <div class="small text-muted">{{ __('pos.sale_date') }}: <strong>{{ $sale->pos_date }}</strong></div>
-                        <div class="small text-muted">{{ __('pos.delivery_date') }}: <strong>{{ $sale->delivery_date ?? '—' }}</strong></div>
-                        @if($sale->notes)
-                            <div class="small text-muted">{{ __('pos.note') }}: <strong>{{ $sale->notes }}</strong></div>
+                        <div class="small text-muted">{{ __('pos.sale_no') }}:
+                            <strong>{{ $sale->pos_no ?? '—' }}</strong>
+                        </div>
+                        <div class="small text-muted">{{ __('pos.sale_date') }}:
+                            <strong>{{ $sale->pos_date }}</strong>
+                        </div>
+                        <div class="small text-muted">{{ __('pos.delivery_date') }}:
+                            <strong>{{ $sale->delivery_date ?? '—' }}</strong>
+                        </div>
+
+                        {{-- دفعات/عملة/خزينة/كوبون --}}
+                        <hr class="my-2">
+                        <div class="small text-muted">{{ __('pos.payment_method') }}:
+                            <strong>{{ $paymentLabel }}</strong>
+                        </div>
+                        <div class="small text-muted">{{ __('pos.currency') }}:
+                            <strong>{{ $currencyName }} @if($currencySymbol) ({{ $currencySymbol }}) @endif</strong>
+                        </div>
+                        <div class="small text-muted">{{ __('pos.treasury') }}:
+                            <strong>{{ $treasuryName ?? '—' }}</strong>
+                            @if($treasuryBranch) <span class="text-muted">— {{ __('pos.branch') }} #{{ $treasuryBranch }}</span> @endif
+                        </div>
+                        @if($sale->coupon_code)
+                            <div class="small text-muted">{{ __('pos.coupon_code') }}:
+                                <strong>{{ $sale->coupon_code }}</strong>
+                                @if($sale->coupon_value) — <span class="text-success">{{ __('pos.coupon_discount') }}: {{ number_format((float)$sale->coupon_value,2) }}</span> @endif
+                            </div>
                         @endif
-                        <div class="small text-muted">ID: <strong>#{{ $sale->id }}</strong></div>
+
+                        @if($sale->notes)
+                            <div class="small text-muted mt-1">{{ __('pos.note') }}:
+                                <strong>{{ $sale->notes }}</strong>
+                            </div>
+                        @endif
+
+                        <div class="small text-muted mt-1">ID: <strong>#{{ $sale->id }}</strong></div>
                     </div>
                 </div>
+
                 <div class="col-lg-6">
                     @php
                         $wRaw = $sale->warehouse->name ?? null;
                         $wName = is_array($wRaw) ? ($wRaw[app()->getLocale()] ?? ($wRaw['ar'] ?? (reset($wRaw)??''))) : $wRaw;
+
                         $cRaw = $sale->customer->name ?? null;
                         $cName = is_array($cRaw) ? ($cRaw[app()->getLocale()] ?? ($cRaw['ar'] ?? (reset($cRaw)??''))) : $cRaw;
                     @endphp
                     <div class="p-3 border rounded-3">
                         <div class="fw-bold mb-2">{{ __('pos.parties_info') }}</div>
-                        <div class="small text-muted">{{ __('pos.warehouse') }}: <strong>{{ $wName ?? '—' }}</strong></div>
-                        <div class="small text-muted">{{ __('pos.customer') }}: <strong>{{ $cName ?? '—' }}</strong></div>
-                        <div class="small text-muted">{{ __('pos.created_by') }}: <strong>{{ $sale->user->name ?? '—' }}</strong></div>
+                        <div class="small text-muted">{{ __('pos.warehouse') }}:
+                            <strong>{{ $wName ?? '—' }}</strong>
+                        </div>
+                        <div class="small text-muted">{{ __('pos.customer') }}:
+                            <strong>{{ $cName ?? '—' }}</strong>
+                        </div>
+                        <div class="small text-muted">{{ __('pos.created_by') }}:
+                            <strong>{{ $sale->user->name ?? '—' }}</strong>
+                        </div>
+
+                        {{-- ملخّص مبالغ --}}
+                        <div class="summary mt-2">
+                            <div class="summary-row">
+                                <span>{{ __('pos.subtotal') }}</span>
+                                <span>{{ number_format((float)$sale->subtotal,2) }}</span>
+                            </div>
+                            @if((float)$sale->discount > 0)
+                                <div class="summary-row">
+                                    <span>{{ __('pos.discount') }}</span>
+                                    <span>-{{ number_format((float)$sale->discount,2) }}</span>
+                                </div>
+                            @endif
+                            @if((float)$sale->coupon_value > 0)
+                                <div class="summary-row">
+                                    <span>{{ __('pos.coupon_discount') }}</span>
+                                    <span>-{{ number_format((float)$sale->coupon_value,2) }}</span>
+                                </div>
+                            @endif
+                            @if((float)$sale->tax > 0)
+                                <div class="summary-row">
+                                    <span>{{ __('pos.tax') }}</span>
+                                    <span>{{ number_format((float)$sale->tax,2) }}</span>
+                                </div>
+                            @endif
+                            <div class="summary-row">
+                                <span>{{ __('pos.grand_total') }}</span>
+                                <strong>{{ number_format((float)$sale->grand_total,2) }}</strong>
+                            </div>
+                            @if((float)$sale->amount_paid !== 0.0)
+                                <div class="summary-row">
+                                    <span>{{ __('pos.amount_paid') }}</span>
+                                    <span>{{ number_format((float)$sale->amount_paid,2) }}</span>
+                                </div>
+                            @endif
+                            @php $chg = (float)($sale->change_due ?? 0); @endphp
+                            @if($chg !== 0.0)
+                                <div class="summary-row">
+                                    <span>{{ __('pos.change_due') }}</span>
+                                    <span>{{ number_format($chg,2) }}</span>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
 
+            {{-- جدول السطور --}}
             <div class="table-responsive mb-3">
                 <table class="table table-sm table-bordered">
                     <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>{{ __('pos.product') }}</th>
-                        <th class="text-center">{{ __('pos.unit') }}</th>
-                        <th class="text-center">{{ __('pos.qty') }}</th>
-                        <th class="text-center">{{ __('pos.unit_price') }}</th>
-                        <th class="text-end">{{ __('pos.total') }}</th>
-                    </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>{{ __('pos.product') }}</th>
+                            <th class="text-center">{{ __('pos.unit') }}</th>
+                            <th class="text-center">{{ __('pos.qty') }}</th>
+                            <th class="text-center">{{ __('pos.unit_price') }}</th>
+                            <th class="text-end">{{ __('pos.total') }}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @forelse($sale->lines as $i => $line)
-                        @php
-                            $pRaw = $line->product->name ?? null;
-                            $pName = is_array($pRaw) ? ($pRaw[app()->getLocale()] ?? ($pRaw['ar'] ?? (reset($pRaw)??''))) : $pRaw;
-                            $uom = $line->uom_text ?? ($line->unit->name ?? '—');
-                            if (is_array($uom)) { $uom = $uom[app()->getLocale()] ?? ($uom['ar'] ?? (reset($uom)??'—')); }
-                            $qty   = (float)($line->qty ?? 0);
-                            $price = (float)($line->unit_price ?? 0);
-                            $total = $qty * $price;
-                        @endphp
-                        <tr>
-                            <td>{{ $i+1 }}</td>
-                            <td>{{ $pName ?? '—' }}</td>
-                            <td class="text-center">{{ $uom }}</td>
-                            <td class="text-center">{{ number_format($qty,2) }}</td>
-                            <td class="text-center">{{ number_format($price,2) }}</td>
-                            <td class="text-end">{{ number_format($total,2) }}</td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="6" class="text-center text-muted py-3">{{ __('pos.no_items') }}</td></tr>
-                    @endforelse
+                        @forelse($sale->lines as $i => $line)
+                            @php
+                                $pRaw   = $line->product->name ?? null;
+                                $pName  = is_array($pRaw) ? ($pRaw[app()->getLocale()] ?? ($pRaw['ar'] ?? (reset($pRaw)??''))) : $pRaw;
+                                $uom    = $line->uom_text ?? ($line->unit->name ?? '—');
+                                if (is_array($uom)) { $uom = $uom[app()->getLocale()] ?? ($uom['ar'] ?? (reset($uom)??'—')); }
+                                $qty    = (float)($line->qty ?? 0);
+                                $price  = (float)($line->unit_price ?? 0);
+                                $total  = $qty * $price;
+                            @endphp
+                            <tr>
+                                <td>{{ $i+1 }}</td>
+                                <td>{{ $pName ?? '—' }}</td>
+                                <td class="text-center">{{ $uom }}</td>
+                                <td class="text-center">{{ number_format($qty,2) }}</td>
+                                <td class="text-center">{{ number_format($price,2) }}</td>
+                                <td class="text-end">{{ number_format($total,2) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="6" class="text-center text-muted py-3">{{ __('pos.no_items') }}</td></tr>
+                        @endforelse
                     </tbody>
-                    <tfoot>
-                    <tr><th colspan="5" class="text-end">{{ __('pos.subtotal') }}</th><th class="text-end">{{ number_format((float)$sale->subtotal,2) }}</th></tr>
-                    <tr><th colspan="5" class="text-end">{{ __('pos.discount') }}</th><th class="text-end">{{ number_format((float)$sale->discount,2) }}</th></tr>
-                    <tr><th colspan="5" class="text-end">{{ __('pos.tax') }}</th><th class="text-end">{{ number_format((float)$sale->tax,2) }}</th></tr>
-                    <tr><th colspan="5" class="text-end">{{ __('pos.grand_total') }}</th><th class="text-end">{{ number_format((float)$sale->grand_total,2) }}</th></tr>
-                    </tfoot>
                 </table>
             </div>
 
@@ -169,23 +250,23 @@
         }
     </script>
 
-    {{-- SweetAlert2 (نفس أسلوب الحذف) --}}
+    {{-- SweetAlert2 للحذف --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmDelete(id) {
             Swal.fire({
-                title: 'تحذير',
-                text: '⚠️ هل أنت متأكد أنك تريد حذف هذا الإجراء لا يمكن التراجع عنه!',
+                title: '{{ __("تحذير") }}',
+                text: '⚠️ {{ __("هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه!") }}',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#198754',
                 cancelButtonColor: '#0d6efd',
-                confirmButtonText: 'نعم، احذفها',
-                cancelButtonText: 'إلغاء'
+                confirmButtonText: '{{ __("نعم، احذف") }}',
+                cancelButtonText: '{{ __("إلغاء") }}'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Livewire.emit('deleteConfirmed', id);
-                    Swal.fire('تم الحذف!', '✅ تم الحذف بنجاح.', 'success');
+                    Livewire.emit("deleteConfirmed", id);
+                    Swal.fire('{{ __("تم الحذف!") }}', '✅ {{ __("تم الحذف بنجاح.") }}', 'success');
                 }
             })
         }

@@ -30,11 +30,11 @@ class couponusages extends Model
 
     public function customer()
     {
-        return $this->belongsTo(\App\Models\Customers\Customer::class, 'customer_id');
+        return $this->belongsTo(\App\models\Customers\Customer::class, 'customer_id');
     }
 
     public function branch()
     {
-        return $this->belongsTo(\App\Models\General\Branch::class, 'branch_id');
+        return $this->belongsTo(\App\models\General\Branch::class, 'branch_id');
     }
 }

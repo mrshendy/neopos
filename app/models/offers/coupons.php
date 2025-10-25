@@ -35,12 +35,12 @@ class coupons extends Model
     /** علاقات */
     public function branches()
     {
-        return $this->belongsToMany(\App\Models\General\Branch::class, 'coupon_branches');
+        return $this->belongsToMany(\App\models\General\Branch::class, 'coupon_branches');
     }
 
     public function customers()
     {
-        return $this->belongsToMany(\App\Models\Customers\Customer::class, 'coupon_customers');
+        return $this->belongsToMany(\App\models\Customers\Customer::class, 'coupon_customers');
     }
 
     public function usages()

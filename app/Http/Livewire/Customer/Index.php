@@ -4,7 +4,7 @@ namespace App\Http\Livewire\Customer;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\customer\customer as Customer;
+use App\models\customer\customer as Customer;
 
 class Index extends Component
 {

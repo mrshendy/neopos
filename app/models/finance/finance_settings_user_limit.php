@@ -19,5 +19,5 @@ class finance_settings_user_limit extends Model
     ];
 
     public function settings() { return $this->belongsTo(finance_settings::class, 'finance_settings_id'); }
-    public function user()     { return $this->belongsTo(\App\Models\User::class, 'user_id'); }
+    public function user()     { return $this->belongsTo(\App\models\User::class, 'user_id'); }
 }

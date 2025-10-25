@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\General\Branches;
 
 use Livewire\Component;
-use App\Models\General\Branch as BranchModel; // ✅ صحّح الـnamespace والكابيتالايز
+use App\models\General\Branch as BranchModel; // ✅ صحّح الـnamespace والكابيتالايز
 
 class Edit extends Component
 {

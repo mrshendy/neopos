@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Area;
 
-use App\Models\Area;
-use App\Models\City;
-use App\Models\Country;
-use App\Models\Governorate;
+use App\models\Area;
+use App\models\City;
+use App\models\Country;
+use App\models\Governorate;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;

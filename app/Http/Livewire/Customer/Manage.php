@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\Customer;
 
 use Livewire\Component;
-use App\Models\customer\customer as Customer;
+use App\models\customer\customer as Customer;
 use Illuminate\Validation\Rule;
 
 class Manage extends Component
@@ -44,7 +44,7 @@ class Manage extends Component
         return [
             'code'    => [
                 'nullable', 'max:60',
-                Rule::unique('customers','code')->ignore($this->customer_id)->whereNull('deleted_at')
+                Rule::unique('customer','code')->ignore($this->customer_id)->whereNull('deleted_at')
             ],
             'type'    => ['required','in:person,company'],
             'status'  => ['required','in:active,inactive'],

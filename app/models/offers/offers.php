@@ -37,19 +37,19 @@ class offers extends Model
     public function branches()
     {
         // عدّل المسار لو اسم موديل الفروع مختلف عندك
-        return $this->belongsToMany(\App\Models\General\Branch::class, 'offer_branches');
+        return $this->belongsToMany(\App\models\General\Branch::class, 'offer_branches');
     }
 
     public function products()
     {
         // يوجد min_qty على Pivot
-        return $this->belongsToMany(\App\Models\Products\Product::class, 'offer_products')
+        return $this->belongsToMany(\App\models\Products\Product::class, 'offer_products')
                     ->withPivot('min_qty');
     }
 
     public function categories()
     {
-        return $this->belongsToMany(\App\Models\Products\Category::class, 'offer_categories');
+        return $this->belongsToMany(\App\models\Products\Category::class, 'offer_categories');
     }
 
     /** Scopes */

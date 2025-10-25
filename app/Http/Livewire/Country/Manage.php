@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Country;
 
-use App\Models\Country;
+use App\models\Country;
 use Livewire\Component;
 use Livewire\WithPagination;
 

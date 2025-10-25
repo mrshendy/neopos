@@ -26,8 +26,8 @@ class currencies extends Model
     ];
 
     // علاقات خفيفة (اختيارية) مع المستخدمين إن وجدت جداول users
-    public function creator(){ return $this->belongsTo(\App\Models\User::class, 'created_by'); }
-    public function updater(){ return $this->belongsTo(\App\Models\User::class, 'updated_by'); }
+    public function creator(){ return $this->belongsTo(\App\models\User::class, 'created_by'); }
+    public function updater(){ return $this->belongsTo(\App\models\User::class, 'updated_by'); }
 
     // Scopes
     public function scopeActive($q){ return $q->where('status','active'); }

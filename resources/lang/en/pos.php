@@ -2643,5 +2643,29 @@ return [
     'swal_deleted_title' => 'Deleted!',
     'swal_deleted_text' => '✅ Deleted successfully.',
     'currencies_manage' => 'Manage Currencies',
+    'saved_successfully' => ' ✅ saved successfully ' ,
+
+
+    // --- Payments / Currency / Treasury ---
+    'payment_method'   => 'Payment Method',
+    'pm_cash'          => 'Cash',
+    'pm_card'          => 'Card (Visa/Master)',
+    'pm_instapay'      => 'InstaPay',
+    'pm_wallet'        => 'e-Wallet',
+
+    'currency'         => 'Currency',
+    'treasury'         => 'Treasury',
+    'branch'           => 'Branch',
+
+    // --- Coupon ---
+    'coupon_code'      => 'Coupon Code',
+    'apply'            => 'Apply',
+    'coupon_applied'   => 'Coupon applied successfully',
+    'coupon_error'     => 'Failed to apply coupon',
+    'coupon_discount'  => 'Coupon Discount',
+
+    // --- Payment amounts ---
+    'amount_paid'      => 'Amount Paid',
+    'change_due'       => 'Change Due',
 
 ];

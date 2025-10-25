@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\General\Branches;
 
 use Livewire\Component;
-use App\Models\General\Branch;
+use App\models\General\Branch;
 
 class Create extends Component
 {

@@ -2676,4 +2676,28 @@ return [
     'swal_deleted_title'        => 'تم الحذف!',
     'swal_deleted_text'         => '✅ تم الحذف بنجاح.',
     'currencies_manage'          => 'إدارة العملات',
+    'saved_successfully' => ' ✅ تم الحفظ بنجاح' ,
+
+    
+    // --- Payments / Currency / Treasury ---
+    'payment_method'   => 'طريقة السداد',
+    'pm_cash'          => 'نقدي',
+    'pm_card'          => 'بطاقة (فيزا/ماستر)',
+    'pm_instapay'      => 'إنستاباي',
+    'pm_wallet'        => 'محفظة إلكترونية',
+
+    'currency'         => 'العملة',
+    'treasury'         => 'الخزينة',
+    'branch'           => 'الفرع',
+
+    // --- Coupon ---
+    'coupon_code'      => 'كود الكوبون',
+    'apply'            => 'تطبيق',
+    'coupon_applied'   => 'تم تطبيق الكوبون بنجاح',
+    'coupon_error'     => 'تعذّر تطبيق الكوبون',
+    'coupon_discount'  => 'خصم الكوبون',
+
+    // --- Payment amounts ---
+    'amount_paid'      => 'المبلغ المدفوع',
+    'change_due'       => 'المتبقي/الفرق',
 ];
