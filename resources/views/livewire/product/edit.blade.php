@@ -1,3 +1,4 @@
+{{-- resources/views/livewire/product/edit.blade.php --}}
 <div class="page-wrap">
 
     {{-- alerts --}}
@@ -11,7 +12,10 @@
     {{-- header --}}
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div>
-            <h4 class="mb-1 fw-bold"><i class="mdi mdi-pencil-circle-outline me-2"></i> {{ __('pos.product_edit_title') ?? 'تعديل منتج' }}</h4>
+            <h4 class="mb-1 fw-bold">
+                <i class="mdi mdi-pencil-circle-outline me-2"></i>
+                {{ __('pos.product_edit_title') ?? 'تعديل منتج' }}
+            </h4>
             <div class="text-muted small">{{ __('pos.product_edit_sub') ?? 'عدّل البيانات الأساسية، الوحدات، والإعدادات' }}</div>
         </div>
         <a href="{{ route('product.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
@@ -36,6 +40,7 @@
                             </div>
                         @endif
                     </div>
+
                     <div class="flex-grow-1">
                         <label class="form-label mb-1">{{ __('pos.product_image') ?? 'صورة المنتج' }}</label>
                         <input type="file" class="form-control" wire:model="image" accept="image/*">
@@ -50,6 +55,7 @@
                             </span>
                         </div>
                     </div>
+
                     <div>
                         <button type="button" class="btn btn-outline-danger rounded-pill" wire:click="removeImage">
                             <i class="mdi mdi-close"></i> {{ __('pos.remove') ?? 'إزالة' }}
@@ -59,7 +65,7 @@
             </div>
         </div>
 
-        {{-- البيانات الأساسية (4 أعمدة) --}}
+        {{-- البيانات الأساسية --}}
         <div class="col-12">
             <div class="card shadow-sm rounded-4">
                 <div class="card-body">
@@ -68,7 +74,8 @@
                         {{-- sku --}}
                         <div class="col">
                             <label class="form-label">{{ __('pos.sku') ?? 'كود الصنف' }}</label>
-                            <input type="text" class="form-control @error('sku') is-invalid @enderror" wire:model.lazy="sku" placeholder="{{ __('pos.ph_sku') ?? 'مثال: PRD-0001' }}">
+                            <input type="text" class="form-control @error('sku') is-invalid @enderror"
+                                   wire:model.lazy="sku" placeholder="{{ __('pos.ph_sku') ?? 'مثال: PRD-0001' }}">
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_sku') ?? 'يُستخدم كمعرّف داخلي فريد' }}</small>
                             @error('sku') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
                             <div class="preview-box"><i class="mdi mdi-tag-outline"></i><span>{{ $sku ?: '—' }}</span></div>
@@ -77,7 +84,8 @@
                         {{-- barcode --}}
                         <div class="col">
                             <label class="form-label">{{ __('pos.barcode') ?? 'الباركود' }}</label>
-                            <input type="text" class="form-control @error('barcode') is-invalid @enderror" wire:model.lazy="barcode" placeholder="{{ __('pos.ph_barcode') ?? 'مثال: 6221234567890' }}">
+                            <input type="text" class="form-control @error('barcode') is-invalid @enderror"
+                                   wire:model.lazy="barcode" placeholder="{{ __('pos.ph_barcode') ?? 'مثال: 6221234567890' }}">
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_barcode') ?? 'اختياري — لو متاح على الصنف' }}</small>
                             @error('barcode') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
                             <div class="preview-box"><i class="mdi mdi-barcode"></i><span>{{ $barcode ?: '—' }}</span></div>
@@ -86,7 +94,8 @@
                         {{-- name ar --}}
                         <div class="col">
                             <label class="form-label">{{ __('pos.name_ar') ?? 'الاسم (عربي)' }}</label>
-                            <input type="text" class="form-control @error('name.ar') is-invalid @enderror" wire:model.lazy="name.ar" placeholder="{{ __('pos.ph_name_ar') ?? 'ادخل الاسم بالعربية' }}">
+                            <input type="text" class="form-control @error('name.ar') is-invalid @enderror"
+                                   wire:model.lazy="name.ar" placeholder="{{ __('pos.ph_name_ar') ?? 'ادخل الاسم بالعربية' }}">
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_name_ar') ?? 'سيظهر للواجهة العربية' }}</small>
                             @error('name.ar') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
                             <div class="preview-box"><i class="mdi mdi-alphabet-arabic"></i><span>{{ $name['ar'] ?? '—' }}</span></div>
@@ -95,7 +104,8 @@
                         {{-- name en --}}
                         <div class="col">
                             <label class="form-label">{{ __('pos.name_en') ?? 'الاسم (إنجليزي)' }}</label>
-                            <input type="text" class="form-control @error('name.en') is-invalid @enderror" wire:model.lazy="name.en" placeholder="{{ __('pos.ph_name_en') ?? 'Enter English name' }}">
+                            <input type="text" class="form-control @error('name.en') is-invalid @enderror"
+                                   wire:model.lazy="name.en" placeholder="{{ __('pos.ph_name_en') ?? 'Enter English name' }}">
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_name_en') ?? 'سيظهر للواجهة الإنجليزية' }}</small>
                             @error('name.en') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
                             <div class="preview-box"><i class="mdi mdi-alphabet-latin"></i><span>{{ $name['en'] ?? '—' }}</span></div>
@@ -122,17 +132,17 @@
                         {{-- category --}}
                         <div class="col">
                             <label class="form-label">{{ __('pos.category') ?? 'القسم' }}</label>
-                            <select class="form-select @error('category_id') is-invalid @enderror" wire:model="category_id">
+                            <select class="form-select @error('category_id') is-invalid @enderror" wire:model="category_id" wire:key="categorySelect">
                                 <option value="">{{ __('pos.choose') ?? 'اختر' }}</option>
                                 @foreach($categories as $c)
-                                    <option value="{{ $c->id }}">{{ $c->getTranslation('name', app()->getLocale()) }}</option>
+                                    <option value="{{ (string)$c->id }}">{{ $c->getTranslation('name', app()->getLocale()) }}</option>
                                 @endforeach
                             </select>
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_category') ?? 'اختر القسم المناسب' }}</small>
                             @error('category_id') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
                             <div class="preview-box"><i class="mdi mdi-shape-outline"></i>
                                 <span>
-                                    {{ optional($categories->firstWhere('id',$category_id))->getTranslation('name', app()->getLocale()) ?? '—' }}
+                                    {{ optional($categories->firstWhere('id', (int)$category_id))->getTranslation('name', app()->getLocale()) ?? '—' }}
                                 </span>
                             </div>
                         </div>
@@ -140,17 +150,17 @@
                         {{-- supplier --}}
                         <div class="col">
                             <label class="form-label">{{ __('pos.supplier') ?? 'المورّد' }}</label>
-                            <select class="form-select @error('supplier_id') is-invalid @enderror" wire:model="supplier_id">
+                            <select class="form-select @error('supplier_id') is-invalid @enderror" wire:model="supplier_id" wire:key="supplierSelect">
                                 <option value="">{{ __('pos.choose') ?? 'اختر' }}</option>
                                 @foreach($suppliers as $s)
-                                    <option value="{{ $s->id }}">{{ $s->getTranslation('name', app()->getLocale()) }}</option>
+                                    <option value="{{ (string)$s->id }}">{{ $s->getTranslation('name', app()->getLocale()) }}</option>
                                 @endforeach
                             </select>
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_supplier') ?? 'اختر المورّد الأساسي للصنف' }}</small>
                             @error('supplier_id') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
                             <div class="preview-box"><i class="mdi mdi-truck-outline"></i>
                                 <span>
-                                    {{ optional($suppliers->firstWhere('id',$supplier_id))->getTranslation('name', app()->getLocale()) ?? '—' }}
+                                    {{ optional($suppliers->firstWhere('id', (int)$supplier_id))->getTranslation('name', app()->getLocale()) ?? '—' }}
                                 </span>
                             </div>
                         </div>
@@ -159,7 +169,7 @@
                     <div class="row g-3 mt-1">
                         <div class="col-12 col-lg-3">
                             <label class="form-label">{{ __('pos.status') ?? 'الحالة' }}</label>
-                            <select class="form-select @error('status') is-invalid @enderror" wire:model="status">
+                            <select class="form-select @error('status') is-invalid @enderror" wire:model="status" wire:key="statusSelect">
                                 <option value="active">{{ __('pos.status_active') ?? 'نشط' }}</option>
                                 <option value="inactive">{{ __('pos.status_inactive') ?? 'غير نشط' }}</option>
                             </select>
@@ -167,7 +177,7 @@
                             @error('status') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
                             <div class="preview-box">
                                 <i class="mdi mdi-toggle-switch"></i>
-                                <span>{{ $status=='active' ? __('pos.status_active') ?? 'نشط' : __('pos.status_inactive') ?? 'غير نشط' }}</span>
+                                <span>{{ $status==='active' ? (__('pos.status_active') ?? 'نشط') : (__('pos.status_inactive') ?? 'غير نشط') }}</span>
                             </div>
                         </div>
                     </div>
@@ -175,7 +185,7 @@
             </div>
         </div>
 
-        {{-- جدول الوحدات المربوط بوحدات النظام --}}
+        {{-- جدول الوحدات --}}
         <div class="col-12">
             <div class="card shadow-sm rounded-4">
                 <div class="card-body">
@@ -193,26 +203,26 @@
                             </thead>
                             <tbody>
 
-                                {{-- اختيار الوحدة من جدول units --}}
+                                {{-- اختيار الوحدة --}}
                                 <tr>
                                     <td class="text-muted">{{ __('pos.unit') ?? 'الوحدة' }}</td>
                                     @foreach (['minor','middle','major'] as $lvl)
                                         <td>
                                             <select class="form-select @error('units_matrix.'.$lvl.'.unit_id') is-invalid @enderror"
-                                                    wire:model="units_matrix.{{ $lvl }}.unit_id">
+                                                    wire:model="units_matrix.{{ $lvl }}.unit_id"
+                                                    wire:key="unitSelect-{{ $lvl }}">
                                                 <option value="">{{ __('pos.choose') ?? 'اختر' }}</option>
                                                 @foreach($units as $u)
-                                                    <option value="{{ $u->id }}">{{ $u->getTranslation('name', app()->getLocale()) }}</option>
+                                                    <option value="{{ (string)$u->id }}">{{ $u->getTranslation('name', app()->getLocale()) }}</option>
                                                 @endforeach
                                             </select>
                                             <small class="text-muted d-block mb-1">{{ __('pos.hint_pick_unit') ?? 'اختر وحدة لهذا المستوى' }}</small>
                                             @error('units_matrix.'.$lvl.'.unit_id') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
+
+                                            @php $uid = data_get($units_matrix, $lvl.'.unit_id'); @endphp
                                             <div class="preview-box">
                                                 <i class="mdi mdi-ruler-square"></i>
-                                                <span>
-                                                    @php $uid = $units_matrix[$lvl]['unit_id'] ?? null; @endphp
-                                                    {{ $uid ? optional($units->firstWhere('id',$uid))->getTranslation('name', app()->getLocale()) : '—' }}
-                                                </span>
+                                                <span>{{ optional($units->firstWhere('id', (int)$uid))->getTranslation('name', app()->getLocale()) ?? '—' }}</span>
                                             </div>
                                         </td>
                                     @endforeach
@@ -224,9 +234,11 @@
                                     @foreach (['minor','middle','major'] as $lvl)
                                         <td>
                                             <input type="number" step="0.0001" class="form-control"
-                                                   wire:model.lazy="units_matrix.{{ $lvl }}.cost" placeholder="0.00">
+                                                   wire:model.lazy="units_matrix.{{ $lvl }}.cost"
+                                                   wire:key="cost-{{ $lvl }}"
+                                                   placeholder="0.00">
                                             <small class="text-muted d-block mb-1">{{ __('pos.hint_cost') ?? 'أدخل التكلفة' }}</small>
-                                            <div class="preview-box"><i class="mdi mdi-cash"></i><span>{{ $units_matrix[$lvl]['cost'] ?? '—' }}</span></div>
+                                            <div class="preview-box"><i class="mdi mdi-cash"></i><span>{{ data_get($units_matrix, $lvl.'.cost', '—') }}</span></div>
                                         </td>
                                     @endforeach
                                 </tr>
@@ -237,9 +249,11 @@
                                     @foreach (['minor','middle','major'] as $lvl)
                                         <td>
                                             <input type="number" step="0.0001" class="form-control"
-                                                   wire:model.lazy="units_matrix.{{ $lvl }}.price" placeholder="0.00">
+                                                   wire:model.lazy="units_matrix.{{ $lvl }}.price"
+                                                   wire:key="price-{{ $lvl }}"
+                                                   placeholder="0.00">
                                             <small class="text-muted d-block mb-1">{{ __('pos.hint_price') ?? 'أدخل سعر البيع' }}</small>
-                                            <div class="preview-box"><i class="mdi mdi-cash-multiple"></i><span>{{ $units_matrix[$lvl]['price'] ?? '—' }}</span></div>
+                                            <div class="preview-box"><i class="mdi mdi-cash-multiple"></i><span>{{ data_get($units_matrix, $lvl.'.price', '—') }}</span></div>
                                         </td>
                                     @endforeach
                                 </tr>
@@ -249,11 +263,14 @@
                                     <td class="text-muted">{{ __('pos.conv_factor') ?? 'معامل التحويل' }}</td>
                                     @foreach (['minor','middle','major'] as $lvl)
                                         <td>
-                                            <input type="number" step="0.0001" class="form-control @error('units_matrix.'.$lvl.'.factor') is-invalid @enderror"
-                                                   wire:model.lazy="units_matrix.{{ $lvl }}.factor" placeholder="1">
+                                            <input type="number" step="0.0001"
+                                                   class="form-control @error('units_matrix.'.$lvl.'.factor') is-invalid @enderror"
+                                                   wire:model.lazy="units_matrix.{{ $lvl }}.factor"
+                                                   wire:key="factor-{{ $lvl }}"
+                                                   placeholder="1">
                                             <small class="text-muted d-block mb-1">{{ __('pos.hint_factor') ?? 'الافتراضي 1' }}</small>
                                             @error('units_matrix.'.$lvl.'.factor') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
-                                            <div class="preview-box"><i class="mdi mdi-swap-horizontal"></i><span>{{ $units_matrix[$lvl]['factor'] ?? '—' }}</span></div>
+                                            <div class="preview-box"><i class="mdi mdi-swap-horizontal"></i><span>{{ data_get($units_matrix, $lvl.'.factor', '—') }}</span></div>
                                         </td>
                                     @endforeach
                                 </tr>
@@ -265,37 +282,35 @@
                     <div class="row g-3 mt-3">
                         <div class="col-12 col-md-6">
                             <label class="form-label">{{ __('pos.sale_unit') ?? 'وحدة البيع' }}</label>
-                            <select class="form-select @error('sale_unit_key') is-invalid @enderror" wire:model="sale_unit_key">
+                            <select class="form-select @error('sale_unit_key') is-invalid @enderror"
+                                    wire:model="sale_unit_key" wire:key="saleUnitKey">
                                 <option value="minor">{{ __('pos.minor') ?? 'الصغرى' }}</option>
                                 <option value="middle">{{ __('pos.middle') ?? 'الوسطى' }}</option>
                                 <option value="major">{{ __('pos.major') ?? 'الكبرى' }}</option>
                             </select>
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_sale_unit') ?? 'يجب أن تكون من الثلاث وحدات المختارة أعلاه' }}</small>
                             @error('sale_unit_key') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
+                            @php $k = $sale_unit_key; $uid = $k ? data_get($units_matrix, $k.'.unit_id') : null; @endphp
                             <div class="preview-box">
                                 <i class="mdi mdi-cart-outline"></i>
-                                <span>
-                                    @php $k = $sale_unit_key; $uid = $units_matrix[$k]['unit_id'] ?? null; @endphp
-                                    {{ $uid ? optional($units->firstWhere('id',$uid))->getTranslation('name', app()->getLocale()) : '—' }}
-                                </span>
+                                <span>{{ optional($units->firstWhere('id', (int)$uid))->getTranslation('name', app()->getLocale()) ?? '—' }}</span>
                             </div>
                         </div>
 
                         <div class="col-12 col-md-6">
                             <label class="form-label">{{ __('pos.purchase_unit') ?? 'وحدة الشراء' }}</label>
-                            <select class="form-select @error('purchase_unit_key') is-invalid @enderror" wire:model="purchase_unit_key">
+                            <select class="form-select @error('purchase_unit_key') is-invalid @enderror"
+                                    wire:model="purchase_unit_key" wire:key="purchaseUnitKey">
                                 <option value="minor">{{ __('pos.minor') ?? 'الصغرى' }}</option>
                                 <option value="middle">{{ __('pos.middle') ?? 'الوسطى' }}</option>
                                 <option value="major">{{ __('pos.major') ?? 'الكبرى' }}</option>
                             </select>
                             <small class="text-muted d-block mb-1">{{ __('pos.hint_purchase_unit') ?? 'يجب أن تكون من الثلاث وحدات المختارة أعلاه' }}</small>
                             @error('purchase_unit_key') <div class="text-danger small mb-1">{{ $message }}</div> @enderror
+                            @php $k = $purchase_unit_key; $uid = $k ? data_get($units_matrix, $k.'.unit_id') : null; @endphp
                             <div class="preview-box">
                                 <i class="mdi mdi-basket-outline"></i>
-                                <span>
-                                    @php $k = $purchase_unit_key; $uid = $units_matrix[$k]['unit_id'] ?? null; @endphp
-                                    {{ $uid ? optional($units->firstWhere('id',$uid))->getTranslation('name', app()->getLocale()) : '—' }}
-                                </span>
+                                <span>{{ optional($units->firstWhere('id', (int)$uid))->getTranslation('name', app()->getLocale()) ?? '—' }}</span>
                             </div>
                         </div>
 
@@ -322,7 +337,7 @@
                         <label class="form-check-label" for="expirySwitch">{{ __('pos.has_expiry') ?? 'له صلاحية؟' }}</label>
                         <div class="preview-box mt-2">
                             <i class="mdi mdi-check-circle-outline"></i>
-                            <span>{{ $expiry_enabled ? __('pos.yes') ?? 'نعم' : __('pos.no') ?? 'لا' }}</span>
+                            <span>{{ $expiry_enabled ? (__('pos.yes') ?? 'نعم') : (__('pos.no') ?? 'لا') }}</span>
                         </div>
                     </div>
 
@@ -330,7 +345,7 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
                                 <label class="form-label">{{ __('pos.expiry_unit') ?? 'وحدة الصلاحية' }}</label>
-                                <select class="form-select" wire:model="expiry_unit">
+                                <select class="form-select" wire:model="expiry_unit" wire:key="expiryUnit">
                                     <option value="day">{{ __('pos.day') ?? 'يوم' }}</option>
                                     <option value="month">{{ __('pos.month') ?? 'شهر' }}</option>
                                     <option value="year">{{ __('pos.year') ?? 'سنة' }}</option>
@@ -345,8 +360,6 @@
                                 <small class="text-muted d-block mb-1">{{ __('pos.hint_expiry_value') ?? 'عدد الأيام/الأشهر/السنوات' }}</small>
                                 <div class="preview-box"><i class="mdi mdi-numeric"></i><span>{{ $expiry_value ?: '—' }}</span></div>
                             </div>
-
-                            
                         </div>
                     @endif
                 </div>
@@ -358,10 +371,11 @@
             <a href="{{ route('product.index') }}" class="btn btn-light rounded-pill px-4 shadow-sm">
                 <i class="mdi mdi-close"></i> {{ __('pos.btn_cancel') ?? 'إلغاء' }}
             </a>
-            <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
+            <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm" wire:loading.attr="disabled">
                 <i class="mdi mdi-content-save-outline"></i> {{ __('pos.btn_update') ?? 'تحديث' }}
             </button>
         </div>
+
     </form>
 </div>
 

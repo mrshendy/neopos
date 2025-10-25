@@ -103,7 +103,7 @@ class index extends Component
                     'sku'     => (string)$p->sku,
                     'barcode' => (string)($p->barcode ?? ''),
                     'label'   => (string)$p->getTranslation('name', app()->getLocale()),
-                    'image'   => $p->image_path ? asset('storage/'.ltrim($p->image_path,'/')) : null,
+                    'image'   => $p->image_path ? asset('attachments/'.ltrim($p->image_path,'/')) : null,
                     'qty'     => $q,
                 ];
             })

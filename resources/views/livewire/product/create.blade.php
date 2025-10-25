@@ -81,7 +81,7 @@
                         @if($image)
                             <img src="{{ $image->temporaryUrl() }}" class="rounded border" width="88" height="88" style="object-fit:cover">
                         @elseif($image_path)
-                            <img src="{{ asset('storage/'.ltrim($image_path,'/')) }}" class="rounded border" width="88" height="88" style="object-fit:cover">
+                            <img src="{{ asset('attachments/'.ltrim($image_path,'/')) }}" class="rounded border" width="88" height="88" style="object-fit:cover">
                         @else
                             <div class="rounded border bg-light d-flex align-items-center justify-content-center" style="width:88px;height:88px">
                                 <i class="mdi mdi-image-plus text-muted fs-2"></i>

@@ -40,6 +40,71 @@ return [
 'currency_settings' => 'إعدادات العملات',
 'nationalities_settings' => 'إعدادات الجنسيات', 
 
-   
+    'settings'           => 'الإعدادات',
+    'system_settings'    => 'إعدادات النظام',
+    'Go_to_settings_now' => 'اذهب إلى الإعدادات الآن',
+
+    // عناوين الكاردات
+    'country'            => 'الدول',
+    'governorate'        => 'المحافظات',
+    'city'               => 'المدن',
+    'area'               => 'المناطق',
+
+       'settings'                 => 'الإعدادات',
+    'system_settings'          => 'إعدادات النظام',
+    'nationalities_settings'   => 'إعدادات الجنسيات',
+
+    // صفحة الدول
+    'add_new_country'          => 'إضافة دولة جديدة',
+    'country'                  => 'الدول',
+
+    // الجدول
+    'sr_no'                    => 'م',
+    'id'                       => 'المعرف',
+    'name_ar'                  => 'الاسم (عربي)',
+    'name_en'                  => 'الاسم (إنجليزي)',
+    'create_date'              => 'تاريخ الإنشاء',
+    'action'                   => 'الإجراءات',
+
+    // النماذج
+    'update_country'           => 'تعديل الدولة',
+    'submit'                   => 'حفظ',
+    'name_ar_enter'            => 'أدخل الاسم بالعربية',
+    'name_en_enter'            => 'أدخل الاسم بالإنجليزية',
+
+    // الحذف
+    'massagedelete_country'    => 'تأكيد حذف الدولة',
+    'massagedelete'            => 'حذف',
+    'massagedelete_d'          => 'هل أنت متأكد؟',
+    'massagedelete_p'          => 'سيتم حذف:',
+        'add_new_governorate'      => 'إضافة محافظة جديدة',
+    'update_country'           => 'تعديل المحافظة', // يُستخدم كعنوان مودال تعديل
+    'massagedelete_governorate'=> 'تأكيد حذف المحافظة',
+    'massagedelete_d'          => 'هل أنت متأكد؟',
+    'massagedelete_p'          => 'سيتم حذف: ',
+    'country_select'           => 'اختر الدولة',
+      // شاشة المدن
+    'city'                 => 'المدن',
+    'add_new_city'         => 'إضافة مدينة جديدة',
+    'update_city'          => 'تعديل المدينة',
+    'massagedelete_city'   => 'تأكيد حذف المدينة',
+
+    // أعمدة / اختيارات مرتبطة
+    'name_country'         => 'الدولة',
+    'name_governoratees'   => 'المحافظة',
+    'governorate_select'   => 'اختر المحافظة',
+
+     'area'                 => 'المناطق',
+    'add_new_area'         => 'إضافة منطقة جديدة',
+    'update_area'          => 'تعديل المنطقة',
+    'massagedelete_area'   => 'تأكيد حذف المنطقة',
+
+    'name_country'         => 'الدولة',
+    'name_governoratees'   => 'المحافظة',
+    'name_city'            => 'المدينة',
+
+    'country_select'       => 'اختر الدولة',
+    'governorate_select'   => 'اختر المحافظة',
+    'city_select'          => 'اختر المدينة',
     
 ];

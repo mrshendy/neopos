@@ -4,6 +4,8 @@ namespace App\Http\Livewire\product;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\DB;
+
 use App\models\product\product;
 use App\models\product\category;
 use App\models\unit\unit;
@@ -22,13 +24,23 @@ class Edit extends Component
     public $category_id, $supplier_id;
     public $status = 'active';
 
+    // الإضافية
+    public $tax_rate = 0;
+    public $opening_stock = 0;
+    public $track_batch = false;
+    public $track_serial = false;
+    public $reorder_level = null;
+
     // الصورة
     public $image;
     public $image_path;
 
-    // وحدات
+    // قوائم
     public $units = [];
+    public $categories = [];
+    public $suppliers = [];
 
+    // الوحدات
     public $units_matrix = [
         'minor'  => ['unit_id' => null, 'cost' => null, 'price' => null, 'factor' => 1],
         'middle' => ['unit_id' => null, 'cost' => null, 'price' => null, 'factor' => 1],
@@ -44,7 +56,7 @@ class Edit extends Component
     public $expiry_weekdays = [];
 
     protected $rules = [
-        // sku نضيف لها unique ديناميكياً في save()
+        // sku: نحقن unique لاحقًا
         'barcode'                     => 'nullable|string|max:100',
         'name.ar'                     => 'required|string|max:255',
         'name.en'                     => 'required|string|max:255',
@@ -53,6 +65,12 @@ class Edit extends Component
         'category_id'                 => 'nullable|exists:categories,id',
         'supplier_id'                 => 'nullable|exists:suppliers,id',
         'status'                      => 'required|in:active,inactive',
+
+        'tax_rate'                    => 'nullable|numeric|min:0|max:100',
+        'opening_stock'               => 'nullable|integer|min:0',
+        'track_batch'                 => 'boolean',
+        'track_serial'                => 'boolean',
+        'reorder_level'               => 'nullable|integer|min:0',
 
         'units_matrix.minor.unit_id'  => 'nullable|exists:unit,id',
         'units_matrix.middle.unit_id' => 'nullable|exists:unit,id',
@@ -73,14 +91,66 @@ class Edit extends Component
     ];
 
     protected $messages = [
-        'name.ar.required' => 'الاسم بالعربية مطلوب.',
-        'name.en.required' => 'الاسم بالإنجليزية مطلوب.',
+        'name.ar.required'              => 'الاسم بالعربية مطلوب.',
+        'name.en.required'              => 'الاسم بالإنجليزية مطلوب.',
         'units_matrix.*.unit_id.exists' => 'الوحدة المختارة غير موجودة.',
         'units_matrix.*.factor.min'     => 'معامل التحويل يجب ألا يقل عن 1.',
     ];
 
+    protected function loadLookups(): void
+    {
+        $this->units = unit::orderBy('name->' . app()->getLocale())->get(['id','name']);
+        $this->categories = category::orderBy('name->' . app()->getLocale())->get(['id','name']);
+        $this->suppliers = supplier::orderBy('name->' . app()->getLocale())->get(['id','name']);
+    }
+
+    protected function asArray($val): array
+    {
+        if (is_array($val)) return $val;
+        if (is_string($val) && strlen($val)) {
+            $dec = json_decode($val, true);
+            return is_array($dec) ? $dec : [];
+        }
+        return [];
+    }
+
+    protected function hydrateUnitsMatrix($raw): void
+    {
+        $base = [
+            'minor'  => ['unit_id' => null, 'cost' => null, 'price' => null, 'factor' => 1],
+            'middle' => ['unit_id' => null, 'cost' => null, 'price' => null, 'factor' => 1],
+            'major'  => ['unit_id' => null, 'cost' => null, 'price' => null, 'factor' => 1],
+        ];
+
+        $src = $this->asArray($raw);
+        foreach (['minor','middle','major'] as $lvl) {
+            $row = (array)($src[$lvl] ?? []);
+            $base[$lvl]['unit_id'] = isset($row['unit_id']) && $row['unit_id'] !== '' ? (string)$row['unit_id'] : null;
+            $base[$lvl]['cost']    = isset($row['cost'])    && $row['cost'] !== ''    ? (float)$row['cost']  : null;
+            $base[$lvl]['price']   = isset($row['price'])   && $row['price'] !== ''   ? (float)$row['price'] : null;
+            $base[$lvl]['factor']  = isset($row['factor'])  && $row['factor']         ? (float)$row['factor']: 1.0;
+        }
+        $this->units_matrix = $base;
+
+        foreach (['sale_unit_key','purchase_unit_key'] as $prop) {
+            $k = $this->{$prop};
+            if (!in_array($k, ['minor','middle','major'], true)) {
+                $this->{$prop} = 'minor';
+            }
+            if (empty($this->units_matrix[$this->{$prop}]['unit_id'])) {
+                foreach (['minor','middle','major'] as $try) {
+                    if (!empty($this->units_matrix[$try]['unit_id'])) {
+                        $this->{$prop} = $try; break;
+                    }
+                }
+            }
+        }
+    }
+
     public function mount($id)
     {
+        $this->loadLookups();
+
         $p = product::findOrFail($id);
         $this->row_id = $p->id;
 
@@ -97,26 +167,26 @@ class Edit extends Component
         ];
         $this->category_id = $p->category_id;
         $this->supplier_id = $p->supplier_id;
-        $this->status      = $p->status;
+        $this->status      = in_array($p->status, ['active','inactive'], true) ? $p->status : 'active';
         $this->image_path  = $p->image_path;
 
-        // وحدات
-        if (is_array($p->units_matrix)) {
-            foreach (['minor','middle','major'] as $k) {
-                $this->units_matrix[$k] = array_merge(
-                    ['unit_id' => null, 'cost' => null, 'price' => null, 'factor' => 1],
-                    (array)($p->units_matrix[$k] ?? [])
-                );
-            }
-        }
+        // الإضافية
+        $this->tax_rate      = $p->tax_rate ?? 0;
+        $this->opening_stock = $p->opening_stock ?? 0;
+        $this->track_batch   = (bool)($p->track_batch ?? 0);
+        $this->track_serial  = (bool)($p->track_serial ?? 0);
+        $this->reorder_level = $p->reorder_level ?? null;
+
+        // الوحدات
         $this->sale_unit_key     = $p->sale_unit_key ?: 'minor';
         $this->purchase_unit_key = $p->purchase_unit_key ?: 'minor';
+        $this->hydrateUnitsMatrix($p->units_matrix);
 
         // الصلاحية
-        $this->expiry_enabled  = (bool)$p->expiry_enabled;
-        $this->expiry_unit     = $p->expiry_enabled ? ($p->expiry_unit ?: 'day') : 'day';
-        $this->expiry_value    = $p->expiry_enabled ? ($p->expiry_value ?: null) : null;
-        $this->expiry_weekdays = ($p->expiry_enabled && is_array($p->expiry_weekdays)) ? $p->expiry_weekdays : [];
+        $this->expiry_enabled  = (bool)($p->expiry_enabled ?? false);
+        $this->expiry_unit     = $this->expiry_enabled ? ($p->expiry_unit ?: 'day') : 'day';
+        $this->expiry_value    = $this->expiry_enabled ? ($p->expiry_value ?: null) : null;
+        $this->expiry_weekdays = ($this->expiry_enabled && is_array($p->expiry_weekdays)) ? array_values($p->expiry_weekdays) : [];
     }
 
     public function removeImage()
@@ -127,10 +197,10 @@ class Edit extends Component
     public function save()
     {
         // unique للـ sku مع تجاهل السجل الحالي
-        $this->rules['sku'] = 'required|string|max:100|unique:products,sku,' . $this->row_id;
+        $table = (new product)->getTable();
+        $this->rules['sku'] = 'required|string|max:100|unique:' . $table . ',sku,' . $this->row_id;
         $this->validate();
 
-        // تأكيد وحدة البيع/الشراء من داخل الجدول ولها unit_id
         foreach ([$this->sale_unit_key, $this->purchase_unit_key] as $k) {
             if (empty($this->units_matrix[$k]['unit_id'])) {
                 $this->addError('sale_purchase_mismatch', 'وحدة البيع/الشراء يجب أن تكون من الوحدات المحددة بالأعلى.');
@@ -140,24 +210,39 @@ class Edit extends Component
 
         $p = product::findOrFail($this->row_id);
 
-        // صورة
         if ($this->image) {
             $this->image_path = $this->image->store('products', 'public');
-            $p->image_path = $this->image_path;
+            $p->image_path = '/' . $this->image_path;
         }
 
-        // أساسية
-        $p->sku = $this->sku;
-        $p->barcode = $this->barcode;
-        $p->setTranslation('name', 'ar', $this->name['ar']);
-        $p->setTranslation('name', 'en', $this->name['en']);
-        $p->setTranslation('description', 'ar', $this->description['ar'] ?? '');
-        $p->setTranslation('description', 'en', $this->description['en'] ?? '');
+        $p->sku         = $this->sku;
+        $p->barcode     = $this->barcode;
         $p->category_id = $this->category_id ?: null;
         $p->supplier_id = $this->supplier_id ?: null;
         $p->status      = $this->status;
 
-        // وحدات
+        $p->tax_rate       = $this->tax_rate ?? 0;
+        $p->opening_stock  = $this->opening_stock ?? 0;
+        $p->track_batch    = $this->track_batch ? 1 : 0;
+        $p->track_serial   = $this->track_serial ? 1 : 0;
+        $p->reorder_level  = $this->reorder_level ?? null;
+
+        // ترجمات
+        $p->setTranslation('name', 'ar', $this->name['ar']);
+        $p->setTranslation('name', 'en', $this->name['en']);
+        $p->setTranslation('description', 'ar', $this->description['ar'] ?? '');
+        $p->setTranslation('description', 'en', $this->description['en'] ?? '');
+
+        // تهيئة وحدات قبل الحفظ
+        foreach (['minor','middle','major'] as $lvl) {
+            $row = $this->units_matrix[$lvl] ?? [];
+            $this->units_matrix[$lvl] = [
+                'unit_id' => isset($row['unit_id']) && $row['unit_id'] !== '' ? (int)$row['unit_id'] : null,
+                'cost'    => isset($row['cost'])   && $row['cost'] !== ''   ? (float)$row['cost']  : null,
+                'price'   => isset($row['price'])  && $row['price'] !== ''  ? (float)$row['price'] : null,
+                'factor'  => isset($row['factor']) && $row['factor']        ? (float)$row['factor']: 1.0,
+            ];
+        }
         $p->units_matrix      = $this->units_matrix;
         $p->sale_unit_key     = $this->sale_unit_key;
         $p->purchase_unit_key = $this->purchase_unit_key;
@@ -177,9 +262,9 @@ class Edit extends Component
     public function render()
     {
         return view('livewire.product.edit', [
-            'categories' => category::orderBy('name->' . app()->getLocale())->get(['id', 'name']),
-            'units'      => $this->units = unit::orderBy('name->' . app()->getLocale())->get(['id', 'name']),
-            'suppliers'  => supplier::orderBy('name->' . app()->getLocale())->get(['id', 'name']),
+            'categories' => $this->categories,
+            'units'      => $this->units,
+            'suppliers'  => $this->suppliers,
         ]);
     }
 }
